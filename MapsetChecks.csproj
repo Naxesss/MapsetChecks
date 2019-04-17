@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NAudio" Version="1.8.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="MapsetParser">
+      <HintPath>..\MapsetParser\bin\Debug\netcoreapp2.0\MapsetParser.dll</HintPath>
+    </Reference>
+    <Reference Include="MapsetVerifier">
+      <HintPath>..\MapsetVerifier\bin\Debug\netcoreapp2.0\MapsetVerifier.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
