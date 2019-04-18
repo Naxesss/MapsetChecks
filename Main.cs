@@ -1,7 +1,7 @@
-﻿using MapsetVerifier;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using MapsetChecks.checks.general.audio;
+using MapsetChecks.checks.general.files;
+using MapsetChecks.checks.timing;
+using MapsetVerifier;
 
 namespace MapsetChecks
 {
@@ -17,6 +17,19 @@ namespace MapsetChecks
             // Examples
             // CheckerRegistry.RegisterCheck(new CheckTest());
             // CheckerRegistry.RegisterCheck(new GeneralCheckTest());
+
+            // General > Audio
+            CheckerRegistry.RegisterCheck(new CheckAudioInVideo());
+            CheckerRegistry.RegisterCheck(new CheckBitrate());
+            CheckerRegistry.RegisterCheck(new CheckHitSoundDelay());
+            CheckerRegistry.RegisterCheck(new CheckHitSoundFormat());
+            CheckerRegistry.RegisterCheck(new CheckHitSoundImbalance());
+            CheckerRegistry.RegisterCheck(new CheckHitSoundLength());
+            CheckerRegistry.RegisterCheck(new CheckMultipleAudio());
+
+            // General > Files
+            CheckerRegistry.RegisterCheck(new CheckUnusedFiles());
+            CheckerRegistry.RegisterCheck(new CheckUpdateVailidity());
 
             // Timing
             CheckerRegistry.RegisterCheck(new CheckUnsnaps());
