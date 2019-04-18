@@ -1,7 +1,5 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
-
-/.vs/MapsetChecks/v15
+﻿/.vs/MapsetChecks/v15
 /obj
 /bin
+MapsetChecks.csproj
+MapsetChecks.sln
