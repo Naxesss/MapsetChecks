@@ -33,9 +33,9 @@ namespace MapsetChecks.checks.general.files
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
-            Beatmap refBeatmap = beatmapSet.beatmaps[0];
+            Beatmap refBeatmap = aBeatmapSet.beatmaps[0];
 
             // Matches strings which contain some version of "vs.", "CV:" or "feat." markers but not exactly.
             Regex regexVs   = new Regex("(?i)( vs.)");

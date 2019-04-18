@@ -41,26 +41,26 @@ namespace MapsetChecks.checks.general.files
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
-            IEnumerable<Beatmap.Mode> modes = beatmapSet.beatmaps.Select(aBeatmap => aBeatmap.generalSettings.mode).Distinct();
+            IEnumerable<Beatmap.Mode> modes = aBeatmapSet.beatmaps.Select(aBeatmap => aBeatmap.generalSettings.mode).Distinct();
             List<KeyValuePair<string, Beatmap.Mode>> modeVideoPairs = new List<KeyValuePair<string, Beatmap.Mode>>();
 
             foreach (Beatmap.Mode mode in modes)
             {
-                IEnumerable<Beatmap> beatmaps = beatmapSet.beatmaps.Where(aBeatmap => aBeatmap.generalSettings.mode == mode);
+                IEnumerable<Beatmap> beatmaps = aBeatmapSet.beatmaps.Where(aBeatmap => aBeatmap.generalSettings.mode == mode);
                 IEnumerable<string> videoFiles =
                     beatmaps.Select(aBeatmap =>
                         aBeatmap.videos
                             .FirstOrDefault()?.path ?? "None")
-                            .Append(beatmapSet.osb?.videos.FirstOrDefault()?.path ?? "").Distinct();
+                            .Append(aBeatmapSet.osb?.videos.FirstOrDefault()?.path ?? "").Distinct();
 
                 foreach (string videoFile in videoFiles)
                 {
                     IEnumerable<Beatmap> issueBeatmaps =
                         beatmaps.Where(aBeatmap =>
                             aBeatmap.videos.FirstOrDefault()?.path == videoFile ||
-                            beatmapSet.osb?.videos.FirstOrDefault()?.path == videoFile);
+                            aBeatmapSet.osb?.videos.FirstOrDefault()?.path == videoFile);
 
                     if (videoFiles.Count(aFile => aFile != "") > 1 && issueBeatmaps.Count() > 0)
                     {

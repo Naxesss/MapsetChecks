@@ -35,9 +35,9 @@ namespace MapsetChecks.checks.examples
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
-            foreach(Beatmap beatmap in beatmapSet.beatmaps)
+            foreach(Beatmap beatmap in aBeatmapSet.beatmaps)
                 yield return new Issue(GetTemplate("DiffName"), null, beatmap.metadataSettings.version);
         }
     }

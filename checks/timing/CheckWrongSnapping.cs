@@ -79,15 +79,15 @@ namespace MapsetChecks.checks.timing
 
         private ConcurrentBag<Tuple<double, double, Beatmap>> inconsistentPlaces;
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
             // uses a non-isolated approach in order to compare for inconsistent snappings between beatmaps in a set
-            foreach (Beatmap beatmap in beatmapSet.beatmaps)
+            foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
             {
                 inconsistentPlaces = new ConcurrentBag<Tuple<double, double, Beatmap>>();
 
                 IEnumerable<Beatmap> otherBeatmaps =
-                    beatmapSet.beatmaps.Where(aBeatmap =>
+                    aBeatmapSet.beatmaps.Where(aBeatmap =>
                         aBeatmap.starRating > beatmap.starRating &&
                         aBeatmap.generalSettings.mode == beatmap.generalSettings.mode);
 

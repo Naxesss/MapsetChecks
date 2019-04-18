@@ -47,11 +47,11 @@ namespace MapsetChecks.checks.general.audio
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
-            foreach (string hsFile in beatmapSet.hitsoundFiles)
+            foreach (string hsFile in aBeatmapSet.hitsoundFiles)
             {
-                AudioFile audioFile = new AudioFile(beatmapSet.songPath + "\\" + hsFile);
+                AudioFile audioFile = new AudioFile(aBeatmapSet.songPath + "\\" + hsFile);
                 
                 string errorMessage =
                     audioFile.ReadWav(

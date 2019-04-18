@@ -46,9 +46,9 @@ namespace MapsetChecks.checks.examples
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
         {
-            yield return new Issue(GetTemplate("DiffName"), beatmap, beatmap.metadataSettings.version);
+            yield return new Issue(GetTemplate("DiffName"), aBeatmap, aBeatmap.metadataSettings.version);
         }
     }
 }

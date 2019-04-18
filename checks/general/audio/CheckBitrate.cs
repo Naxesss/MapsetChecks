@@ -49,11 +49,11 @@ namespace MapsetChecks.checks.general.audio
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
-            if (beatmapSet.GetAudioFilePath() != null)
+            if (aBeatmapSet.GetAudioFilePath() != null)
             {
-                AudioFile file = new AudioFile(beatmapSet.GetAudioFilePath());
+                AudioFile file = new AudioFile(aBeatmapSet.GetAudioFilePath());
 
                 // gets the bitrate in bps, so turn it into kbps
                 double bitrate = file.GetAverageBitrate() / 1000;
@@ -64,7 +64,7 @@ namespace MapsetChecks.checks.general.audio
                 {
                     if (minBitrate < 128 || maxBitrate > 192)
                         yield return new Issue(GetTemplate("CBR"), null,
-                            beatmapSet.GetAudioFileName(), bitrate.ToString(CultureInfo.InvariantCulture),
+                            aBeatmapSet.GetAudioFileName(), bitrate.ToString(CultureInfo.InvariantCulture),
                             (bitrate < 128 ? "low" : "high"));
                 }
                 else
@@ -74,7 +74,7 @@ namespace MapsetChecks.checks.general.audio
                         if (Math.Round(bitrate) < 128 || Math.Round(bitrate) > 192)
                         {
                             yield return new Issue(GetTemplate("VBR"), null,
-                                beatmapSet.GetAudioFileName(), bitrate.ToString(CultureInfo.InvariantCulture),
+                                aBeatmapSet.GetAudioFileName(), bitrate.ToString(CultureInfo.InvariantCulture),
                                 minBitrate.ToString(CultureInfo.InvariantCulture),
                                 maxBitrate.ToString(CultureInfo.InvariantCulture),
                                 (bitrate < 128 ? "low" : "high"));
@@ -82,7 +82,7 @@ namespace MapsetChecks.checks.general.audio
                         else
                         {
                             yield return new Issue(GetTemplate("Exact VBR"), null,
-                                beatmapSet.GetAudioFileName(), bitrate.ToString(CultureInfo.InvariantCulture),
+                                aBeatmapSet.GetAudioFileName(), bitrate.ToString(CultureInfo.InvariantCulture),
                                 minBitrate.ToString(CultureInfo.InvariantCulture),
                                 maxBitrate.ToString(CultureInfo.InvariantCulture),
                                 (bitrate < 128 ? "low" : "high"));

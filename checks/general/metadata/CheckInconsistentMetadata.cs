@@ -42,13 +42,13 @@ namespace MapsetChecks.checks.general.files
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
-            Beatmap refBeatmap = beatmapSet.beatmaps[0];
+            Beatmap refBeatmap = aBeatmapSet.beatmaps[0];
             string refVersion = refBeatmap.metadataSettings.version;
             MetadataSettings refSettings = refBeatmap.metadataSettings;
 
-            foreach (Beatmap beatmap in beatmapSet.beatmaps)
+            foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
             {
                 string curVersion = beatmap.metadataSettings.version;
 

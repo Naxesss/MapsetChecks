@@ -32,9 +32,9 @@ namespace MapsetChecks.checks.general.files
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
-            Beatmap beatmap = beatmapSet.beatmaps[0];
+            Beatmap beatmap = aBeatmapSet.beatmaps[0];
 
             // Matches any string containing some form of TV Size but not exactly "(TV Size)".
             Regex regex = new Regex("(?i)(tv.(size|ver))");

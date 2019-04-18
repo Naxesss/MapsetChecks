@@ -47,23 +47,23 @@ namespace MapsetChecks.checks.general.files
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
-            if (beatmapSet.beatmaps.All(aBeatmap => aBeatmap.backgrounds.Count == 0))
+            if (aBeatmapSet.beatmaps.All(aBeatmap => aBeatmap.backgrounds.Count == 0))
                 yield return new Issue(GetTemplate("All"), null);
             else
             {
-                foreach (Beatmap beatmap in beatmapSet.beatmaps)
+                foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
                 {
                     if (beatmap.backgrounds.Count == 0)
                         yield return new Issue(GetTemplate("One"), null,
                             beatmap.metadataSettings.version);
 
-                    else if (beatmapSet.songPath != null)
+                    else if (aBeatmapSet.songPath != null)
                     {
                         foreach (Background bg in beatmap.backgrounds)
                         {
-                            string path = beatmapSet.songPath + "\\" + bg.path;
+                            string path = aBeatmapSet.songPath + "\\" + bg.path;
                             if (!File.Exists(path))
                                 yield return new Issue(GetTemplate("Missing"), null,
                                     beatmap.metadataSettings.version, bg.path);

@@ -39,9 +39,9 @@ namespace MapsetChecks.checks.general.files
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
-            Beatmap beatmap = beatmapSet.beatmaps[0];
+            Beatmap beatmap = aBeatmapSet.beatmaps[0];
 
             // Matches additional markers, like "Speed up ver." and "Full Version".
             Regex regex = new Regex("(?i)(( |-)ver(\\.|sion)?)(\\))?$");

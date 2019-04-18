@@ -37,9 +37,9 @@ namespace MapsetChecks.checks.timing
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
         {
-            foreach (HitObject hitObject in beatmap.hitObjects)
+            foreach (HitObject hitObject in aBeatmap.hitObjects)
             {
                 string objectType =
                     hitObject.HasType(HitObject.Type.Circle) ? "Circle" :
@@ -53,7 +53,7 @@ namespace MapsetChecks.checks.timing
                                     ? "" : " head")
                                 : objectType + (edgeTime == hitObject.GetEndTime()
                                     ? " tail" : " repeat"),
-                            edgeTime, beatmap, hitObject))
+                            edgeTime, aBeatmap, hitObject))
                         yield return issue;
             }
         }

@@ -35,11 +35,11 @@ namespace MapsetChecks.checks.general.audio
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
-            if (beatmapSet.hitsoundFiles != null)
+            if (aBeatmapSet.hitsoundFiles != null)
             {
-                foreach (string hitsoundFile in beatmapSet.hitsoundFiles)
+                foreach (string hitsoundFile in aBeatmapSet.hitsoundFiles)
                 {
                     if (hitsoundFile.EndsWith(".ogg"))
                         yield return new Issue(GetTemplate("ogg"), null,
@@ -48,7 +48,7 @@ namespace MapsetChecks.checks.general.audio
                     // needs to be passive, can't be active
                     if (hitsoundFile.EndsWith(".mp3"))
                     {
-                        foreach (Beatmap beatmap in beatmapSet.beatmaps)
+                        foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
                         {
                             foreach (HitObject hitObject in beatmap.hitObjects)
                             {

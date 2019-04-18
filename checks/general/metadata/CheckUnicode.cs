@@ -32,9 +32,9 @@ namespace MapsetChecks.checks.general.files
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
-            foreach (Beatmap beatmap in beatmapSet.beatmaps)
+            foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
             {
                 if (ContainsUnicode(beatmap.metadataSettings.title))
                     yield return new Issue(GetTemplate("Unicode"), null,
