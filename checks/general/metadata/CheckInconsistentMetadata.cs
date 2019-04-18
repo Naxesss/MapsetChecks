@@ -53,12 +53,12 @@ namespace MapsetChecks.checks.general.files
                 string curVersion = beatmap.metadataSettings.version;
 
                 List<Issue> issues = new List<Issue>();
-                issues.AddRange(TryAddIssue("artist",         beatmap, refBeatmap, aBeatmap => aBeatmap.metadataSettings.artist));
-                issues.AddRange(TryAddIssue("unicode artist", beatmap, refBeatmap, aBeatmap => aBeatmap.metadataSettings.artistUnicode));
-                issues.AddRange(TryAddIssue("title",          beatmap, refBeatmap, aBeatmap => aBeatmap.metadataSettings.title));
-                issues.AddRange(TryAddIssue("unicode title",  beatmap, refBeatmap, aBeatmap => aBeatmap.metadataSettings.titleUnicode));
-                issues.AddRange(TryAddIssue("source",         beatmap, refBeatmap, aBeatmap => aBeatmap.metadataSettings.source));
-                issues.AddRange(TryAddIssue("creator",        beatmap, refBeatmap, aBeatmap => aBeatmap.metadataSettings.creator));
+                issues.AddRange(GetInconsistency("artist",         beatmap, refBeatmap, aBeatmap => aBeatmap.metadataSettings.artist));
+                issues.AddRange(GetInconsistency("unicode artist", beatmap, refBeatmap, aBeatmap => aBeatmap.metadataSettings.artistUnicode));
+                issues.AddRange(GetInconsistency("title",          beatmap, refBeatmap, aBeatmap => aBeatmap.metadataSettings.title));
+                issues.AddRange(GetInconsistency("unicode title",  beatmap, refBeatmap, aBeatmap => aBeatmap.metadataSettings.titleUnicode));
+                issues.AddRange(GetInconsistency("source",         beatmap, refBeatmap, aBeatmap => aBeatmap.metadataSettings.source));
+                issues.AddRange(GetInconsistency("creator",        beatmap, refBeatmap, aBeatmap => aBeatmap.metadataSettings.creator));
                 foreach (Issue issue in issues)
                     yield return issue;
                 
@@ -79,7 +79,7 @@ namespace MapsetChecks.checks.general.files
         }
         
         /// <summary> Returns issues where the metadata fields of the given beatmaps do not match. </summary>
-        private IEnumerable<Issue> TryAddIssue(string aField, Beatmap aBeatmap, Beatmap anOtherBeatmap, Func<Beatmap, string> aMetadataField)
+        private IEnumerable<Issue> GetInconsistency(string aField, Beatmap aBeatmap, Beatmap anOtherBeatmap, Func<Beatmap, string> aMetadataField)
         {
             string field      = aMetadataField(aBeatmap);
             string otherField = aMetadataField(anOtherBeatmap);
