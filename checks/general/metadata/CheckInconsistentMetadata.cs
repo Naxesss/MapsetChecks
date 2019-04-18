@@ -78,6 +78,7 @@ namespace MapsetChecks.checks.general.files
             }
         }
         
+        /// <summary> Returns issues where the metadata fields of the given beatmaps do not match. </summary>
         private IEnumerable<Issue> TryAddIssue(string aField, Beatmap aBeatmap, Beatmap anOtherBeatmap, Func<Beatmap, string> aMetadataField)
         {
             string field      = aMetadataField(aBeatmap);
