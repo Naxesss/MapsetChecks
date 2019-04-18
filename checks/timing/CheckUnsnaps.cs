@@ -47,18 +47,19 @@ namespace MapsetChecks.checks.timing
                     "Spinner";
 
                 foreach (double edgeTime in hitObject.GetEdgeTimes())
-                    foreach (Issue issue in GetIssue(
+                    foreach (Issue issue in GetUnsnapIssue(
                             edgeTime == hitObject.time
                                 ? objectType + (objectType == "Circle"
                                     ? "" : " head")
                                 : objectType + (edgeTime == hitObject.GetEndTime()
                                     ? " tail" : " repeat"),
-                            edgeTime, aBeatmap, hitObject))
+                            edgeTime, aBeatmap))
                         yield return issue;
             }
         }
 
-        private IEnumerable<Issue> GetIssue<T>(string aType, double aTime, Beatmap aBeatmap, params T[] anObject)
+        /// <summary> Returns issues wherever the given time value is unsnapped. </summary>
+        private IEnumerable<Issue> GetUnsnapIssue(string aType, double aTime, Beatmap aBeatmap)
         {
             double? unsnapIssue = aBeatmap.GetUnsnapIssue(aTime);
 
