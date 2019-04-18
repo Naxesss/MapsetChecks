@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace MapsetChecks.checks.general.files
+namespace MapsetChecks.checks.general.resources
 {
     public class CheckBgPresence : GeneralCheck
     {

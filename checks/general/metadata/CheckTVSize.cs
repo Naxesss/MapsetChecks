@@ -8,7 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace MapsetChecks.checks.general.files
+namespace MapsetChecks.checks.general.metadata
 {
     public class CheckTVSize : GeneralCheck
     {
