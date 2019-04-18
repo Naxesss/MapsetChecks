@@ -41,7 +41,7 @@ namespace MapsetChecks.checks.general.audio
                 { "Missing",
                     new IssueTemplate(Issue.Level.Unrankable,
                         "\"{0}\" is missing, so unable to check that.",
-                        "file name", "exception")
+                        "file name")
                     .WithCause(
                         "An audio file referenced is not present.") },
 
