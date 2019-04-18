@@ -39,40 +39,40 @@ namespace MapsetChecks.checks.timing
 
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (HitObject myHitObject in beatmap.hitObjects)
+            foreach (HitObject hitObject in beatmap.hitObjects)
             {
-                string myType =
-                    myHitObject.HasType(HitObject.Type.Circle) ? "Circle" :
-                    myHitObject.HasType(HitObject.Type.Slider) ? "Slider" :
+                string objectType =
+                    hitObject.HasType(HitObject.Type.Circle) ? "Circle" :
+                    hitObject.HasType(HitObject.Type.Slider) ? "Slider" :
                     "Spinner";
 
-                foreach (double myEdgeTime in myHitObject.GetEdgeTimes())
-                    foreach (Issue myIssue in GetIssue(
-                            myEdgeTime == myHitObject.time
-                                ? myType + (myType == "Circle"
+                foreach (double edgeTime in hitObject.GetEdgeTimes())
+                    foreach (Issue issue in GetIssue(
+                            edgeTime == hitObject.time
+                                ? objectType + (objectType == "Circle"
                                     ? "" : " head")
-                                : myType + (myEdgeTime == myHitObject.GetEndTime()
+                                : objectType + (edgeTime == hitObject.GetEndTime()
                                     ? " tail" : " repeat"),
-                            myEdgeTime, beatmap, myHitObject))
-                        yield return myIssue;
+                            edgeTime, beatmap, hitObject))
+                        yield return issue;
             }
         }
 
         private IEnumerable<Issue> GetIssue<T>(string aType, double aTime, Beatmap aBeatmap, params T[] anObject)
         {
-            double? myUnsnapIssue = aBeatmap.GetUnsnapIssue(aTime);
+            double? unsnapIssue = aBeatmap.GetUnsnapIssue(aTime);
 
-            double myUnsnap = aBeatmap.GetPracticalUnsnap(aTime);
-            double myRoundedUnsnap = Math.Round(myUnsnap * 1000) / 1000;
-            string myUnsnapString = myRoundedUnsnap.ToString(CultureInfo.InvariantCulture);
+            double unsnap = aBeatmap.GetPracticalUnsnap(aTime);
+            double roundedUnsnap = Math.Round(unsnap * 1000) / 1000;
+            string unsnapString = roundedUnsnap.ToString(CultureInfo.InvariantCulture);
 
-            if (myUnsnapIssue != null)
+            if (unsnapIssue != null)
                 yield return new Issue(GetTemplate("Unrankable"), aBeatmap,
-                    Timestamp.Get(aTime), aType, myUnsnapString);
+                    Timestamp.Get(aTime), aType, unsnapString);
 
-            else if (Math.Abs(myUnsnap) >= 1)
+            else if (Math.Abs(unsnap) >= 1)
                 yield return new Issue(GetTemplate("Minor"), aBeatmap,
-                    Timestamp.Get(aTime), aType, myUnsnapString);
+                    Timestamp.Get(aTime), aType, unsnapString);
         }
     }
 }

@@ -44,15 +44,15 @@ namespace MapsetChecks.checks.general.files
             Beatmap beatmap = beatmapSet.beatmaps[0];
 
             // Matches additional markers, like "Speed up ver." and "Full Version".
-            Regex myRegex = new Regex("(?i)(( |-)ver(\\.|sion)?)(\\))?$");
+            Regex regex = new Regex("(?i)(( |-)ver(\\.|sion)?)(\\))?$");
 
-            if (myRegex.IsMatch(beatmap.metadataSettings.title))
+            if (regex.IsMatch(beatmap.metadataSettings.title))
                 yield return new Issue(GetTemplate("Romanized"), null,
                     beatmap.metadataSettings.title);
 
             // Unicode fields do not exist in file version 9.
             if (beatmap.metadataSettings.titleUnicode != null &&
-                myRegex.IsMatch(beatmap.metadataSettings.titleUnicode))
+                regex.IsMatch(beatmap.metadataSettings.titleUnicode))
             {
                 yield return new Issue(GetTemplate("Unicode"), null,
                     beatmap.metadataSettings.titleUnicode);

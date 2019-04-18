@@ -50,36 +50,36 @@ namespace MapsetChecks.checks.general.files
         {
             for (int i = 0; i < beatmapSet.songFilePaths.Count; ++i)
             {
-                string myFilePath = beatmapSet.songFilePaths[i].Substring(beatmapSet.songPath.Length + 1);
-                string myFileName = myFilePath.Split(new char[] { '/', '\\' }).Last().ToLower();
+                string filePath = beatmapSet.songFilePaths[i].Substring(beatmapSet.songPath.Length + 1);
+                string fileName = filePath.Split(new char[] { '/', '\\' }).Last().ToLower();
 
-                if(myFileName.Length > 132)
+                if(fileName.Length > 132)
                     yield return new Issue(GetTemplate("Too Long Name"), null,
-                            myFilePath, myFileName.Length);
+                            filePath, fileName.Length);
                 
-                if (myFileName.EndsWith(".osu"))
+                if (fileName.EndsWith(".osu"))
                 {
-                    bool myIsFine = false;
+                    bool isExpected = false;
 
-                    foreach (Beatmap myBeatmap in beatmapSet.beatmaps)
+                    foreach (Beatmap beatmap in beatmapSet.beatmaps)
                     {
-                        string myFileNameExpected = myBeatmap.GetOsuFileName();
-                        if (myFileName == myFileNameExpected)
-                            myIsFine = true;
+                        string fileNameExpected = beatmap.GetOsuFileName();
+                        if (fileName == fileNameExpected)
+                            isExpected = true;
                     }
 
-                    if (!myIsFine)
+                    if (!isExpected)
                         yield return new Issue(GetTemplate("Wrong Format"), null,
-                            myFilePath);
+                            filePath);
 
-                    // updating .osu files larger than 1 mb will cause the update to stop at the 1 mb mark
-                    FileInfo myFileInfo = new FileInfo(beatmapSet.songFilePaths[i]);
-                    double myApproxMB = Math.Round(myFileInfo.Length / 10000d) / 100;
-                    string myApproxMBString = (myApproxMB).ToString(CultureInfo.InvariantCulture);
+                    // Updating .osu files larger than 1 mb will cause the update to stop at the 1 mb mark
+                    FileInfo fileInfo = new FileInfo(beatmapSet.songFilePaths[i]);
+                    double approxMB = Math.Round(fileInfo.Length / 10000d) / 100;
+                    string approxMBString = (approxMB).ToString(CultureInfo.InvariantCulture);
 
-                    if (myApproxMB > 1)
+                    if (approxMB > 1)
                         yield return new Issue(GetTemplate("File Size"), null,
-                            myFilePath, myApproxMBString);
+                            filePath, approxMBString);
                 }
             }
         }

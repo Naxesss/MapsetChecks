@@ -105,14 +105,8 @@ namespace MapsetChecks
                         string[] files = null;
                         try
                         { files = Directory.GetFiles(aBeatmapSet.songPath, fileName + (fileName.Contains(".") ? "" : ".*")); }
-                        catch (Exception exception)
-                        {
-                            if (exception is DirectoryNotFoundException)
-                                files = new string[] { };
-                            //else if(myException is )
-                            else
-                                throw exception;
-                        }
+                        catch (DirectoryNotFoundException)
+                        { files = new string[] { }; }
 
                         if (files.Length > 0)
                         {

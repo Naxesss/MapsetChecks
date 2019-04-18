@@ -36,12 +36,12 @@ namespace MapsetChecks.checks.general.files
         {
             for (int i = 0; i < beatmapSet.songFilePaths.Count; ++i)
             {
-                string myFilePath = beatmapSet.songFilePaths[i].Substring(beatmapSet.songPath.Length + 1);
-                string myFileName = myFilePath.Split(new char[] { '/', '\\' }).Last().ToLower();
+                string filePath = beatmapSet.songFilePaths[i].Substring(beatmapSet.songPath.Length + 1);
+                string fileName = filePath.Split(new char[] { '/', '\\' }).Last().ToLower();
 
-                if (!beatmapSet.IsFileUsed(myFilePath) && myFileName != "thumbs.db")
+                if (!beatmapSet.IsFileUsed(filePath) && fileName != "thumbs.db")
                     yield return new Issue(GetTemplate("Unused"), null,
-                        myFilePath);
+                        filePath);
             }
         }
     }
