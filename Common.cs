@@ -23,10 +23,13 @@ namespace MapsetChecks
             var groups = pairs.Where(aPair => aPair.Value != null).GroupBy(aPair => aPair.Value).Select(aGroup =>
                 new KeyValuePair<string, IEnumerable<Beatmap>>(aGroup.Key, aGroup.Select(aPair => aPair.Key)));
 
-            foreach (var group in groups)
+            if (groups.Count() > 1)
             {
-                string message = group.Key + " : " + String.Join(" ", group.Value);
-                yield return new Issue(aTemplate, null, message);
+                foreach (var group in groups)
+                {
+                    string message = group.Key + " : " + String.Join(" ", group.Value);
+                    yield return new Issue(aTemplate, null, message);
+                }
             }
         }
 
