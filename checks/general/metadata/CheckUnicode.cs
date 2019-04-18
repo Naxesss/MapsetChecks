@@ -50,6 +50,6 @@ namespace MapsetChecks.checks.general.files
             }
         }
 
-        public bool ContainsUnicode(string aString) => aString.Any(aChar => aChar > 127);
+        private bool ContainsUnicode(string aString) => aString.Any(aChar => aChar > 127);
     }
 }

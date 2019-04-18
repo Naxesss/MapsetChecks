@@ -77,8 +77,8 @@ namespace MapsetChecks.checks.general.files
                 }
             }
         }
-
-        public IEnumerable<Issue> TryAddIssue(string aField, Beatmap aBeatmap, Beatmap anOtherBeatmap, Func<Beatmap, string> aMetadataField)
+        
+        private IEnumerable<Issue> TryAddIssue(string aField, Beatmap aBeatmap, Beatmap anOtherBeatmap, Func<Beatmap, string> aMetadataField)
         {
             string field      = aMetadataField(aBeatmap);
             string otherField = aMetadataField(anOtherBeatmap);

@@ -54,7 +54,7 @@ namespace MapsetChecks.checks.general.files
         }
 
         /// <summary> Applies a predicate to all artist and title metadata fields. Yields an issue wherever the predicate is true. </summary>
-        public IEnumerable<Issue> GetFormattingIssues(MetadataSettings aSettings, Func<string, bool> aFunc)
+        private IEnumerable<Issue> GetFormattingIssues(MetadataSettings aSettings, Func<string, bool> aFunc)
         {
             if (aFunc(aSettings.artist))
                 yield return new Issue(GetTemplate("Wrong Format"), null,

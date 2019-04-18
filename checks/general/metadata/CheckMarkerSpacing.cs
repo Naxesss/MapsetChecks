@@ -115,7 +115,7 @@ namespace MapsetChecks.checks.general.files
         }
 
         /// <summary> Returns a message describing where a space is missing given a field and what is tested against. </summary>
-        public string FormalSpaceRegex(string aField, string aTest)
+        private string FormalSpaceRegex(string aField, string aTest)
         {
             if (new Regex(aTest + "[a-zA-Z0-9]").IsMatch(aField))
                 return "whitespace after \"" + aTest.Replace("\\", "") + "\"";
@@ -127,7 +127,7 @@ namespace MapsetChecks.checks.general.files
         }
 
         /// <summary> Applies a predicate to all artist and title metadata fields. Yields an issue wherever the predicate is true. </summary>
-        public IEnumerable<Issue> GetFormattingIssues(MetadataSettings aSettings, Func<string, bool> aFunc)
+        private IEnumerable<Issue> GetFormattingIssues(MetadataSettings aSettings, Func<string, bool> aFunc)
         {
             if (aFunc(aSettings.artist))
                 yield return new Issue(GetTemplate("Wrong Format"), null,
