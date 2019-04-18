@@ -17,7 +17,7 @@ namespace MapsetChecks.checks.examples
             Documentation = new Dictionary<string, string>()
             {
                 { "Purpose", "Show an example of a custom general check." },
-                { "Reasoning", "Examples can teach through practice." }
+                { "Reasoning", "Examples teach through practice." }
             }
         };
 
