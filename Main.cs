@@ -1,5 +1,7 @@
 ﻿using MapsetChecks.checks.general.audio;
 using MapsetChecks.checks.general.files;
+using MapsetChecks.checks.general.metadata;
+using MapsetChecks.checks.general.resources;
 using MapsetChecks.checks.timing;
 using MapsetVerifier;
 
@@ -14,10 +16,6 @@ namespace MapsetChecks
             // CheckerRegistry is what MapsetVerifier uses to determine which checks to run, so by adding an
             // instance of a check to it, it will be executed and loaded exactly like any other check.
 
-            // Examples
-            // CheckerRegistry.RegisterCheck(new CheckTest());
-            // CheckerRegistry.RegisterCheck(new GeneralCheckTest());
-
             // General > Audio
             CheckerRegistry.RegisterCheck(new CheckAudioInVideo());
             CheckerRegistry.RegisterCheck(new CheckBitrate());
@@ -30,6 +28,19 @@ namespace MapsetChecks
             // General > Files
             CheckerRegistry.RegisterCheck(new CheckUnusedFiles());
             CheckerRegistry.RegisterCheck(new CheckUpdateVailidity());
+
+            // General > Metadata
+            CheckerRegistry.RegisterCheck(new CheckAdditionalMarkers());
+            CheckerRegistry.RegisterCheck(new CheckInconsistentMetadata());
+            CheckerRegistry.RegisterCheck(new CheckMarkerFormat());
+            CheckerRegistry.RegisterCheck(new CheckMarkerSpacing());
+            CheckerRegistry.RegisterCheck(new CheckTVSize());
+            CheckerRegistry.RegisterCheck(new CheckUnicode());
+
+            // General > Resources
+            CheckerRegistry.RegisterCheck(new CheckBgPresence());
+            CheckerRegistry.RegisterCheck(new CheckMultipleVideo());
+            CheckerRegistry.RegisterCheck(new CheckVideoOffset());
 
             // Timing
             CheckerRegistry.RegisterCheck(new CheckUnsnaps());
