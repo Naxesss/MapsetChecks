@@ -18,7 +18,7 @@ namespace MapsetChecks.checks.hit_sounds
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
         {
             Category = "Hit Sounds",
-            Message = "Long periods without hit sounding.",
+            Message = "Low volume hit sounding.",
             Author = "Naxess"
         };
         
