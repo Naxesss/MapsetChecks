@@ -163,8 +163,7 @@ namespace MapsetChecks.checks.hit_sounds
                     ApplyFeedbackUpdate((int)slider.endHitsound, slider.GetEndSampleset(), slider, slider.endTime);
                 }
             }
-
-            // if there are no hitsounds, it'll just say that here since nothing of the above would trigger
+            
             if (totalHitSounds == 0)
                 yield return new Issue(GetTemplate("No Hit Sounds"), aBeatmap);
             else
