@@ -2,6 +2,8 @@
 using MapsetChecks.checks.general.files;
 using MapsetChecks.checks.general.metadata;
 using MapsetChecks.checks.general.resources;
+using MapsetChecks.checks.hit_sounds;
+using MapsetChecks.checks.settings;
 using MapsetChecks.checks.timing;
 using MapsetVerifier;
 
@@ -41,6 +43,15 @@ namespace MapsetChecks
             CheckerRegistry.RegisterCheck(new CheckBgPresence());
             CheckerRegistry.RegisterCheck(new CheckMultipleVideo());
             CheckerRegistry.RegisterCheck(new CheckVideoOffset());
+
+            // Hit Sounds
+            CheckerRegistry.RegisterCheck(new CheckHitSounds());
+            CheckerRegistry.RegisterCheck(new CheckMuted());
+
+            // Settings
+            CheckerRegistry.RegisterCheck(new CheckDiffSettings());
+            CheckerRegistry.RegisterCheck(new CheckInconsistentSettings());
+            CheckerRegistry.RegisterCheck(new CheckTickRate());
 
             // Timing
             CheckerRegistry.RegisterCheck(new CheckUnsnaps());
