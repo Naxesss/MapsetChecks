@@ -24,7 +24,7 @@ namespace MapsetChecks.checks.hit_sounds
                 Beatmap.Mode.Catch,
                 Beatmap.Mode.Mania
             },
-            Category = "Audio",
+            Category = "Hit Sounds",
             Message = "Long periods without hit sounding.",
             Author = "Naxess"
         };

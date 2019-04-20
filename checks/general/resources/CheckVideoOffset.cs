@@ -16,7 +16,7 @@ namespace MapsetChecks.checks.general.resources
     {
         public override CheckMetadata GetMetadata() => new CheckMetadata()
         {
-            Category = "Metadata",
+            Category = "Resources",
             Message = "Inconsistent video offset.",
             Author = "Naxess"
         };
