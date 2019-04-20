@@ -53,52 +53,52 @@ namespace MapsetChecks.checks.hit_sounds
         {
             foreach (HitObject hitObject in aBeatmap.hitObjects)
             {
-                string myType = hitObject is Circle ? "circle" : "slider head";
+                string type = hitObject is Circle ? "circle" : "slider head";
                 
                 if (hitObject is Circle || hitObject is Slider || hitObject is HoldNote)
                 {
                     // Mania uses hitsounding differently so circles and hold notes are overridden by the object-specific volume option if it's > 0
                     // and that applies to standard and any other mode as well even though it's basically just used for mania.
-                    float myVolume =
+                    float volume =
                         !(hitObject is Slider) && hitObject.volume > 0 && hitObject.volume != null ?
                             hitObject.volume.GetValueOrDefault() :
                             aBeatmap.GetTimingLine(hitObject.time, false, true).volume;
 
                     // Even if you manually put a volume less than 5%, it'll just act as if it were 5% in gameplay.
-                    if (myVolume < 5)
-                        myVolume = 5;
+                    if (volume < 5)
+                        volume = 5;
                     
-                    if (myVolume <= 10)
-                        yield return new Issue(GetTemplate("Warning Volume"), aBeatmap, Timestamp.Get(hitObject), myVolume, myType);
-                    else if (myVolume <= 20)
-                        yield return new Issue(GetTemplate("Minor Volume"), aBeatmap, Timestamp.Get(hitObject), myVolume, myType);
+                    if (volume <= 10)
+                        yield return new Issue(GetTemplate("Warning Volume"), aBeatmap, Timestamp.Get(hitObject), volume, type);
+                    else if (volume <= 20)
+                        yield return new Issue(GetTemplate("Minor Volume"), aBeatmap, Timestamp.Get(hitObject), volume, type);
 
                     // Ideally passive objects like repeats and tails should be hit sounded wherever the song has distinct sounds
                     // to build consistency. This also applies to slider ticks if the sliderslide is slienced.
                     if (hitObject is Slider slider)
                     {
-                        foreach (double myTickTime in slider.sliderTickTimes)
+                        foreach (double tickTime in slider.sliderTickTimes)
                         {
-                            myType = "tick";
-                            myVolume = aBeatmap.GetTimingLine(myTickTime, false, true).volume;
-                            if (myVolume <= 10)
-                                yield return new Issue(GetTemplate("Passive"), aBeatmap, Timestamp.Get(myTickTime), myVolume, myType);
+                            type = "tick";
+                            volume = aBeatmap.GetTimingLine(tickTime, false, true).volume;
+                            if (volume <= 10)
+                                yield return new Issue(GetTemplate("Passive"), aBeatmap, Timestamp.Get(tickTime), volume, type);
                         }
                         
-                        myType = "repeat";
+                        type = "repeat";
                         for (int i = 0; i < slider.edgeAmount; ++i)
                         {
-                            double myTime = Math.Floor(slider.GetCurveDuration() * i);
+                            double time = Math.Floor(slider.GetCurveDuration() * i);
 
                             if (i == slider.edgeAmount - 1)
                             {
-                                myTime = slider.endTime;
-                                myType = "tail";
+                                time = slider.endTime;
+                                type = "tail";
                             }
 
-                            myVolume = aBeatmap.GetTimingLine(myTime, false, true).volume;
-                            if (myVolume <= 10)
-                                yield return new Issue(GetTemplate("Passive"), aBeatmap, Timestamp.Get(myTime), myVolume, myType);
+                            volume = aBeatmap.GetTimingLine(time, false, true).volume;
+                            if (volume <= 10)
+                                yield return new Issue(GetTemplate("Passive"), aBeatmap, Timestamp.Get(time), volume, type);
                         }
                     }
                 }
