@@ -47,13 +47,13 @@ namespace MapsetChecks
             }
         }
 
-        public static IEnumerable<Issue> GetTagIssues(
+        public static IEnumerable<Issue> GetTagOsuIssues(
             BeatmapSet aBeatmapSet,
             Func<Beatmap, IEnumerable<string>> aBeatmapFunc,
             Func<string, IssueTemplate> aTemplateFunc,
             Func<TagFile, List<Issue>> aSuccessFunc)
         {
-            IEnumerable<TagFile> tagFiles = GetTagFiles(aBeatmapSet, aBeatmapFunc);
+            IEnumerable<TagFile> tagFiles = GetTagOsuFiles(aBeatmapSet, aBeatmapFunc);
             foreach (TagFile tagFile in tagFiles)
             {
                 // error
@@ -68,7 +68,26 @@ namespace MapsetChecks
             }
         }
 
-        public static IEnumerable<TagFile> GetTagFiles(BeatmapSet aBeatmapSet, Func<Beatmap, IEnumerable<string>> aBeatmapFunc)
+        public static IEnumerable<Issue> GetTagOsbIssues(
+            BeatmapSet aBeatmapSet,
+            Func<Osb, IEnumerable<string>> anOsbFunc,
+            Func<string, IssueTemplate> aTemplateFunc,
+            Func<TagFile, List<Issue>> aSuccessFunc)
+        {
+            IEnumerable<TagFile> tagFiles = GetTagOsbFiles(aBeatmapSet, anOsbFunc);
+            foreach (TagFile tagFile in tagFiles)
+            {
+                if (tagFile.file == null)
+                    yield return new Issue(aTemplateFunc(tagFile.templateName), null,
+                        tagFile.templateArgs[0], tagFile.templateArgs[1]);
+                
+                else
+                    foreach (Issue issue in aSuccessFunc(tagFile))
+                        yield return issue;
+            }
+        }
+
+        public static IEnumerable<TagFile> GetTagOsuFiles(BeatmapSet aBeatmapSet, Func<Beatmap, IEnumerable<string>> aBeatmapFunc)
         {
             List<string> fileNames = new List<string>();
             foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
@@ -80,6 +99,19 @@ namespace MapsetChecks
                         if (fileName != null && !fileNames.Contains(fileName))
                             fileNames.Add(fileName);
             }
+
+            return GetTagFiles(aBeatmapSet, fileNames);
+        }
+
+        public static IEnumerable<TagFile> GetTagOsbFiles(BeatmapSet aBeatmapSet, Func<Osb, IEnumerable<string>> anOsbFunc)
+        {
+            List<string> fileNames = new List<string>();
+            IEnumerable<string> fileNameList = anOsbFunc(aBeatmapSet.osb);
+
+            if (fileNameList != null)
+                foreach (string fileName in fileNameList)
+                    if (fileName != null && !fileNames.Contains(fileName))
+                        fileNames.Add(fileName);
 
             return GetTagFiles(aBeatmapSet, fileNames);
         }

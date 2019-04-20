@@ -65,7 +65,7 @@ namespace MapsetChecks.checks.general.resources
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
-            foreach (Issue issue in Common.GetTagIssues(
+            foreach (Issue issue in Common.GetTagOsuIssues(
                 aBeatmapSet,
                 aBeatmap => aBeatmap.backgrounds.Count > 0 ? aBeatmap.backgrounds.Select(aBg => aBg.path) : null,
                 aTemplateArg => GetTemplate(aTemplateArg),

@@ -56,7 +56,7 @@ namespace MapsetChecks.checks.general.audio
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
-            foreach (Issue issue in Common.GetTagIssues(
+            foreach (Issue issue in Common.GetTagOsuIssues(
                 aBeatmapSet,
                 aBeatmap => aBeatmap.videos.Count > 0 ? aBeatmap.videos.Select(aVideo => aVideo.path) : null,
                 aTemplateArg => GetTemplate(aTemplateArg),
