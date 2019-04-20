@@ -17,7 +17,7 @@ namespace MapsetChecks.checks.general.resources
         public override CheckMetadata GetMetadata() => new CheckMetadata()
         {
             Category = "Metadata",
-            Message = "Too high resolution video.",
+            Message = "Too high video resolution.",
             Author = "Naxess"
         };
         

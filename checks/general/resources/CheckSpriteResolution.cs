@@ -17,7 +17,7 @@ namespace MapsetChecks.checks.general.resources
         public override CheckMetadata GetMetadata() => new CheckMetadata()
         {
             Category = "Metadata",
-            Message = "Too high or low background resolution.",
+            Message = "Too high sprite resolution.",
             Author = "Naxess"
         };
         
