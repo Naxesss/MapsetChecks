@@ -32,8 +32,8 @@ namespace MapsetChecks.checks.general.files
 
                 { "Wrong Format",
                     new IssueTemplate(Issue.Level.Warning,
-                        "\"{0}\" should be in the format \"Artist - Title (Creator) [Version].osu\" in order to receive updates.",
-                        "path")
+                        "\"{0}\" should be named \"{1}\" to receive updates.",
+                        "file name", "artist - title (creator) [version].osu")
                     .WithCause(
                         "A .osu file is not named after the mentioned format using its respective properties.") },
 
@@ -51,7 +51,7 @@ namespace MapsetChecks.checks.general.files
             for (int i = 0; i < aBeatmapSet.songFilePaths.Count; ++i)
             {
                 string filePath = aBeatmapSet.songFilePaths[i].Substring(aBeatmapSet.songPath.Length + 1);
-                string fileName = filePath.Split(new char[] { '/', '\\' }).Last().ToLower();
+                string fileName = filePath.Split(new char[] { '/', '\\' }).Last();
 
                 if(fileName.Length > 132)
                     yield return new Issue(GetTemplate("Too Long Name"), null,
@@ -59,18 +59,10 @@ namespace MapsetChecks.checks.general.files
                 
                 if (fileName.EndsWith(".osu"))
                 {
-                    bool isExpected = false;
-
-                    foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
-                    {
-                        string fileNameExpected = beatmap.GetOsuFileName();
-                        if (fileName == fileNameExpected)
-                            isExpected = true;
-                    }
-
-                    if (!isExpected)
+                    Beatmap beatmap = aBeatmapSet.beatmaps.First(aBeatmap => aBeatmap.mapPath == filePath);
+                    if (beatmap.GetOsuFileName().ToLower() != fileName.ToLower())
                         yield return new Issue(GetTemplate("Wrong Format"), null,
-                            filePath);
+                            fileName, beatmap.GetOsuFileName());
 
                     // Updating .osu files larger than 1 mb will cause the update to stop at the 1 mb mark
                     FileInfo fileInfo = new FileInfo(aBeatmapSet.songFilePaths[i]);
