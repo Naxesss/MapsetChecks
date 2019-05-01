@@ -260,18 +260,16 @@ namespace MapsetChecks.objects
                     int bytes   = reader.ReadInt32(); // samples * channels * bitDepth / 8
 
                     if (bytes < 0)
-                        return "seemingly has a negative amount of bytes which makes no sense";
+                        return "could not be parsed (negative bytes)";
 
                     int bytesPerSample = bitDepth / 8;
                     if (bytes / (float)(channels * bytesPerSample) < 1 && bytes != 0)
-                        return "seems to only have " + bytes + " bytes, but that can't be right";
+                        return "could not be parsed (byte mismatch)";
 
                     // raw data
                     byte[] byteArray = reader.ReadBytes(bytes);
                     if (byteArray.Length < bytes)
-                        return "seems to be missing " +
-                            (Math.Round((bytes - byteArray.Length) / (float)bytes * 10000) / 100).ToString(CultureInfo.InvariantCulture) +
-                            "% of its expected size";
+                        return "could not be parsed (missing bytes)";
 
                     int samples = bytes / bytesPerSample;
 
@@ -293,7 +291,7 @@ namespace MapsetChecks.objects
                             floats = int16s.Select(anInt => anInt / (float)Int16.MaxValue).ToArray();
                             break;
                         default:
-                            return " has a bit depth of " + bitDepth + ", which isn't 16, 32 or 64";
+                            return "could not be parsed (bit depth " + bitDepth + " unsupported)";
                     }
 
                     switch (channels)
@@ -320,7 +318,7 @@ namespace MapsetChecks.objects
 
                             return null;
                         default:
-                            return "has less than 1 or more than 2 channels";
+                            return "could not be parsed (unknown channel amount " + channels + ")";
                     }
                 }
             }
