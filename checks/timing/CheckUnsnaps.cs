@@ -42,8 +42,8 @@ namespace MapsetChecks.checks.timing
             foreach (HitObject hitObject in aBeatmap.hitObjects)
             {
                 string objectType =
-                    hitObject.HasType(HitObject.Type.Circle) ? "Circle" :
-                    hitObject.HasType(HitObject.Type.Slider) ? "Slider" :
+                    hitObject.type.HasFlag(HitObject.Type.Circle) ? "Circle" :
+                    hitObject.type.HasFlag(HitObject.Type.Slider) ? "Slider" :
                     "Spinner";
 
                 foreach (double edgeTime in hitObject.GetEdgeTimes())
