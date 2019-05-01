@@ -66,7 +66,7 @@ namespace MapsetChecks.checks.hit_sounds
 
             List<Issue> issues = new List<Issue>();
             
-            void ApplyFeedbackUpdate(int aHitSound, Beatmap.Sampleset aSampleSet, HitObject hitObject, double aTime)
+            void ApplyFeedbackUpdate(HitObject.HitSound aHitSound, Beatmap.Sampleset aSampleSet, HitObject hitObject, double aTime)
             {
                 if (aHitSound > 0 ||
                     aSampleSet != prevSample && prevSample != null ||
@@ -146,21 +146,21 @@ namespace MapsetChecks.checks.hit_sounds
                     issues.Add(storyIssue);
 
                 if (hitObject is Circle)
-                    ApplyFeedbackUpdate(hitObject.hitsound, hitObject.GetSampleset(), hitObject, hitObject.time);
+                    ApplyFeedbackUpdate(hitObject.hitSound, hitObject.GetSampleset(), hitObject, hitObject.time);
 
                 if (hitObject is Slider slider)
                 {
-                    ApplyFeedbackUpdate((int)slider.startHitsound, slider.GetStartSampleset(), slider, slider.time);
+                    ApplyFeedbackUpdate(slider.startHitsound, slider.GetStartSampleset(), slider, slider.time);
 
                     if (slider.repeatHitsounds.Count() > 0)
                         for (int repeatIndex = 0; repeatIndex < slider.edgeAmount - 1; ++repeatIndex)
                             ApplyFeedbackUpdate(
-                                (int)slider.repeatHitsounds.ElementAt(repeatIndex),
+                                slider.repeatHitsounds.ElementAt(repeatIndex),
                                 slider.GetRepeatSampleset(repeatIndex),
                                 slider,
                                 Math.Floor(slider.time + slider.GetCurveDuration() * (repeatIndex + 1)));
 
-                    ApplyFeedbackUpdate((int)slider.endHitsound, slider.GetEndSampleset(), slider, slider.endTime);
+                    ApplyFeedbackUpdate(slider.endHitsound, slider.GetEndSampleset(), slider, slider.endTime);
                 }
             }
             
