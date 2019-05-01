@@ -20,7 +20,7 @@ namespace MapsetChecks.checks.general.resources
             Message = "Too high or low background resolution.",
             Author = "Naxess"
         };
-        
+
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
             return new Dictionary<string, IssueTemplate>()
@@ -30,7 +30,7 @@ namespace MapsetChecks.checks.general.resources
                         "\"{0}\" greater than 1920 x 1200 ({1} x {2})",
                         "file name", "width", "height")
                     .WithCause(
-                        "A background file has a width exceeding 1920 pixels or a height exceeding 1200 pixels.") },
+                        "A background file has a width exceeding 2560 pixels or a height exceeding 1440 pixels.") },
 
                 { "Very low",
                     new IssueTemplate(Issue.Level.Warning,
@@ -73,8 +73,8 @@ namespace MapsetChecks.checks.general.resources
                 {
                     // Executes for each non-faulty background file used in one of the beatmaps in the set.
                     List<Issue> issues = new List<Issue>();
-                    if (aTagFile.file.Properties.PhotoWidth > 1920 ||
-                        aTagFile.file.Properties.PhotoHeight > 1200)
+                    if (aTagFile.file.Properties.PhotoWidth > 2560 ||
+                        aTagFile.file.Properties.PhotoHeight > 1440)
                     {
                         issues.Add(new Issue(GetTemplate("Too high"), null,
                             aTagFile.templateArgs[0],
