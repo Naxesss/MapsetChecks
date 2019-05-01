@@ -98,7 +98,9 @@ namespace MapsetChecks.checks.settings
                 }
 
                 // Widescreen support does nothing without a storyboard.
-                if (beatmap.HasStoryboard() && refBeatmap.HasStoryboard() || aBeatmapSet.osb != null)
+                if (beatmap.HasDifficultySpecificStoryboard() &&
+                    refBeatmap.HasDifficultySpecificStoryboard() ||
+                    aBeatmapSet.osb != null)
                 {
                     if (beatmap.generalSettings.widescreenSupport != refBeatmap.generalSettings.widescreenSupport)
                         yield return new Issue(GetTemplate("Warning"), beatmap,
@@ -112,14 +114,19 @@ namespace MapsetChecks.checks.settings
                         yield return new Issue(GetTemplate("Warning"), beatmap,
                             "usage of skin sprites in storyboard", refBeatmap);
                 }
-                else if (aBeatmapSet.osb == null && (beatmap.HasStoryboard() || refBeatmap.HasStoryboard()))
+                else if (
+                    aBeatmapSet.osb == null &&
+                    (beatmap.HasDifficultySpecificStoryboard() ||
+                    refBeatmap.HasDifficultySpecificStoryboard()))
                 {
                     yield return new Issue(GetTemplate("Warning"), beatmap,
                         "storyboard", refBeatmap);
                 }
 
                 // Epilepsy warning requires either a storyboard or video to show.
-                if (beatmap.HasStoryboard() && refBeatmap.HasStoryboard() || aBeatmapSet.osb != null ||
+                if (beatmap.HasDifficultySpecificStoryboard() &&
+                    refBeatmap.HasDifficultySpecificStoryboard() ||
+                    aBeatmapSet.osb != null ||
                     beatmap.videos.Count > 0 && refBeatmap.videos.Count > 0)
                 {
                     if (beatmap.generalSettings.epilepsyWarning != refBeatmap.generalSettings.epilepsyWarning)
