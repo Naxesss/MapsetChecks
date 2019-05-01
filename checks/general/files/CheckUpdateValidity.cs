@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace MapsetChecks.checks.general.files
 {
-    public class CheckUpdateVailidity : GeneralCheck
+    public class CheckUpdateValidity : GeneralCheck
     {
         public override CheckMetadata GetMetadata() => new CheckMetadata()
         {
