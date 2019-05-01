@@ -39,6 +39,13 @@ namespace MapsetChecks.checks.general.resources
                     .WithCause(
                         "A background file has a width lower than 1024 pixels or a height lower than 640 pixels.") },
 
+                { "File size",
+                    new IssueTemplate(Issue.Level.Unrankable,
+                        "\"{0}\" has a file size exceeding 2.5 MB ({1} MB)",
+                        "file name", "file size")
+                    .WithCause(
+                        "A background file has a file size greater than 2.5 MB.") },
+
                 // parsing results
                 { "Leaves Folder",
                     new IssueTemplate(Issue.Level.Unrankable,
@@ -50,7 +57,7 @@ namespace MapsetChecks.checks.general.resources
                 { "Missing",
                     new IssueTemplate(Issue.Level.Unrankable,
                         "\"{0}\" is missing, so unable to check that.",
-                        "file name", "exception")
+                        "file name")
                     .WithCause(
                         "A background file referenced is not present.") },
 
@@ -90,6 +97,16 @@ namespace MapsetChecks.checks.general.resources
                             aTagFile.templateArgs[0],
                             aTagFile.file.Properties.PhotoWidth,
                             aTagFile.file.Properties.PhotoHeight));
+                    }
+
+                    // Apparently Windows defines a KB as 1024 B and MB as 1024 KB,
+                    // so since this is more lenient we'll use this to be completely certain.
+                    double megaBytes = new FileInfo(aTagFile.file.Name).Length / Math.Pow(1024, 2);
+                    if (megaBytes > 2.5)
+                    {
+                        issues.Add(new Issue(GetTemplate("File size"), null,
+                            aTagFile.templateArgs[0],
+                            FormattableString.Invariant($"{megaBytes:0.##}")));
                     }
 
                     return issues;
