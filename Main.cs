@@ -43,6 +43,9 @@ namespace MapsetChecks
             CheckerRegistry.RegisterCheck(new CheckBgPresence());
             CheckerRegistry.RegisterCheck(new CheckMultipleVideo());
             CheckerRegistry.RegisterCheck(new CheckVideoOffset());
+            CheckerRegistry.RegisterCheck(new CheckBgResolution());
+            CheckerRegistry.RegisterCheck(new CheckSpriteResolution());
+            CheckerRegistry.RegisterCheck(new CheckVideoResolution());
 
             // Hit Sounds
             CheckerRegistry.RegisterCheck(new CheckHitSounds());
@@ -56,6 +59,10 @@ namespace MapsetChecks
             // Timing
             CheckerRegistry.RegisterCheck(new CheckUnsnaps());
             CheckerRegistry.RegisterCheck(new CheckWrongSnapping());
+            CheckerRegistry.RegisterCheck(new CheckBehindLine());
+            CheckerRegistry.RegisterCheck(new CheckFirstLine());
+            CheckerRegistry.RegisterCheck(new CheckConcurrentLines());
+            CheckerRegistry.RegisterCheck(new CheckPreview());
         }
     }
 }
