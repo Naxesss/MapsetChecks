@@ -42,7 +42,7 @@ namespace MapsetChecks.checks.general.resources
                 { "Missing",
                     new IssueTemplate(Issue.Level.Warning,
                         "\"{0}\" is missing, so unable to check that.",
-                        "file name", "exception")
+                        "file name")
                     .WithCause(
                         "A video referenced is not present.") },
 
