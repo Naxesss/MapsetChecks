@@ -106,12 +106,15 @@ namespace MapsetChecks
         public static IEnumerable<TagFile> GetTagOsbFiles(BeatmapSet aBeatmapSet, Func<Osb, IEnumerable<string>> anOsbFunc)
         {
             List<string> fileNames = new List<string>();
-            IEnumerable<string> fileNameList = anOsbFunc(aBeatmapSet.osb);
+            if (aBeatmapSet.osb != null)
+            {
+                IEnumerable<string> fileNameList = anOsbFunc(aBeatmapSet.osb);
 
-            if (fileNameList != null)
-                foreach (string fileName in fileNameList)
-                    if (fileName != null && !fileNames.Contains(fileName))
-                        fileNames.Add(fileName);
+                if (fileNameList != null)
+                    foreach (string fileName in fileNameList)
+                        if (fileName != null && !fileNames.Contains(fileName))
+                            fileNames.Add(fileName);
+            }
 
             return GetTagFiles(aBeatmapSet, fileNames);
         }
