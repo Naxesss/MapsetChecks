@@ -36,7 +36,7 @@ namespace MapsetChecks
             CheckerRegistry.RegisterCheck(new CheckInconsistentMetadata());
             CheckerRegistry.RegisterCheck(new CheckMarkerFormat());
             CheckerRegistry.RegisterCheck(new CheckMarkerSpacing());
-            CheckerRegistry.RegisterCheck(new CheckTVSize());
+            CheckerRegistry.RegisterCheck(new CheckVersionFormat());
             CheckerRegistry.RegisterCheck(new CheckUnicode());
 
             // General > Resources
