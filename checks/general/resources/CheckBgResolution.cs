@@ -99,8 +99,9 @@ namespace MapsetChecks.checks.general.resources
                             aTagFile.file.Properties.PhotoHeight));
                     }
 
-                    // Apparently Windows defines a KB as 1024 B and MB as 1024 KB,
-                    // so since this is more lenient we'll use this to be completely certain.
+                    // Most operating systems define 1 KB as 1024 B and 1 MB as 1024 KB;
+                    // not 10^(3x) which the prefixes usually mean, but 2^(10x), since binary is more efficient for circuits,
+                    // so since this is what your computer uses we'll use this too.
                     double megaBytes = new FileInfo(aTagFile.file.Name).Length / Math.Pow(1024, 2);
                     if (megaBytes > 2.5)
                     {
