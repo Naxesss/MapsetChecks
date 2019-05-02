@@ -41,17 +41,17 @@ namespace MapsetChecks.checks.timing
 
         public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
         {
-            foreach (TimingLine myLine in aBeatmap.timingLines)
+            foreach (TimingLine line in aBeatmap.timingLines)
             {
-                double myUnsnap = aBeatmap.GetPracticalUnsnap(myLine.offset);
+                double unsnap = aBeatmap.GetPracticalUnsnap(line.offset);
 
-                if (Math.Abs(myUnsnap) >= 10)
+                if (Math.Abs(unsnap) >= 10)
                     yield return new Issue(GetTemplate("Warning"), aBeatmap,
-                        Timestamp.Get(myLine.offset), myUnsnap);
+                        Timestamp.Get(line.offset), unsnap);
 
-                else if (Math.Abs(myUnsnap) >= 1)
+                else if (Math.Abs(unsnap) >= 1)
                     yield return new Issue(GetTemplate("Minor"), aBeatmap,
-                        Timestamp.Get(myLine.offset), myUnsnap);
+                        Timestamp.Get(line.offset), unsnap);
             }
         }
     }
