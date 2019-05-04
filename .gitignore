@@ -1,5 +1,5 @@
-﻿/.vs/MapsetChecks/v15
+﻿.vs/
 /obj
 /bin
-MapsetChecks.csproj
-MapsetChecks.sln
+*.csproj
+*.sln
