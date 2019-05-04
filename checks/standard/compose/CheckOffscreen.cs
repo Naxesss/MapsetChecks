@@ -71,15 +71,15 @@ namespace MapsetChecks.checks.timing
 
                     if (hitObject.Position.Y + circleRadius > 428)
                         yield return new Issue(GetTemplate("Offscreen"), aBeatmap,
-                                        Timestamp.Get(hitObject), type,
-                                        Math.Round(Math.Abs(hitObject.Position.Y + circleRadius - LOWER_LIMIT)));
+                            Timestamp.Get(hitObject), type,
+                            Math.Round(Math.Abs(hitObject.Position.Y + circleRadius - LOWER_LIMIT)));
 
                     // The game prevents the head of objects from going offscreen inside a 512 by 512 px square,
                     // meaning heads can still go offscreen at the bottom due to how aspect ratios work.
                     else if (GetOffscreenBy(hitObject.Position, aBeatmap) > 0)
                         yield return new Issue(GetTemplate("Prevented"), aBeatmap,
-                                        Timestamp.Get(hitObject), type,
-                                        GetOffscreenBy(hitObject.Position, aBeatmap).ToString(CultureInfo.InvariantCulture));
+                            Timestamp.Get(hitObject), type,
+                            GetOffscreenBy(hitObject.Position, aBeatmap).ToString(CultureInfo.InvariantCulture));
                     
                     if (hitObject is Slider slider)
                     {

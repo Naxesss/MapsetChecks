@@ -151,17 +151,17 @@ namespace MapsetChecks.checks.hit_sounds
 
                 if (hitObject is Slider slider)
                 {
-                    ApplyFeedbackUpdate(slider.startHitsound, slider.GetStartSampleset(), slider, slider.time);
+                    ApplyFeedbackUpdate(slider.startHitSound, slider.GetStartSampleset(), slider, slider.time);
 
-                    if (slider.repeatHitsounds.Count() > 0)
+                    if (slider.repeatHitSounds.Count() > 0)
                         for (int repeatIndex = 0; repeatIndex < slider.edgeAmount - 1; ++repeatIndex)
                             ApplyFeedbackUpdate(
-                                slider.repeatHitsounds.ElementAt(repeatIndex),
+                                slider.repeatHitSounds.ElementAt(repeatIndex),
                                 slider.GetRepeatSampleset(repeatIndex),
                                 slider,
                                 Math.Floor(slider.time + slider.GetCurveDuration() * (repeatIndex + 1)));
 
-                    ApplyFeedbackUpdate(slider.endHitsound, slider.GetEndSampleset(), slider, slider.endTime);
+                    ApplyFeedbackUpdate(slider.endHitSound, slider.GetEndSampleset(), slider, slider.endTime);
                 }
             }
             
@@ -225,7 +225,7 @@ namespace MapsetChecks.checks.hit_sounds
             {
                 while (true)
                 {
-                    StoryHitsound storyHitSound = aBeatmap.storyHitsounds.FirstOrDefault(
+                    StoryHitSound storyHitSound = aBeatmap.storyHitSounds.FirstOrDefault(
                         aHitsound => aHitsound.time > aStartTime && aHitsound.time < anEndTime);
 
                     if (storyHitSound == null)
