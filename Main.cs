@@ -36,15 +36,15 @@ namespace MapsetChecks
             CheckerRegistry.RegisterCheck(new CheckInconsistentMetadata());
             CheckerRegistry.RegisterCheck(new CheckMarkerFormat());
             CheckerRegistry.RegisterCheck(new CheckMarkerSpacing());
-            CheckerRegistry.RegisterCheck(new CheckVersionFormat());
             CheckerRegistry.RegisterCheck(new CheckUnicode());
+            CheckerRegistry.RegisterCheck(new CheckVersionFormat());
 
             // General > Resources
             CheckerRegistry.RegisterCheck(new CheckBgPresence());
-            CheckerRegistry.RegisterCheck(new CheckMultipleVideo());
-            CheckerRegistry.RegisterCheck(new CheckVideoOffset());
             CheckerRegistry.RegisterCheck(new CheckBgResolution());
+            CheckerRegistry.RegisterCheck(new CheckMultipleVideo());
             CheckerRegistry.RegisterCheck(new CheckSpriteResolution());
+            CheckerRegistry.RegisterCheck(new CheckVideoOffset());
             CheckerRegistry.RegisterCheck(new CheckVideoResolution());
 
             // Hit Sounds
@@ -57,15 +57,15 @@ namespace MapsetChecks
             CheckerRegistry.RegisterCheck(new CheckTickRate());
 
             // Timing
-            CheckerRegistry.RegisterCheck(new CheckUnsnaps());
-            CheckerRegistry.RegisterCheck(new CheckWrongSnapping());
             CheckerRegistry.RegisterCheck(new CheckBehindLine());
-            CheckerRegistry.RegisterCheck(new CheckFirstLine());
             CheckerRegistry.RegisterCheck(new CheckConcurrentLines());
-            CheckerRegistry.RegisterCheck(new CheckPreview());
+            CheckerRegistry.RegisterCheck(new CheckFirstLine());
             CheckerRegistry.RegisterCheck(new CheckInconsistentLines());
             CheckerRegistry.RegisterCheck(new CheckKiaiUnsnap());
+            CheckerRegistry.RegisterCheck(new CheckPreview());
+            CheckerRegistry.RegisterCheck(new CheckUnsnaps());
             CheckerRegistry.RegisterCheck(new CheckUnusedLines());
+            CheckerRegistry.RegisterCheck(new CheckWrongSnapping());
         }
     }
 }
