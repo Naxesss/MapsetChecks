@@ -63,6 +63,9 @@ namespace MapsetChecks
             CheckerRegistry.RegisterCheck(new CheckFirstLine());
             CheckerRegistry.RegisterCheck(new CheckConcurrentLines());
             CheckerRegistry.RegisterCheck(new CheckPreview());
+            CheckerRegistry.RegisterCheck(new CheckInconsistentLines());
+            CheckerRegistry.RegisterCheck(new CheckKiaiUnsnap());
+            CheckerRegistry.RegisterCheck(new CheckUnusedLines());
         }
     }
 }
