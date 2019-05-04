@@ -2,6 +2,7 @@
 using MapsetParser.objects;
 using MapsetParser.objects.events;
 using MapsetParser.objects.hitobjects;
+using MapsetParser.statics;
 using MapsetVerifier;
 using MapsetVerifier.objects;
 using MapsetVerifier.objects.metadata;

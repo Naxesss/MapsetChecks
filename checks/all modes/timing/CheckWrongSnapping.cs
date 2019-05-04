@@ -1,5 +1,6 @@
 ﻿using MapsetParser.objects;
 using MapsetParser.objects.timinglines;
+using MapsetParser.statics;
 using MapsetVerifier;
 using MapsetVerifier.objects;
 using MapsetVerifier.objects.metadata;
