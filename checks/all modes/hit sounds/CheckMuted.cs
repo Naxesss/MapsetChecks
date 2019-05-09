@@ -74,18 +74,10 @@ namespace MapsetChecks.checks.hit_sounds
                     else if (volume <= 20)
                         yield return new Issue(GetTemplate("Minor Volume"), aBeatmap, Timestamp.Get(hitObject), volume, type);
 
-                    // Ideally passive objects like repeats and tails should be hit sounded wherever the song has distinct sounds
-                    // to build consistency. This also applies to slider ticks if the sliderslide is slienced.
+                    // Ideally passive objects like repeats and tails should be hit
+                    // sounded wherever the song has distinct sounds to build consistency.
                     if (hitObject is Slider slider)
                     {
-                        foreach (double tickTime in slider.sliderTickTimes)
-                        {
-                            type = "tick";
-                            volume = aBeatmap.GetTimingLine(tickTime, false, true).volume;
-                            if (volume <= 10)
-                                yield return new Issue(GetTemplate("Passive"), aBeatmap, Timestamp.Get(tickTime), volume, type);
-                        }
-                        
                         type = "repeat";
                         for (int i = 0; i < slider.edgeAmount; ++i)
                         {
