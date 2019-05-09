@@ -49,7 +49,7 @@ namespace MapsetChecks.checks.general.audio
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
-            foreach (string hsFile in aBeatmapSet.hitsoundFiles)
+            foreach (string hsFile in aBeatmapSet.hitSoundFiles)
             {
                 AudioFile audioFile = new AudioFile(aBeatmapSet.songPath + "\\" + hsFile);
                 

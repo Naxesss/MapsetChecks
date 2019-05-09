@@ -37,16 +37,16 @@ namespace MapsetChecks.checks.general.audio
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
-            if (aBeatmapSet.hitsoundFiles != null)
+            if (aBeatmapSet.hitSoundFiles != null)
             {
-                foreach (string hitsoundFile in aBeatmapSet.hitsoundFiles)
+                foreach (string hitSoundFile in aBeatmapSet.hitSoundFiles)
                 {
-                    if (hitsoundFile.EndsWith(".ogg"))
+                    if (hitSoundFile.EndsWith(".ogg"))
                         yield return new Issue(GetTemplate("ogg"), null,
-                            hitsoundFile);
+                            hitSoundFile);
 
                     // needs to be passive, can't be active
-                    if (hitsoundFile.EndsWith(".mp3"))
+                    if (hitSoundFile.EndsWith(".mp3"))
                     {
                         foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
                         {
@@ -63,7 +63,7 @@ namespace MapsetChecks.checks.general.audio
                         }
 
                         yield return new Issue(GetTemplate("mp3"), null,
-                            hitsoundFile);
+                            hitSoundFile);
                     }
                 }
             }
