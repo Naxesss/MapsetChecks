@@ -41,7 +41,10 @@ namespace MapsetChecks.checks.timing
                 if (aBeatmap.timingLines[i - 1].offset == aBeatmap.timingLines[i].offset &&
                     aBeatmap.timingLines[i - 1].uninherited == aBeatmap.timingLines[i].uninherited)
                 {
-                    string inheritance = (aBeatmap.timingLines[i].uninherited ? "uninherited" : "inherited");
+                    string inheritance =
+                        aBeatmap.timingLines[i].uninherited ?
+                            "uninherited" : "inherited";
+
                     yield return new Issue(GetTemplate("Concurrent"), aBeatmap,
                         Timestamp.Get(aBeatmap.timingLines[i].offset), inheritance);
                 }

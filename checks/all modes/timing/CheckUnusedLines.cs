@@ -60,7 +60,7 @@ namespace MapsetChecks.checks.timing
 
         public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
         {
-            List<UninheritedLine> lines = aBeatmap.timingLines.Where(aLine => aLine.uninherited).Select(aLine => aLine as UninheritedLine).ToList();
+            List<UninheritedLine> lines = aBeatmap.timingLines.OfType<UninheritedLine>().ToList();
             for (int i = 1; i < lines.Count; ++i)
             {
                 // Uninherited lines 4 beats apart (varying up to 1 ms for rounding errors),

@@ -46,7 +46,7 @@ namespace MapsetChecks.checks.timing
                 if (beatmap.generalSettings.previewTime == -1)
                     yield return new Issue(GetTemplate("Not Set"), beatmap);
 
-                if (beatmap.generalSettings.previewTime != refBeatmap.generalSettings.previewTime)
+                else if (beatmap.generalSettings.previewTime != refBeatmap.generalSettings.previewTime)
                     yield return new Issue(GetTemplate("Inconsistent"), beatmap,
                         refBeatmap);
             }

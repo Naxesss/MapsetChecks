@@ -41,22 +41,9 @@ namespace MapsetChecks.checks.timing
         public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
         {
             foreach (HitObject hitObject in aBeatmap.hitObjects)
-            {
-                string objectType =
-                    hitObject.type.HasFlag(HitObject.Type.Circle) ? "Circle" :
-                    hitObject.type.HasFlag(HitObject.Type.Slider) ? "Slider" :
-                    "Spinner";
-
                 foreach (double edgeTime in hitObject.GetEdgeTimes())
-                    foreach (Issue issue in GetUnsnapIssue(
-                            edgeTime == hitObject.time
-                                ? objectType + (objectType == "Circle"
-                                    ? "" : " head")
-                                : objectType + (edgeTime == hitObject.GetEndTime()
-                                    ? " tail" : " repeat"),
-                            edgeTime, aBeatmap))
+                    foreach (Issue issue in GetUnsnapIssue(hitObject.GetPartName(edgeTime), edgeTime, aBeatmap))
                         yield return issue;
-            }
         }
 
         /// <summary> Returns issues wherever the given time value is unsnapped. </summary>

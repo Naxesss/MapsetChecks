@@ -49,14 +49,14 @@ namespace MapsetChecks.checks.timing
                     aBeatmap.generalSettings.mode == Beatmap.Mode.Taiko ||
                     aBeatmap.generalSettings.mode == Beatmap.Mode.Mania)
                 {
-                    foreach (Issue issue in GetIssue(type, hitObject.time, aBeatmap, hitObject))
+                    foreach (Issue issue in GetIssue(type, hitObject.time, aBeatmap))
                         yield return issue;
                 }
             }
         }
 
         /// <summary> Returns an issue if this time is very close behind to a timing line which would modify objects. </summary>
-        private IEnumerable<Issue> GetIssue<T>(string aType, double aTime, Beatmap aBeatmap, params T[] anObject)
+        private IEnumerable<Issue> GetIssue(string aType, double aTime, Beatmap aBeatmap)
         {
             double unsnap = aBeatmap.GetPracticalUnsnap(aTime);
 
@@ -65,8 +65,8 @@ namespace MapsetChecks.checks.timing
 
             if (nextLine != null)
             {
-                double curEffectiveBPM = curLine.svMult * (aBeatmap.GetTimingLine(aTime, true) as UninheritedLine).bpm;
-                double nextEffectiveBPM = nextLine.svMult * (aBeatmap.GetTimingLine(nextLine.offset, true) as UninheritedLine).bpm;
+                double curEffectiveBPM = curLine.svMult * aBeatmap.GetTimingLine<UninheritedLine>(aTime).bpm;
+                double nextEffectiveBPM = nextLine.svMult * aBeatmap.GetTimingLine<UninheritedLine>(nextLine.offset).bpm;
 
                 double deltaEffectiveBPM = curEffectiveBPM - nextEffectiveBPM;
 

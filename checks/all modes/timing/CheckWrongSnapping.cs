@@ -268,7 +268,7 @@ namespace MapsetChecks.checks.timing
             {
                 if (Math.Abs(aTime - anOtherTime) >= 3)
                 {
-                    UninheritedLine line = (UninheritedLine)anOtherBeatmap.GetTimingLine(aTime, true);
+                    UninheritedLine line = anOtherBeatmap.GetTimingLine<UninheritedLine>(aTime);
                     double msPerBeat = line.msPerBeat;
 
                     if (Math.Abs(aTime - anOtherTime) < msPerBeat)
@@ -298,7 +298,11 @@ namespace MapsetChecks.checks.timing
 
             if (anOtherTime == null)
             {
-                int index = divisor == 0 ? -1 : Array.IndexOf(divisors, divisor) == -1 ? divisors.Length : Array.IndexOf(divisors, divisor);
+                int index =
+                    divisor == 0 ? -1 :
+                    Array.IndexOf(divisors, divisor) == -1 ? divisors.Length :
+                    Array.IndexOf(divisors, divisor);
+
                 if (index != -1)
                 {
                     double range = aMsPerBeat / divisors.ElementAt(index + 2 > divisors.Length - 1 ? divisors.Length - 1 : index + 2) - 2;

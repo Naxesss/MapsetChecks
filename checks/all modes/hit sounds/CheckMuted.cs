@@ -63,7 +63,7 @@ namespace MapsetChecks.checks.hit_sounds
                     float volume =
                         !(hitObject is Slider) && hitObject.volume > 0 && hitObject.volume != null ?
                             hitObject.volume.GetValueOrDefault() :
-                            aBeatmap.GetTimingLine(hitObject.time, false, true).volume;
+                            aBeatmap.GetTimingLine(hitObject.time, true).volume;
 
                     // Even if you manually put a volume less than 5%, it'll just act as if it were 5% in gameplay.
                     if (volume < 5)
@@ -89,7 +89,7 @@ namespace MapsetChecks.checks.hit_sounds
                                 type = "tail";
                             }
 
-                            volume = aBeatmap.GetTimingLine(time, false, true).volume;
+                            volume = aBeatmap.GetTimingLine(time, true).volume;
                             if (volume <= 10)
                                 yield return new Issue(GetTemplate("Passive"), aBeatmap, Timestamp.Get(time), volume, type);
                         }

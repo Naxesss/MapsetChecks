@@ -51,30 +51,28 @@ namespace MapsetChecks.checks.timing
         public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
             Beatmap refBeatmap = aBeatmapSet.beatmaps[0];
-            string version = refBeatmap.metadataSettings.version;
-
             foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
             {
                 foreach (TimingLine line in refBeatmap.timingLines)
                 {
-                    if (line.uninherited)
+                    if (line is UninheritedLine uninheritLine)
                     {
-                        UninheritedLine otherLine =
-                            (UninheritedLine)beatmap.timingLines.FirstOrDefault(
-                                aLine => aLine.offset == line.offset && aLine.uninherited);
+                        UninheritedLine otherUninheritLine =
+                            beatmap.timingLines.OfType<UninheritedLine>().FirstOrDefault(
+                                aLine => aLine.offset == uninheritLine.offset);
 
-                        double offset = (int)Math.Floor(line.offset);
+                        double offset = Timestamp.Round(uninheritLine.offset);
                         
-                        if (otherLine == null)
+                        if (otherUninheritLine == null)
                             yield return new Issue(GetTemplate("Missing"), beatmap,
                                 Timestamp.Get(offset), refBeatmap);
                         else
                         {
-                            if (line.meter != otherLine.meter)
+                            if (uninheritLine.meter != otherUninheritLine.meter)
                                 yield return new Issue(GetTemplate("Inconsistent Meter"), beatmap,
                                     Timestamp.Get(offset), refBeatmap);
 
-                            if (((UninheritedLine)line).msPerBeat != otherLine.msPerBeat)
+                            if (uninheritLine.msPerBeat != otherUninheritLine.msPerBeat)
                                 yield return new Issue(GetTemplate("Inconsistent BPM"), beatmap,
                                     Timestamp.Get(offset), refBeatmap);
                         }
@@ -84,11 +82,11 @@ namespace MapsetChecks.checks.timing
                 // Check the other way around as well, to make sure the reference map has all uninherited lines this map has.
                 foreach (TimingLine line in beatmap.timingLines)
                 {
-                    if (line.uninherited)
+                    if (line is UninheritedLine)
                     {
                         UninheritedLine otherLine =
-                            (UninheritedLine)refBeatmap.timingLines.FirstOrDefault(
-                                aLine => aLine.offset == line.offset && aLine.uninherited);
+                            refBeatmap.timingLines.OfType<UninheritedLine>().FirstOrDefault(
+                                aLine => aLine.offset == line.offset);
 
                         double offset = (int)Math.Floor(line.offset);
                         
