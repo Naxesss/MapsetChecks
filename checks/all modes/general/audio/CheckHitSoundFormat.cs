@@ -1,8 +1,10 @@
 ﻿using MapsetParser.objects;
 using MapsetParser.objects.hitobjects;
+using MapsetParser.statics;
 using MapsetVerifier.objects;
 using MapsetVerifier.objects.metadata;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MapsetChecks.checks.general.audio
 {
@@ -27,9 +29,9 @@ namespace MapsetChecks.checks.general.audio
                         "A hit sound file is using the .ogg format.") },
 
                 { "mp3",
-                    new IssueTemplate(Issue.Level.Warning,
-                        "\"{0}\" Ensure the .mp3 format is not being used for active hit sounding.",
-                        "path")
+                    new IssueTemplate(Issue.Level.Unrankable,
+                        "\"{0}\" This .mp3 file is used for active hit sounding, see {1}.",
+                        "path", "timestamp - ")
                     .WithCause(
                         "A hit sound file is using the .mp3 format.") }
             };
@@ -44,8 +46,8 @@ namespace MapsetChecks.checks.general.audio
                     if (hitSoundFile.EndsWith(".ogg"))
                         yield return new Issue(GetTemplate("ogg"), null,
                             hitSoundFile);
-
-                    // needs to be passive, can't be active
+                    
+                    // The .mp3 format includes inherent delays and are as such not fit for active hit sounding.
                     if (hitSoundFile.EndsWith(".mp3"))
                     {
                         foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
@@ -55,15 +57,17 @@ namespace MapsetChecks.checks.general.audio
                                 if (hitObject is Spinner)
                                     continue;
 
-                                if (beatmap.GetTimingLine(hitObject.time).sampleset == Beatmap.Sampleset.Soft)
+                                // Only the hit sound edge at which the object is clicked is considered active.
+                                if (hitObject.GetUsedHitSamples().Any(aSample =>
+                                        aSample.time == hitObject.time &&
+                                        aSample.hitSource == HitSample.HitSource.Edge &&
+                                        aSample.GetFileName() == hitSoundFile))
                                 {
-
+                                    yield return new Issue(GetTemplate("mp3"), null,
+                                        hitSoundFile, Timestamp.Get(hitObject));
                                 }
                             }
                         }
-
-                        yield return new Issue(GetTemplate("mp3"), null,
-                            hitSoundFile);
                     }
                 }
             }
