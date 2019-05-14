@@ -154,9 +154,9 @@ namespace MapsetChecks.checks.timing
                     }
                 );
 
-            int divisorsTotal = divisors.Sum(aDivisorGroup => aDivisorGroup.count);
+            int divisorsTotal = edgeDivisors.Sum(aDivisorGroup => aDivisorGroup.count);
 
-            foreach (var divisorGroup in divisors)
+            foreach (var divisorGroup in edgeDivisors)
             {
                 double precentage = divisorGroup.count / (double)divisorsTotal;
 

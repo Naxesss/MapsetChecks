@@ -63,7 +63,7 @@ namespace MapsetChecks.checks.general.resources
                     {
                         foreach (Background bg in beatmap.backgrounds)
                         {
-                            string path = aBeatmapSet.songPath + "\\" + bg.path;
+                            string path = aBeatmapSet.songPath + Path.DirectorySeparatorChar + bg.path;
                             if (!File.Exists(path))
                                 yield return new Issue(GetTemplate("Missing"), null,
                                     beatmap.metadataSettings.version, bg.path);

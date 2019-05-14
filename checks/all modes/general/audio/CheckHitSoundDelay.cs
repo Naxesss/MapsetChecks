@@ -51,7 +51,7 @@ namespace MapsetChecks.checks.general.audio
         {
             foreach (string hsFile in aBeatmapSet.hitSoundFiles)
             {
-                AudioFile audioFile = new AudioFile(aBeatmapSet.songPath + "\\" + hsFile);
+                AudioFile audioFile = new AudioFile(aBeatmapSet.songPath + Path.DirectorySeparatorChar + hsFile);
                 
                 string errorMessage =
                     audioFile.ReadWav(
