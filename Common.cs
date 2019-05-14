@@ -35,9 +35,9 @@ namespace MapsetChecks
 
         public struct TagFile
         {
-            public TagLib.File file;
-            public string templateName;
-            public object[] templateArgs;
+            public readonly TagLib.File file;
+            public readonly string templateName;
+            public readonly object[] templateArgs;
 
             public TagFile(TagLib.File aFile, string aTemplateName, object[] aTemplateArgs)
             {

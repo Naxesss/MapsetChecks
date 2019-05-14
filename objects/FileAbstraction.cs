@@ -7,8 +7,8 @@ namespace MapsetChecks.objects
 {
     public class FileAbstraction : TagLib.File.IFileAbstraction
     {
-        private Stream mStream;
-        private string mFilePath;
+        private readonly Stream stream;
+        private readonly string filePath;
 
         public FileAbstraction(string aFilePath)
         {

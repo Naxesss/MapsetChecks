@@ -288,7 +288,7 @@ namespace MapsetChecks.checks.timing
                     inconsistentPlaces.Add(new Tuple<double, double, Beatmap>(inconsistency, anOtherTime, anOtherBeatmap));
         }
 
-        private int[] divisors = new int[] { 1, 2, 3, 4, 6, 8, 12, 16 };
+        private readonly int[] divisors = new int[] { 1, 2, 3, 4, 6, 8, 12, 16 };
 
         /// <summary> Gets a time offset from a given divisor which may be confused with it. Larger for smaller divisors.
         /// So the offset for a 1/1 would be larger than for a 1/6, for example. If two times are supplied, the largest divisor is used. </summary>

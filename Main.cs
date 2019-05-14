@@ -9,7 +9,7 @@ using MapsetVerifier;
 
 namespace MapsetChecks
 {
-    public class Main
+    public static class Main
     {
         /// <summary> Needs to be exactly "public static void Run()". This is the start point of the program,
         /// which is executed from the MapsetVerifier application when its .dll file is provided in "/checks". </summary>

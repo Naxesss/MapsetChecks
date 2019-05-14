@@ -11,7 +11,7 @@ namespace MapsetChecks.objects
 {
     public class AudioFile
     {
-        private string fileName;
+        private readonly string fileName;
 
         private double? duration;
         private uint? sampleRate;
