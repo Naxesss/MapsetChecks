@@ -153,7 +153,7 @@ namespace MapsetChecks.checks.hit_sounds
                 {
                     ApplyFeedbackUpdate(slider.startHitSound, slider.GetStartSampleset(), slider, slider.time);
 
-                    if (slider.repeatHitSounds.Count() > 0)
+                    if (slider.repeatHitSounds.Any())
                         for (int repeatIndex = 0; repeatIndex < slider.edgeAmount - 1; ++repeatIndex)
                             ApplyFeedbackUpdate(
                                 slider.repeatHitSounds.ElementAt(repeatIndex),

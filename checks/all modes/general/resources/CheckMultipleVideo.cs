@@ -62,7 +62,7 @@ namespace MapsetChecks.checks.general.resources
                             aBeatmap.videos.FirstOrDefault()?.path == videoFile ||
                             aBeatmapSet.osb?.videos.FirstOrDefault()?.path == videoFile);
 
-                    if (videoFiles.Count(aFile => aFile != "") > 1 && issueBeatmaps.Count() > 0)
+                    if (videoFiles.Count(aFile => aFile != "") > 1 && issueBeatmaps.Any())
                     {
                         string joinedBeatmaps = String.Join(" ", issueBeatmaps.Select(aBeatmap => aBeatmap));
 
