@@ -60,13 +60,13 @@ namespace MapsetChecks.checks.general.metadata
             Regex gameVerRegex = new Regex("(?i)(game.(size|ver))");
             Regex gameVerExactRegex = new Regex("\\(TV Size\\)");
 
-            foreach (Issue issue in GetIssuesFromRegex(beatmap, tvSizeRegex, tvSizeExactRegex, "Game Ver"))
+            foreach (Issue issue in GetIssuesFromRegex(beatmap, gameVerRegex, gameVerExactRegex, "Game Ver"))
                 yield return issue;
             
             Regex shortVerRegex = new Regex("(?i)((short|cut).(size|ver))");
             Regex shortVerExactRegex = new Regex("\\(TV Size\\)");
 
-            foreach (Issue issue in GetIssuesFromRegex(beatmap, tvSizeRegex, tvSizeExactRegex, "Short Ver"))
+            foreach (Issue issue in GetIssuesFromRegex(beatmap, shortVerRegex, shortVerExactRegex, "Short Ver"))
                 yield return issue;
         }
 
