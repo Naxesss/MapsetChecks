@@ -129,8 +129,6 @@ namespace MapsetChecks
                     string errorTemplate = "";
                     List<object> arguments = new List<object>() { fileName };
 
-                    string filePath = aBeatmapSet.songPath + "/" + fileName;
-
                     if (fileName.StartsWith(".."))
                     {
                         errorTemplate = "Leaves Folder";

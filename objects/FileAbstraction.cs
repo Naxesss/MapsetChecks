@@ -12,23 +12,23 @@ namespace MapsetChecks.objects
 
         public FileAbstraction(string aFilePath)
         {
-            mStream = aFilePath != null ? new FileStream(aFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite) : null;
-            mFilePath = aFilePath;
+            stream = aFilePath != null ? new FileStream(aFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite) : null;
+            filePath = aFilePath;
         }
 
         public string Name
         {
-            get { return mFilePath; }
+            get { return filePath; }
         }
 
         public Stream ReadStream
         {
-            get { return mStream; }
+            get { return stream; }
         }
 
         public Stream WriteStream
         {
-            get { return mStream; }
+            get { return stream; }
         }
 
         public void CloseStream(Stream aStream)
@@ -38,7 +38,7 @@ namespace MapsetChecks.objects
 
         public TagLib.File GetTagFile()
         {
-            if (mFilePath == null || mStream == null)
+            if (filePath == null || stream == null)
                 return null;
 
             return TagLib.File.Create(this);

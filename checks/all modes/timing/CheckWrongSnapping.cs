@@ -140,7 +140,7 @@ namespace MapsetChecks.checks.timing
             percentWarningDivisors = new List<int>();
             percentMinorDivisors = new List<int>();
 
-            var divisors =
+            var edgeDivisors =
                 aBeatmap.hitObjects.SelectMany(anObject =>
                     anObject.GetEdgeTimes().Select(aTime =>
                         aBeatmap.GetLowestDivisor(aTime)

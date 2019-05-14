@@ -58,10 +58,7 @@ namespace MapsetChecks.checks.timing
         /// <summary> Returns an issue if this time is very close behind to a timing line which would modify objects. </summary>
         private IEnumerable<Issue> GetIssue<T>(string aType, double aTime, Beatmap aBeatmap, params T[] anObject)
         {
-            double? unsnapIssue = aBeatmap.GetUnsnapIssue(aTime);
-
             double unsnap = aBeatmap.GetPracticalUnsnap(aTime);
-            double roundedUnsnap = Math.Round(unsnap * 1000) / 1000;
 
             TimingLine curLine = aBeatmap.GetTimingLine(aTime);
             TimingLine nextLine = aBeatmap.GetNextTimingLine(aTime);

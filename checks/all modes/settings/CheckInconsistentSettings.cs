@@ -52,8 +52,6 @@ namespace MapsetChecks.checks.settings
         public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
             Beatmap refBeatmap = aBeatmapSet.beatmaps.First();
-            string version = refBeatmap.metadataSettings.version;
-
             foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
             {
                 if (beatmap.metadataSettings.beatmapSetId != refBeatmap.metadataSettings.beatmapSetId)

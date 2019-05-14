@@ -126,7 +126,7 @@ namespace MapsetChecks.objects
             if (fileName == null)
                 return -1;
 
-            double duration = 0;
+            double tempDuration = 0;
             using (FileStream fs = File.OpenRead(fileName))
             {
                 Mp3Frame frame = Mp3Frame.LoadFromStream(fs);
@@ -136,7 +136,7 @@ namespace MapsetChecks.objects
 
                 while (frame != null)
                 {
-                    duration += frame.SampleCount / (double)frame.SampleRate;
+                    tempDuration += frame.SampleCount / (double)frame.SampleRate;
 
                     try
                     { frame = Mp3Frame.LoadFromStream(fs); }
@@ -144,8 +144,8 @@ namespace MapsetChecks.objects
                     { break; }
                 }
             }
-            this.duration = duration;
-            return this.duration.GetValueOrDefault();
+            duration = tempDuration;
+            return duration.GetValueOrDefault();
         }
 
         /// <summary> Populates the left and right audio channels, if not already present, and then returns them.
@@ -163,14 +163,12 @@ namespace MapsetChecks.objects
 
             byte[] buffer = new byte[16384 * 4];
             MemoryStream stream = new MemoryStream();
-            ChannelMode? channelMode = null;
 
             using (FileStream fs = File.OpenRead(fileName))
             {
                 try
                 {
                     Mp3Frame frame = Mp3Frame.LoadFromStream(fs);
-                    channelMode = frame.ChannelMode;
 
                     var mp3Format = new Mp3WaveFormat(44100, 2, 215, 32000);
                     var frameDecompressor = new DmoMp3FrameDecompressor(mp3Format);
@@ -234,19 +232,19 @@ namespace MapsetChecks.objects
                     // see format at http://soundfile.sapp.org/doc/WaveFormat/
 
                     // riff header
-                    int chunkID     = reader.ReadInt32(); // literally "RIFF"
-                    int chunkSize   = reader.ReadInt32(); // file size in bytes
-                    int riffFormat  = reader.ReadInt32(); // literally "WAVE"
+                    /*int chunkID     =*/ reader.ReadInt32(); // literally "RIFF"
+                    /*int chunkSize   =*/ reader.ReadInt32(); // file size in bytes
+                    /*int riffFormat  =*/ reader.ReadInt32(); // literally "WAVE"
 
                     // fmt subchunk
-                    int fmtID       = reader.ReadInt32(); // literally "fmt ", with the space
-                    int fmtSize     = reader.ReadInt32(); // bytes for the rest of the chunk following this, 16 for PCM
-                    int fmtFormat   = reader.ReadInt16(); // PCM = 1, others indicate some compression format
-                    int channels    = reader.ReadInt16();
-                    int sampleRate  = reader.ReadInt32();
-                    int byteRate    = reader.ReadInt32(); // sampleRate * channels * bitDepth / 8     // 44100 * 2 * 4
-                    int blockAlign  = reader.ReadInt16(); // channels * bitDepth / 8
-                    int bitDepth    = reader.ReadInt16(); // bits per sample
+                    /*int fmtID       =*/ reader.ReadInt32(); // literally "fmt ", with the space
+                    /*int fmtSize     =*/ reader.ReadInt32(); // bytes for the rest of the chunk following this, 16 for PCM
+                    int fmtFormat     =   reader.ReadInt16(); // PCM = 1, others indicate some compression format
+                    int channels      =   reader.ReadInt16();
+                    /*int sampleRate  =*/ reader.ReadInt32();
+                    /*int byteRate    =*/ reader.ReadInt32(); // sampleRate * channels * bitDepth / 8     // 44100 * 2 * 4
+                    /*int blockAlign  =*/ reader.ReadInt16(); // channels * bitDepth / 8
+                    int bitDepth      =   reader.ReadInt16(); // bits per sample
 
                     // if not PCM, then this exists
                     if (fmtFormat != 1)
@@ -256,8 +254,8 @@ namespace MapsetChecks.objects
                     }
 
                     // data subchunk
-                    int dataID  = reader.ReadInt32(); // literally "data"
-                    int bytes   = reader.ReadInt32(); // samples * channels * bitDepth / 8
+                    /*int dataID  =*/ reader.ReadInt32(); // literally "data"
+                    int bytes     =   reader.ReadInt32(); // samples * channels * bitDepth / 8
 
                     if (bytes < 0)
                         return "could not be parsed (negative bytes)";
