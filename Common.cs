@@ -58,8 +58,14 @@ namespace MapsetChecks
             {
                 // error
                 if (tagFile.file == null)
+                {
+                    List<object> templateArgs = new List<object> { tagFile.templateArgs[0] };
+                    if (tagFile.templateArgs.Count() > 1)
+                        templateArgs.Add(tagFile.templateArgs[1]);
+
                     yield return new Issue(aTemplateFunc(tagFile.templateName), null,
-                        tagFile.templateArgs[0], tagFile.templateArgs[1]);
+                        templateArgs.ToArray());
+                }
 
                 // success
                 else
@@ -78,9 +84,15 @@ namespace MapsetChecks
             foreach (TagFile tagFile in tagFiles)
             {
                 if (tagFile.file == null)
+                {
+                    List<object> templateArgs = new List<object> { tagFile.templateArgs[0] };
+                    if (tagFile.templateArgs.Count() > 1)
+                        templateArgs.Add(tagFile.templateArgs[1]);
+
                     yield return new Issue(aTemplateFunc(tagFile.templateName), null,
-                        tagFile.templateArgs[0], tagFile.templateArgs[1]);
-                
+                        templateArgs.ToArray());
+                }
+
                 else
                     foreach (Issue issue in aSuccessFunc(tagFile))
                         yield return issue;
