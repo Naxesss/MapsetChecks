@@ -15,9 +15,6 @@ namespace MapsetChecks.checks.timing
 {
     public class CheckObscuredReverse : BeatmapCheck
     {
-        private const float CLOSE_REVERSE     = 15;
-        private const float TOO_CLOSE_REVERSE = 4;
-
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
         {
             Modes = new Beatmap.Mode[]
@@ -51,6 +48,9 @@ namespace MapsetChecks.checks.timing
 
         public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
         {
+            int closeThreshold    = 15;
+            int tooCloseThreshold = 4;
+
             // Represents the duration the reverse arrow is fully opaque.
             double opaqueTime = aBeatmap.difficultySettings.GetPreemptTime();
 
@@ -83,10 +83,10 @@ namespace MapsetChecks.checks.timing
                                     Math.Pow(otherHitObject.Position.X - reversePosition.X, 2) +
                                     Math.Pow(otherHitObject.Position.Y - reversePosition.Y, 2));
 
-                        if (distanceToReverse < TOO_CLOSE_REVERSE)
+                        if (distanceToReverse < tooCloseThreshold)
                             isSerious = true;
 
-                        if (distanceToReverse < CLOSE_REVERSE)
+                        if (distanceToReverse < closeThreshold)
                         {
                             List<HitObject> hitObjects;
                             if (hitObject.time > otherHitObject.time)
