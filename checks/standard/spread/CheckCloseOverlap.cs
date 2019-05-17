@@ -37,15 +37,15 @@ namespace MapsetChecks.checks.timing
             {
                 { "Unrankable",
                     new IssueTemplate(Issue.Level.Unrankable,
-                        "{0}",
-                        "timestamp - ")
+                        "{0} {1} ms apart, should either be overlapped or at least {2} ms apart.",
+                        "timestamp - ", "gap", "threshold")
                     .WithCause(
                         "Two objects with a time gap less than 125 ms (240 bpm 1/2) are not overlapping.") },
 
                 { "Warning",
                     new IssueTemplate(Issue.Level.Warning,
-                        "{0}",
-                        "timestamp - ")
+                        "{0} {1} ms apart.",
+                        "timestamp - ", "gap")
                     .WithCause(
                         "Two objects with a time gap less than 167 ms (180 bpm 1/2) are not overlapping.") }
             };
@@ -54,16 +54,16 @@ namespace MapsetChecks.checks.timing
         public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
         {
             double unrankableThreshold = 125; // Shortest acceptable gap is 1/2 in 240 BPM, 125 ms.
-            double warningThreshold    = 167; // Shortest gap before warning is 1/2 in 180 BPM, 167 ms.
+            double warningThreshold    = 375; // Shortest gap before warning is 1/2 in 160 BPM, 375 ms.
 
             for (int i = 0; i < aBeatmap.hitObjects.Count - 1; ++i)
             {
-                HitObject hitObject = aBeatmap.hitObjects[i];
+                HitObject hitObject     = aBeatmap.hitObjects[i];
                 HitObject nextHitObject = aBeatmap.hitObjects[i + 1];
 
-                // slider ends do not need to overlap, same with spinners, spinners should be ignored overall
-                // ensure objects are close enough in time that they need to overlap
-                if (hitObject is Circle && !(nextHitObject is Spinner) &&
+                // Slider ends do not need to overlap, same with spinners, spinners should be ignored overall.
+                if (hitObject is Circle &&
+                    !(nextHitObject is Spinner) &&
                     nextHitObject.time - hitObject.time < warningThreshold)
                 {
                     double distance =
@@ -71,17 +71,20 @@ namespace MapsetChecks.checks.timing
                             Math.Pow(hitObject.Position.X - nextHitObject.Position.X, 2) +
                             Math.Pow(hitObject.Position.Y - nextHitObject.Position.Y, 2));
 
-                    // if the distance is larger or equal to two radiuses, then they're not overlapping
+                    // If the distance is larger or equal to two radiuses, then they're not overlapping.
                     float radius = aBeatmap.difficultySettings.GetCircleRadius();
                     if (distance >= radius * 2)
                     {
                         if(nextHitObject.time - hitObject.time < unrankableThreshold)
                             yield return new Issue(GetTemplate("Unrankable"), aBeatmap,
-                                Timestamp.Get(hitObject, nextHitObject));
+                                Timestamp.Get(hitObject, nextHitObject),
+                                (Math.Round((nextHitObject.time - hitObject.time) * 100) / 100).ToString(CultureInfo.InvariantCulture),
+                                unrankableThreshold);
 
                         else
                             yield return new Issue(GetTemplate("Warning"), aBeatmap,
-                                Timestamp.Get(hitObject, nextHitObject));
+                                Timestamp.Get(hitObject, nextHitObject),
+                                (Math.Round((nextHitObject.time - hitObject.time) * 100) / 100).ToString(CultureInfo.InvariantCulture));
                     }
                 }
             }
