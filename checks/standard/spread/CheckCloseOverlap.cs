@@ -47,24 +47,14 @@ namespace MapsetChecks.checks.timing
                         "{0}",
                         "timestamp - ")
                     .WithCause(
-                        "Two objects with a time gap less than 250 ms (120 bpm 1/2, 240 BPM 1/1) are not overlapping.") }
+                        "Two objects with a time gap less than 167 ms (180 bpm 1/2) are not overlapping.") }
             };
         }
 
         public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
         {
-            // 1/2 in 240 BPM becomes 125 ms for 1/2 and 250 ms for 1/1.
-            // 1/2 in 180 BPM becomes 167 ms for 1/2 and 333 ms for 1/1.
-            // 1/2 in 120 BPM becomes 250 ms for 1/2 and 500 ms for 1/1.
-
-            // We need a BPM independent variable within this range that best determines if something is 1/2.
-            // If the delta time is less than 250 ms, we say it's unrankable (240 BPM is double-time).
-            // If the delta time is less than 500 ms, we warn (120 BPM is half-time).
-
-            // pishi said to use 120 BPM as leniency
-
-            double unrankableThreshold = 125;
-            double warningThreshold    = 250;
+            double unrankableThreshold = 125; // Shortest acceptable gap is 1/2 in 240 BPM, 125 ms.
+            double warningThreshold    = 167; // Shortest gap before warning is 1/2 in 180 BPM, 167 ms.
 
             for (int i = 0; i < aBeatmap.hitObjects.Count - 1; ++i)
             {
