@@ -70,13 +70,13 @@ namespace MapsetChecks.checks.timing
 
                 double deltaEffectiveBPM = curEffectiveBPM - nextEffectiveBPM;
 
-                double myTimeDiff = nextLine.offset - aTime;
-                if (myTimeDiff > 0 && myTimeDiff <= 5 &&
+                double timeDiff = nextLine.offset - aTime;
+                if (timeDiff > 0 && timeDiff <= 5 &&
                     Math.Abs(unsnap) <= 1 &&
                     deltaEffectiveBPM > 1)
                 {
                     yield return new Issue(GetTemplate("Behind"), aBeatmap,
-                        Timestamp.Get(aTime), aType, myTimeDiff.ToString(CultureInfo.InvariantCulture));
+                        Timestamp.Get(aTime), aType, timeDiff.ToString(CultureInfo.InvariantCulture));
                 }
             }
         }

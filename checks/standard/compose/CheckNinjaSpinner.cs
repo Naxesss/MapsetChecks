@@ -49,24 +49,22 @@ namespace MapsetChecks.checks.timing
 
         public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
         {
-            foreach (HitObject myHitObject in aBeatmap.hitObjects)
+            foreach (HitObject hitObject in aBeatmap.hitObjects)
             {
-                if (myHitObject is Spinner)
+                if (hitObject is Spinner spinner)
                 {
-                    Spinner mySpinner = myHitObject as Spinner;
+                    double od = aBeatmap.difficultySettings.overallDifficulty;
 
-                    double myOD = aBeatmap.difficultySettings.overallDifficulty;
+                    double warningThreshold    = 500 + (od < 5 ? (5 - od) * -21.8 : (od - 5) * 20);  // anything above this works fine
+                    double unrankableThreshold = 475 + (od < 5 ? (5 - od) * -17.5 : (od - 5) * 20);  // anything above this only works sometimes
 
-                    double myWarningThreshold    = 500 + (myOD < 5 ? (5 - myOD) * -21.8 : (myOD - 5) * 20);  // anything above this works fine
-                    double myUnrankableThreshold = 475 + (myOD < 5 ? (5 - myOD) * -17.5 : (myOD - 5) * 20);  // anything above this only works sometimes
-
-                    if (myUnrankableThreshold > mySpinner.endTime - mySpinner.time)
+                    if (unrankableThreshold > spinner.endTime - spinner.time)
                         yield return new Issue(GetTemplate("Unrankable"),
-                            aBeatmap, Timestamp.Get(mySpinner));
+                            aBeatmap, Timestamp.Get(spinner));
 
-                    else if (myWarningThreshold > mySpinner.endTime - mySpinner.time)
+                    else if (warningThreshold > spinner.endTime - spinner.time)
                         yield return new Issue(GetTemplate("Warning"),
-                            aBeatmap, Timestamp.Get(mySpinner));
+                            aBeatmap, Timestamp.Get(spinner));
                 }
             }
         }
