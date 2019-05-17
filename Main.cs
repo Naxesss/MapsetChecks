@@ -73,6 +73,18 @@ namespace MapsetChecks
             CheckerRegistry.RegisterCheck(new CheckNinjaSpinner());
             CheckerRegistry.RegisterCheck(new CheckObscuredReverse());
             CheckerRegistry.RegisterCheck(new CheckOffscreen());
+
+            // Standard > Settings
+            CheckerRegistry.RegisterCheck(new CheckDefaultColours());
+            CheckerRegistry.RegisterCheck(new CheckLuminosity());
+
+            // Standard > Spread
+            CheckerRegistry.RegisterCheck(new CheckCloseOverlap());
+            CheckerRegistry.RegisterCheck(new CheckMultipleReverses());
+            CheckerRegistry.RegisterCheck(new CheckShortSliders());
+            CheckerRegistry.RegisterCheck(new CheckSpaceVariation());
+            CheckerRegistry.RegisterCheck(new CheckSpinnerRecovery());
+            CheckerRegistry.RegisterCheck(new CheckStackLeniency());
         }
     }
 }
