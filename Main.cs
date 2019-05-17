@@ -47,16 +47,16 @@ namespace MapsetChecks
             CheckerRegistry.RegisterCheck(new CheckVideoOffset());
             CheckerRegistry.RegisterCheck(new CheckVideoResolution());
 
-            // Hit Sounds
+            // All Modes > Hit Sounds
             CheckerRegistry.RegisterCheck(new CheckHitSounds());
             CheckerRegistry.RegisterCheck(new CheckMuted());
 
-            // Settings
+            // All Modes > Settings
             CheckerRegistry.RegisterCheck(new CheckDiffSettings());
             CheckerRegistry.RegisterCheck(new CheckInconsistentSettings());
             CheckerRegistry.RegisterCheck(new CheckTickRate());
 
-            // Timing
+            // All Modes > Timing
             CheckerRegistry.RegisterCheck(new CheckBehindLine());
             CheckerRegistry.RegisterCheck(new CheckConcurrentLines());
             CheckerRegistry.RegisterCheck(new CheckFirstLine());
@@ -66,6 +66,13 @@ namespace MapsetChecks
             CheckerRegistry.RegisterCheck(new CheckUnsnaps());
             CheckerRegistry.RegisterCheck(new CheckUnusedLines());
             CheckerRegistry.RegisterCheck(new CheckWrongSnapping());
+
+            // Standard > Compose
+            CheckerRegistry.RegisterCheck(new CheckAmbiguity());
+            CheckerRegistry.RegisterCheck(new CheckBurai());
+            CheckerRegistry.RegisterCheck(new CheckNinjaSpinner());
+            CheckerRegistry.RegisterCheck(new CheckObscuredReverse());
+            CheckerRegistry.RegisterCheck(new CheckOffscreen());
         }
     }
 }
