@@ -44,7 +44,7 @@ namespace MapsetChecks.checks.hit_sounds
                 { "Passive",
                     new IssueTemplate(Issue.Level.Minor,
                         "{0} {1}% volume slider {2}, ensure there is no distinct sound here in the song.",
-                        "timestamp - ", "percent", "tick/repeat/tail")
+                        "timestamp - ", "percent", "tick/reverse/tail")
                     .WithCause(
                         "A passive hit object is at 10% or lower volume.") }
             };
@@ -54,8 +54,6 @@ namespace MapsetChecks.checks.hit_sounds
         {
             foreach (HitObject hitObject in aBeatmap.hitObjects)
             {
-                string type = hitObject is Circle ? "circle" : "slider head";
-                
                 if (hitObject is Circle || hitObject is Slider || hitObject is HoldNote)
                 {
                     // Mania uses hitsounding differently so circles and hold notes are overridden by the object-specific volume option if it's > 0
@@ -70,28 +68,28 @@ namespace MapsetChecks.checks.hit_sounds
                         volume = 5;
                     
                     if (volume <= 10)
-                        yield return new Issue(GetTemplate("Warning Volume"), aBeatmap, Timestamp.Get(hitObject), volume, type);
-                    else if (volume <= 20)
-                        yield return new Issue(GetTemplate("Minor Volume"), aBeatmap, Timestamp.Get(hitObject), volume, type);
+                        yield return new Issue(GetTemplate("Warning Volume"), aBeatmap,
+                            Timestamp.Get(hitObject), volume, hitObject.GetPartName(hitObject.time).ToLower());
 
-                    // Ideally passive objects like repeats and tails should be hit
+                    else if (volume <= 20)
+                        yield return new Issue(GetTemplate("Minor Volume"), aBeatmap,
+                            Timestamp.Get(hitObject), volume, hitObject.GetPartName(hitObject.time).ToLower());
+
+                    // Ideally passive objects like reverses and tails should be hit
                     // sounded wherever the song has distinct sounds to build consistency.
                     if (hitObject is Slider slider)
                     {
-                        type = "repeat";
                         for (int i = 0; i < slider.edgeAmount; ++i)
                         {
                             double time = Math.Floor(slider.GetCurveDuration() * i);
 
                             if (i == slider.edgeAmount - 1)
-                            {
                                 time = slider.endTime;
-                                type = "tail";
-                            }
 
                             volume = aBeatmap.GetTimingLine(time, true).volume;
                             if (volume <= 10)
-                                yield return new Issue(GetTemplate("Passive"), aBeatmap, Timestamp.Get(time), volume, type);
+                                yield return new Issue(GetTemplate("Passive"), aBeatmap,
+                                    Timestamp.Get(time), volume, hitObject.GetPartName(time).ToLower());
                         }
                     }
                 }

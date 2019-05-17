@@ -13,10 +13,10 @@ using System.Numerics;
 
 namespace MapsetChecks.checks.timing
 {
-    public class CheckObscuredRepeat : BeatmapCheck
+    public class CheckObscuredReverse : BeatmapCheck
     {
-        private const float CLOSE_REPEAT     = 15;
-        private const float TOO_CLOSE_REPEAT = 4;
+        private const float CLOSE_REVERSE     = 15;
+        private const float TOO_CLOSE_REVERSE = 4;
 
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
         {
@@ -32,7 +32,7 @@ namespace MapsetChecks.checks.timing
                 Beatmap.Difficulty.Insane
             },
             Category = "Compose",
-            Message = "Obscured repeat arrows.",
+            Message = "Obscured reverse arrows.",
             Author = "Naxess"
         };
         
@@ -51,42 +51,42 @@ namespace MapsetChecks.checks.timing
 
         public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
         {
-            // Represents the duration the repeat arrow is fully opaque.
+            // Represents the duration the reverse arrow is fully opaque.
             double opaqueTime = aBeatmap.difficultySettings.GetPreemptTime();
 
             foreach (HitObject hitObject in aBeatmap.hitObjects)
             {
                 if (hitObject is Slider slider && slider.edgeAmount > 1)
                 {
-                    double repeatTime = slider.time + slider.GetCurveDuration();
-                    Vector2 reversePosition = slider.GetPathPosition(repeatTime);
+                    double reverseTime = slider.time + slider.GetCurveDuration();
+                    Vector2 reversePosition = slider.GetPathPosition(reverseTime);
 
                     List<HitObject> selectedObjects = new List<HitObject>();
                     bool isSerious = false;
                     
-                    IEnumerable<HitObject> hitObjectsRightBeforeRepeat =
+                    IEnumerable<HitObject> hitObjectsRightBeforeReverse =
                         aBeatmap.hitObjects.Where(anObject =>
-                            anObject.GetEndTime() > repeatTime - opaqueTime &&
-                            anObject.GetEndTime() < repeatTime);
+                            anObject.GetEndTime() > reverseTime - opaqueTime &&
+                            anObject.GetEndTime() < reverseTime);
 
-                    foreach (HitObject otherHitObject in hitObjectsRightBeforeRepeat)
+                    foreach (HitObject otherHitObject in hitObjectsRightBeforeReverse)
                     {
-                        float distanceToRepeat;
+                        float distanceToReverse;
                         if (otherHitObject is Slider otherSlider)
-                            distanceToRepeat =
+                            distanceToReverse =
                                 (float)Math.Sqrt(
                                     Math.Pow(otherSlider.EndPosition.X - reversePosition.X, 2) +
                                     Math.Pow(otherSlider.EndPosition.Y - reversePosition.Y, 2));
                         else
-                            distanceToRepeat =
+                            distanceToReverse =
                                 (float)Math.Sqrt(
                                     Math.Pow(otherHitObject.Position.X - reversePosition.X, 2) +
                                     Math.Pow(otherHitObject.Position.Y - reversePosition.Y, 2));
 
-                        if (distanceToRepeat < TOO_CLOSE_REPEAT)
+                        if (distanceToReverse < TOO_CLOSE_REVERSE)
                             isSerious = true;
 
-                        if (distanceToRepeat < CLOSE_REPEAT)
+                        if (distanceToReverse < CLOSE_REVERSE)
                         {
                             List<HitObject> hitObjects;
                             if (hitObject.time > otherHitObject.time)

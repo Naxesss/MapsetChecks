@@ -153,13 +153,13 @@ namespace MapsetChecks.checks.hit_sounds
                 {
                     ApplyFeedbackUpdate(slider.startHitSound, slider.GetStartSampleset(), slider, slider.time);
 
-                    if (slider.repeatHitSounds.Any())
-                        for (int repeatIndex = 0; repeatIndex < slider.edgeAmount - 1; ++repeatIndex)
+                    if (slider.reverseHitSounds.Any())
+                        for (int reverseIndex = 0; reverseIndex < slider.edgeAmount - 1; ++reverseIndex)
                             ApplyFeedbackUpdate(
-                                slider.repeatHitSounds.ElementAt(repeatIndex),
-                                slider.GetRepeatSampleset(repeatIndex),
+                                slider.reverseHitSounds.ElementAt(reverseIndex),
+                                slider.GetReverseSampleset(reverseIndex),
                                 slider,
-                                Math.Floor(slider.time + slider.GetCurveDuration() * (repeatIndex + 1)));
+                                Math.Floor(slider.time + slider.GetCurveDuration() * (reverseIndex + 1)));
 
                     ApplyFeedbackUpdate(slider.endHitSound, slider.GetEndSampleset(), slider, slider.endTime);
                 }
