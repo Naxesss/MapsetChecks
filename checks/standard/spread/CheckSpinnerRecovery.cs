@@ -78,7 +78,7 @@ namespace MapsetChecks.checks.timing
                         double spinnerTime = spinner.endTime - spinner.time;
                         double recoveryTime = nextObject.time - spinner.endTime;
                         
-                        UninheritedLine line = (UninheritedLine)aBeatmap.GetTimingLine(nextObject.time, true);
+                        UninheritedLine line = aBeatmap.GetTimingLine<UninheritedLine>(nextObject.time);
                         double bpmScaling = GetScaledTiming(line.bpm);
                         double recoveryTimeScaled = recoveryTime / bpmScaling;
 
