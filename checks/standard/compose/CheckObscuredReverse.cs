@@ -11,7 +11,7 @@ using System.Globalization;
 using System.Linq;
 using System.Numerics;
 
-namespace MapsetChecks.checks.timing
+namespace MapsetChecks.checks.standard.compose
 {
     public class CheckObscuredReverse : BeatmapCheck
     {

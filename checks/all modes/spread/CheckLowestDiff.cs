@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace MapsetChecks.checks.timing
+namespace MapsetChecks.checks.spread
 {
     public class CheckLowestDiff : BeatmapSetCheck
     {

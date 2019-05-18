@@ -4,6 +4,10 @@ using MapsetChecks.checks.general.metadata;
 using MapsetChecks.checks.general.resources;
 using MapsetChecks.checks.hit_sounds;
 using MapsetChecks.checks.settings;
+using MapsetChecks.checks.spread;
+using MapsetChecks.checks.standard.compose;
+using MapsetChecks.checks.standard.settings;
+using MapsetChecks.checks.standard.spread;
 using MapsetChecks.checks.timing;
 using MapsetVerifier;
 

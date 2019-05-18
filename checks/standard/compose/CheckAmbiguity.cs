@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Numerics;
 
-namespace MapsetChecks.checks.timing
+namespace MapsetChecks.checks.standard.compose
 {
     public class CheckAmbiguity : BeatmapCheck
     {
