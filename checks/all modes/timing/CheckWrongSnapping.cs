@@ -234,7 +234,7 @@ namespace MapsetChecks.checks.timing
             List<double> otherTimeDifferences = GetTimeDifferences(anOtherBeatmap, aBeatmap).ToList();
 
             foreach (double time in timeDifferences)
-                TryAddInconsistentPlace(otherTimeDifferences, anOtherBeatmap, time, anOtherBeatmap.starRating - aBeatmap.starRating > 2);
+                TryAddInconsistentPlace(otherTimeDifferences, anOtherBeatmap, time);
         }
 
         /// <summary> Returns any time value from the first beatmap that has no corresponding
@@ -262,7 +262,7 @@ namespace MapsetChecks.checks.timing
         /// is within the consistency range, depending on which divisor this point in time is in.<para/>
         /// This usually means the mapper has interpreted the same sound(s) differently from the other beatmap,
         /// so we add it as a potential inconsistency.</summary>
-        private void TryAddInconsistentPlace(List<double> aTimeDifferences, Beatmap anOtherBeatmap, double anOtherTime, bool aBigDiffRange = false)
+        private void TryAddInconsistentPlace(List<double> aTimeDifferences, Beatmap anOtherBeatmap, double anOtherTime)
         {
             List<double> inconsistencies = aTimeDifferences.Where(aTime =>
             {
@@ -273,7 +273,7 @@ namespace MapsetChecks.checks.timing
 
                     if (Math.Abs(aTime - anOtherTime) < msPerBeat)
                     {
-                        double consistencyRange = GetConsistencyRange(anOtherBeatmap, aTime, msPerBeat, anOtherTime, aBigDiffRange);
+                        double consistencyRange = GetConsistencyRange(anOtherBeatmap, aTime, msPerBeat, anOtherTime);
                         return
                             aTime + consistencyRange > anOtherTime &&
                             aTime - consistencyRange < anOtherTime;
@@ -292,7 +292,7 @@ namespace MapsetChecks.checks.timing
 
         /// <summary> Gets a time offset from a given divisor which may be confused with it. Larger for smaller divisors.
         /// So the offset for a 1/1 would be larger than for a 1/6, for example. If two times are supplied, the largest divisor is used. </summary>
-        private double GetConsistencyRange(Beatmap anOtherBeatmap, double aTime, double aMsPerBeat, double? anOtherTime = null, bool aBigDiffRange = false)
+        private double GetConsistencyRange(Beatmap anOtherBeatmap, double aTime, double aMsPerBeat, double? anOtherTime = null)
         {
             int divisor = Math.Max(anOtherBeatmap.GetLowestDivisor(aTime), 2);
 
@@ -318,7 +318,7 @@ namespace MapsetChecks.checks.timing
 
             // should the difficulty range be too large, we only point it out if the lower difficulty has a higher divisor
             // (since higher diffs having higher divisors is normal)
-            if (!aBigDiffRange || otherDivisor > divisor)
+            if (otherDivisor > divisor)
                 return Math.Max(GetConsistencyRange(anOtherBeatmap, aTime, aMsPerBeat),
                                 GetConsistencyRange(anOtherBeatmap, anOtherTime.GetValueOrDefault(), aMsPerBeat));
             else
