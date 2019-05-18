@@ -54,7 +54,7 @@ namespace MapsetChecks.checks.timing
         public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
         {
             double unrankableThreshold = 125; // Shortest acceptable gap is 1/2 in 240 BPM, 125 ms.
-            double warningThreshold    = 375; // Shortest gap before warning is 1/2 in 160 BPM, 375 ms.
+            double warningThreshold    = 188; // Shortest gap before warning is 1/2 in 160 BPM, 188 ms.
 
             for (int i = 0; i < aBeatmap.hitObjects.Count - 1; ++i)
             {
