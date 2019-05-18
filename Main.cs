@@ -56,6 +56,9 @@ namespace MapsetChecks
             CheckerRegistry.RegisterCheck(new CheckInconsistentSettings());
             CheckerRegistry.RegisterCheck(new CheckTickRate());
 
+            // All Modes > Spread
+            CheckerRegistry.RegisterCheck(new CheckLowestDiff());
+
             // All Modes > Timing
             CheckerRegistry.RegisterCheck(new CheckBehindLine());
             CheckerRegistry.RegisterCheck(new CheckConcurrentLines());
