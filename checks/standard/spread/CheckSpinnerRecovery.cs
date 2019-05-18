@@ -86,7 +86,7 @@ namespace MapsetChecks.checks.timing
                         // So when multiplied by the expected time, we get the time that the Ranking Criteria wanted, which is based on 180 BPM.
                         double expectedMultiplier = 4 / 3d;
                         
-                        double[] spinnerTimeExpected = new double[] { 1000, 750, 500 }; // 4, 3 and 2 beats respectively, 240 bpm
+                        double[] spinnerTimeExpected = new double[] { 1000, 500, 250 }; // 4, 2 and 1 beats respectively, 240 bpm
 
                         for (int i = 0; i < spinnerTimeExpected.Length; ++i)
                         {
@@ -101,7 +101,7 @@ namespace MapsetChecks.checks.timing
                                     .WithInterpretation("difficulty", i);
                         }
                         
-                        double[] recoveryTimeExpected = new double[] { 1000, 500, 250 }; // 4, 3 and 2 beats respectively, 240 bpm
+                        double[] recoveryTimeExpected = new double[] { 1000, 500, 250 }; // 4, 2 and 1 beats respectively, 240 bpm
                         
                         // Tries both scaled and regular recoveries, and only if both are exceeded does it create an issue.
                         for (int i = 0; i < recoveryTimeExpected.Length; ++i)
