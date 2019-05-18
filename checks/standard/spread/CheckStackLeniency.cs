@@ -62,7 +62,7 @@ namespace MapsetChecks.checks.timing
                     foreach (HitObject otherHitObject in aBeatmap.hitObjects.Except(iteratedObjects))
                     {
                         if (hitObject.Position == otherHitObject.Position &&
-                            !(hitObject is Spinner) &&
+                            !(hitObject is Spinner) && !(otherHitObject is Spinner) &&
                             otherHitObject.time - hitObject.time < timeGap)
                         {
                             yield return new Issue(GetTemplate("Unrankable"), aBeatmap,
