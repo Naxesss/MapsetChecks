@@ -53,18 +53,20 @@ namespace MapsetChecks.checks.standard.spread
             for (int diffIndex = 0; diffIndex < snapping.Length; ++diffIndex)
             {
                 double timeGap = snapping[diffIndex] * 60000 / 160d;
-                int requiredStackLeniency = (int)Math.Ceiling(timeGap / (aBeatmap.difficultySettings.GetPreemptTime() * 0.1));
 
-                List<HitObject> iteratedObjects = new List<HitObject>();
-                foreach (HitObject hitObject in aBeatmap.hitObjects)
+                List<Stackable> iteratedObjects = new List<Stackable>();
+                foreach (Stackable hitObject in aBeatmap.hitObjects.OfType<Stackable>())
                 {
                     iteratedObjects.Add(hitObject);
-                    foreach (HitObject otherHitObject in aBeatmap.hitObjects.Except(iteratedObjects))
+                    foreach (Stackable otherHitObject in aBeatmap.hitObjects.OfType<Stackable>().Except(iteratedObjects))
                     {
                         if (hitObject.Position == otherHitObject.Position &&
-                            !(hitObject is Spinner) && !(otherHitObject is Spinner) &&
                             otherHitObject.time - hitObject.time < timeGap)
                         {
+                            int requiredStackLeniency =
+                                (int)Math.Ceiling((otherHitObject.time - hitObject.time) /
+                                    (aBeatmap.difficultySettings.GetFadeInTime() * 0.1));
+
                             yield return new Issue(GetTemplate("Unrankable"), aBeatmap,
                                 Timestamp.Get(hitObject, otherHitObject), requiredStackLeniency)
                                 .WithInterpretation("difficulty", diffIndex);
