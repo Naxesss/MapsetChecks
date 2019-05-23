@@ -1,4 +1,6 @@
-﻿using MapsetChecks.checks.general.audio;
+﻿using MapsetChecks.checks.compose;
+using MapsetChecks.checks.events;
+using MapsetChecks.checks.general.audio;
 using MapsetChecks.checks.general.files;
 using MapsetChecks.checks.general.metadata;
 using MapsetChecks.checks.general.resources;
@@ -50,6 +52,17 @@ namespace MapsetChecks
             CheckerRegistry.RegisterCheck(new CheckSpriteResolution());
             CheckerRegistry.RegisterCheck(new CheckVideoOffset());
             CheckerRegistry.RegisterCheck(new CheckVideoResolution());
+
+            // All Modes > Compose
+            CheckerRegistry.RegisterCheck(new CheckAbnormalNodes());
+            CheckerRegistry.RegisterCheck(new CheckAudioUsage());
+            CheckerRegistry.RegisterCheck(new CheckConcurrent());
+            CheckerRegistry.RegisterCheck(new CheckDrainTime());
+            CheckerRegistry.RegisterCheck(new CheckZeroNode());
+
+            // All Modes > Events
+            CheckerRegistry.RegisterCheck(new CheckBreaks());
+            CheckerRegistry.RegisterCheck(new CheckStoryHitSounds());
 
             // All Modes > Hit Sounds
             CheckerRegistry.RegisterCheck(new CheckHitSounds());
