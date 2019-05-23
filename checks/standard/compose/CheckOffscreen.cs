@@ -31,8 +31,8 @@ namespace MapsetChecks.checks.standard.compose
             {
                 { "Offscreen",
                     new IssueTemplate(Issue.Level.Unrankable,
-                        "{0} {1} is offscreen by {2} px.",
-                        "timestamp - ", "object", "osu!pixels")
+                        "{0} {1} is offscreen.",
+                        "timestamp - ", "object")
                     .WithCause(
                         "The border of a hit object is partially off the screen in 4:3 aspect ratios.") },
 
@@ -71,22 +71,19 @@ namespace MapsetChecks.checks.standard.compose
 
                     if (hitObject.Position.Y + circleRadius > 428)
                         yield return new Issue(GetTemplate("Offscreen"), aBeatmap,
-                            Timestamp.Get(hitObject), type,
-                            Math.Round(Math.Abs(hitObject.Position.Y + circleRadius - LOWER_LIMIT)));
+                            Timestamp.Get(hitObject), type);
 
                     // The game prevents the head of objects from going offscreen inside a 512 by 512 px square,
                     // meaning heads can still go offscreen at the bottom due to how aspect ratios work.
                     else if (GetOffscreenBy(hitObject.Position, aBeatmap) > 0)
                         yield return new Issue(GetTemplate("Prevented"), aBeatmap,
-                            Timestamp.Get(hitObject), type,
-                            GetOffscreenBy(hitObject.Position, aBeatmap).ToString(CultureInfo.InvariantCulture));
+                            Timestamp.Get(hitObject), type);
                     
                     if (hitObject is Slider slider)
                     {
                         if (GetOffscreenBy(slider.EndPosition, aBeatmap) > 0)
                             yield return new Issue(GetTemplate("Offscreen"), aBeatmap,
-                                Timestamp.Get(hitObject.GetEndTime()), "Slider tail",
-                                GetOffscreenBy(slider.EndPosition, aBeatmap).ToString(CultureInfo.InvariantCulture));
+                                Timestamp.Get(hitObject.GetEndTime()), "Slider tail");
                         else
                         {
                             bool offscreenBodyFound = false;
@@ -95,8 +92,7 @@ namespace MapsetChecks.checks.standard.compose
                                 if (GetOffscreenBy(pathPosition, aBeatmap) > 0)
                                 {
                                     yield return new Issue(GetTemplate("Offscreen"), aBeatmap,
-                                        Timestamp.Get(hitObject), "Slider body",
-                                        GetOffscreenBy(pathPosition, aBeatmap).ToString(CultureInfo.InvariantCulture));
+                                        Timestamp.Get(hitObject), "Slider body");
 
                                     offscreenBodyFound = true;
                                     break;
@@ -125,8 +121,7 @@ namespace MapsetChecks.checks.standard.compose
 
                                         if (isOffscreen)
                                             yield return new Issue(GetTemplate("Offscreen"), aBeatmap,
-                                                Timestamp.Get(hitObject),
-                                                GetOffscreenBy(exactPathPosition, aBeatmap).ToString(CultureInfo.InvariantCulture));
+                                                Timestamp.Get(hitObject), "Slider body");
                                         else
                                             yield return new Issue(GetTemplate("Bezier Margin"), aBeatmap,
                                                 Timestamp.Get(hitObject));
