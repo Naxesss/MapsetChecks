@@ -20,7 +20,26 @@ namespace MapsetChecks.checks.compose
         {
             Category = "Compose",
             Message = "Abnormal amount of slider nodes.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Preventing mappers from writing inappropriate or otherwise harmful messages using slider nodes.
+                    <image-right>
+                        assets/docs/ohno.jpg
+                        An example of text being written with slider nodes in a way which can easily be hidden offscreen.
+                    </image>"
+                },
+                {
+                    "Reasoning",
+                    @"
+                    The code of conduct applies to all aspects of the ranking process, including the beatmap content itself, 
+                    whether that only be visible through the editor or in gameplay as well."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

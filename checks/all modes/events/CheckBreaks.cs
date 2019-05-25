@@ -20,7 +20,28 @@ namespace MapsetChecks.checks.events
         {
             Category = "Events",
             Message = "Breaks only achievable through .osu editing.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Ensures that breaks work as intended."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Although not visible in the editor, manually changing the break times will allow the effects of a break 
+                    to happen sooner and/or later than they should. This means you may start seeing flashing arrows on the 
+                    side of the screen and the background undimming while in the middle of gameplay, which only serves to 
+                    make the player confused. Saving the beatmap again will fix the break times automatically.
+                    <image-right>
+                        assets/docs/breaks.jpg
+                        An example of break effects happening in the middle of gameplay.
+                    </image>"
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

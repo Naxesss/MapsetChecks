@@ -20,7 +20,26 @@ namespace MapsetChecks.checks.compose
         {
             Category = "Compose",
             Message = "Too short drain time.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Prevents beatmaps from being too short, for example 10 seconds long.
+                    <image>
+                        assets/docs/shortMap.jpg
+                        A beatmap with a total mp3 length of ~21 seconds.
+                    </image>"
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Beatmaps this short do not offer a substantial enough gameplay experience for the standards of 
+                    the ranked section."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

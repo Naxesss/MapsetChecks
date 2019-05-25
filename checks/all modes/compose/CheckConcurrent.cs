@@ -20,7 +20,33 @@ namespace MapsetChecks.checks.compose
         {
             Category = "Compose",
             Message = "Concurrent hit objects.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Ensuring that only one object needs to be interacted with at any given moment in time."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    A clickable object during the duration of an already clicked object, for example a slider, is possible to play 
+                    assuming the clickable object is within the slider circle whenever a slider tick/edge happens. However, there is 
+                    no way for a player to intuitively know how to play such patterns as there is no tutorial for them, and they are 
+                    not self-explanatory.
+                    <br \><br \>
+                    Sliders, spinners, and other holdable objects, teach the player to hold down the key for 
+                    the whole duration of the object, so suddenly forcing them to press again would be contradictory to that 
+                    fundamental understanding. Because of this, these patterns more often than not cause confusion, even where 
+                    otherwise introduced well.
+                    <image-right>
+                        assets/docs/concurrentObjects.jpg
+                        A slider with two concurrent circles. Can be hit without breaking combo.
+                    </image>"
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

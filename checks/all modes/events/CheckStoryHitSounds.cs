@@ -26,7 +26,29 @@ namespace MapsetChecks.checks.events
             },
             Category = "Events",
             Message = "Storyboarded hit sounds.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Preventing storyboard sounds from replacing or becoming ambigious with any beatmap hit sounds."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Storyboarded hit sounds always play at the same time regardless of however late or early the player clicks 
+                    on an object, meaning they do not provide proper active hit object feedback, unlike regular hit sounds. This 
+                    contradicts the purpose of hit sounds and is likely to be confusing for players if similar samples as the 
+                    hit sounds are used.
+                    <note>
+                        Mania is exempt from this due to multiple objects at the same point in time being possible, leading 
+                        to regular hit sounding working poorly, for example amplifying the volume if concurrent objects have 
+                        the same hit sounds.
+                    </note>"
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

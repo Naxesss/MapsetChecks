@@ -20,7 +20,27 @@ namespace MapsetChecks.checks.compose
         {
             Category = "Compose",
             Message = "Zero node sliders.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Preventing objects from being invisible.
+                    <image-right>
+                        assets/docs/zeroNode.jpg
+                        A slider with no nodes; looks like a circle on the timeline but is invisible on the playfield.
+                    </image>"
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Although often used in combination with a storyboard to make up for the invisiblity through sprites, there 
+                    is no way to force the storyboard to appear, meaning players may play the map unaware that they should have 
+                    enabled something for a fair gameplay experience."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

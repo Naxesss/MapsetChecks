@@ -20,7 +20,27 @@ namespace MapsetChecks.checks.compose
         {
             Category = "Compose",
             Message = "More than 20% unused audio at the end.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Preventing audio files from being much longer than the beatmaps they are used for.
+                    <image>
+                        assets/docs/unusedAudio.jpg
+                        A beatmap which has left a large portion of the song unmapped.
+                    </image>"
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Audio files tend to be large in file size, so allowing them to be much longer than beatmaps would be a waste of resources, 
+                    since few linger around score screens for that long. Something needs to be happening in the storyboard or video, to keep 
+                    people around from skipping to the score screen, to justify the audio file being longer."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
@@ -32,14 +52,15 @@ namespace MapsetChecks.checks.compose
                         "Currently {0}% unused audio.",
                         "percent")
                     .WithCause(
-                        "The amount of time after the last object exceeds 20% of the length of the audio file.") },
+                        "The amount of time after the last object exceeds 20% of the length of the audio file. " +
+                        "No storyboard or video is present.") },
 
                 { "With Video/Storyboard",
                     new IssueTemplate(Issue.Level.Warning,
                         "Currently {0}% unused audio. Ensure this is being occupied by the video or storyboard.",
                         "percent")
                     .WithCause(
-                        "Same as without a video or storyboard.") }
+                        "Same as the other check, except with a storyboard or video present.") }
             };
         }
 
