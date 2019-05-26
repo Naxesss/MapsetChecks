@@ -18,7 +18,22 @@ namespace MapsetChecks.checks.general.resources
         {
             Category = "Resources",
             Message = "Too high sprite resolution.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Preventing storyboard images from being extremely large."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Unlike background images, storyboard images can be used to pan, zoom, scroll, rotate, etc, so they have more lenient 
+                    limits in terms of resolution, but otherwise follow the same reasoning."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

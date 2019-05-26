@@ -18,7 +18,27 @@ namespace MapsetChecks.checks.general.resources
         {
             Category = "Resources",
             Message = "Too high video resolution.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Keeping video files under a certain resolution threshold."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Videos, having multiple frames stacked after each other, naturally take more file size than any regular background image. 
+                    Because of this, the resolution threshold needs to be lower than for backgrounds in order to keep file size reasonable, 
+                    even if it is possible to download without the video.
+                    <note>
+                        This is partly to ensure a reasonable load on the server, not only on the players' end, due to ranked content 
+                        being downloaded more often.
+                    </note>"
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

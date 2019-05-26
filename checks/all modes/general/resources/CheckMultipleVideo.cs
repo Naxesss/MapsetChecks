@@ -18,7 +18,26 @@ namespace MapsetChecks.checks.general.resources
         {
             Category = "Resources",
             Message = "Multiple videos.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Making sure that any inconsistency in video is intentional and makes sense."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    When adding a guest difficulty or adding different mode difficulties, the mapset host may forget to ensure 
+                    that the videos across beatmaps in the set are consistent.
+                    <note>
+                        For taiko, videos usually need to be modified in some way since they're only visible on the bottom half 
+                        of the screen, so this check ignores any inconsistency with that mode from other modes.
+                    </note>"
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

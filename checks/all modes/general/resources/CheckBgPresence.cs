@@ -18,7 +18,25 @@ namespace MapsetChecks.checks.general.resources
         {
             Category = "Resources",
             Message = "Missing background.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Ensuring that each beatmap in a beatmapset has a background image present.
+                    <image-right>
+                        assets/docs/bgNotPresent.jpg
+                        An example of the default non-seasonal background as shown in the editor.
+                    </image>"
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Backgrounds help players recognize the beatmap, and the absence of one makes it look incomplete."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

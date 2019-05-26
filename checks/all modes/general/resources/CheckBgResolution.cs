@@ -18,7 +18,30 @@ namespace MapsetChecks.checks.general.resources
         {
             Category = "Resources",
             Message = "Too high or low background resolution.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Preventing background quality from being noticably low or unnoticably high to save on file size.
+                    <image>
+                        assets/docs/resolution.jpg
+                        The left side is half the resolution of the right side.
+                    </image>"
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Anything less than 1200 x 750 is usually quite noticeable, whereas anything higher than 2560 x 1440 
+                    is unlikely to be visible with the setup of the average player.
+                    <note>
+                        This uses 16:10 as base, since anything outside of 16:9 will be cut off on that resolution 
+                        rather than resized to fit the screen, preserving quality.
+                    </note>"
+                }
+            }
         };
 
         public override Dictionary<string, IssueTemplate> GetTemplates()
@@ -27,7 +50,7 @@ namespace MapsetChecks.checks.general.resources
             {
                 { "Too high",
                     new IssueTemplate(Issue.Level.Unrankable,
-                        "\"{0}\" greater than 1920 x 1200 ({1} x {2})",
+                        "\"{0}\" greater than 2560 x 1440 ({1} x {2})",
                         "file name", "width", "height")
                     .WithCause(
                         "A background file has a width exceeding 2560 pixels or a height exceeding 1440 pixels.") },
