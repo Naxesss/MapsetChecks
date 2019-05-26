@@ -27,7 +27,7 @@ namespace MapsetChecks.checks.general.metadata
                     like speeding it up, doing a DnB edit, or similar.
                     <image>
                         assets/docs/cutVer.jpg
-                        A song which has been cut should not contain any marker for it like the ""cut ver."" here.
+                        A song which has been unofficially cut should not contain any marker for it, especially not ""cut ver."".
                     </image>"
                 },
                 {
