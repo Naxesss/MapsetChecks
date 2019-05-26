@@ -17,7 +17,27 @@ namespace MapsetChecks.checks.general.metadata
         {
             Category = "Metadata",
             Message = "Inconsistent metadata.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Keeping metadata consistent between all difficulties of a beatmapset.
+                    <image>
+                        assets/docs/inconsistentMetadata.jpg
+                        Comparing two difficulties with different titles in a beatmapset.
+                    </image>"
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Since all difficulties are of the same song, they should use the same song metadata. The website also assumes it's all the 
+                    same, so it'll only display one of the artists, titles, creators, etc. Multiple metadata simply isn't supported very well, 
+                    and should really just be a global beatmap setting rather than a .osu-specific one."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

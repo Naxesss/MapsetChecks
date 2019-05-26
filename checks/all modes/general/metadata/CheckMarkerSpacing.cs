@@ -17,7 +17,28 @@ namespace MapsetChecks.checks.general.metadata
         {
             Category = "Metadata",
             Message = "Incorrect marker spacing.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Standardizing the way metadata is written for ranked content.
+                    <image>
+                        assets/docs/CVspacing.jpg
+                        The romanized artist field is missing a whitespace before and after ""(CV:"". 
+                        The regular artist field is fine, though, since it's using non-alphanumeric characters.
+                    </image>"
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Small deviations in metadata or obvious mistakes in their formatting or capitalization are for 
+                    the most part eliminated through standardization, reducing confusion in case of multiple correct 
+                    ways to write these and contributing to making metadata more consistent across official content."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

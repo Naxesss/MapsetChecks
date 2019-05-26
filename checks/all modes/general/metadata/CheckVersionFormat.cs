@@ -16,7 +16,27 @@ namespace MapsetChecks.checks.general.metadata
         {
             Category = "Metadata",
             Message = "Incorrect format of (TV Size) / (Game Ver.) / (Short Ver.) in title.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Standardizing the way metadata is written for ranked content.
+                    <image>
+                        assets/docs/TVversion.jpg
+                        A song using ""-TV version-"" as its official metadata, which becomes ""(TV Size)"" when standardized.
+                    </image>"
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Small deviations in metadata or obvious mistakes in their formatting or capitalization are for 
+                    the most part eliminated through standardization, reducing confusion in case of multiple correct 
+                    ways to write these and contributing to making metadata more consistent across official content."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
