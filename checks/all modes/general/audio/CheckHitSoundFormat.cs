@@ -14,7 +14,30 @@ namespace MapsetChecks.checks.general.audio
         {
             Category = "Audio",
             Message = "Incorrect hit sound format.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Prevents deprecated file formats for hit sounds, as well as discourages potentially detrimental ones.
+                    <image>
+                        assets/docs/hsFormat.jpg
+                        One of the hit sound files being an mp3, as seen with extensions disabled.
+                    </image>"
+                },
+                {
+                    "Reasoning",
+                    @"
+                    The ogg format is no longer supported and the mp3 format often includes inherent delays. As 
+                    such, the wav format is preferred for any hit sound file.
+                    <note>
+                        Passive objects such as slider tails are not clicked and as such do not need accurate 
+                        feedback and may use the mp3 format because of this.
+                    </note>"
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

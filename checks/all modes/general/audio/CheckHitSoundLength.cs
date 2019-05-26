@@ -17,7 +17,25 @@ namespace MapsetChecks.checks.general.audio
         {
             Category = "Audio",
             Message = "Too short hit sounds.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Preventing issues with soundcards."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Some soundcards have issues playing audio files which are less than 100 ms in length.
+                    <image>
+                        assets/docs/hsShort.jpg
+                        A hit sound which is less than 100 ms long, as shown in Audacity.
+                    </image>"
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

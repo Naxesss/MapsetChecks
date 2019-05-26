@@ -17,7 +17,27 @@ namespace MapsetChecks.checks.general.audio
         {
             Category = "Audio",
             Message = "Delayed hit sounds.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Ensuring hit sounds provide proper feedback for how early or late the player clicked.
+                    <image>
+                        assets/docs/hsDelay.jpg
+                        A hit sound which is delayed by more than 5 ms, as shown in Audacity.
+                    </image>"
+                },
+                {
+                    "Reasoning",
+                    @"
+                    By having delayed hit sounds, the feedback the player receives would be misleading them into 
+                    thinking they clicked later than they actually did, which contradicts the purpose of having hit 
+                    sounds in the first place."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

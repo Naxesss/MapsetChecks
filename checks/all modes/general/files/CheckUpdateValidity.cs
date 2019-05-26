@@ -16,7 +16,34 @@ namespace MapsetChecks.checks.general.files
         {
             Category = "Files",
             Message = "Issues with updating or downloading.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Ensuring that beatmaps can properly be downloaded and updated to their newest version.
+                    <image>
+                        assets/docs/osuFormatting.jpg
+                        An example of a song folder where one of the difficulties' file names are incorrect, causing it to be unable to update.
+                    </image>"
+                },
+                {
+                    "Reasoning",
+                    @"
+                    By being unable to update a beatmap, potentially important fixes can easily be missed out on. This mostly 
+                    affects players who download the map in qualified, as it is more visible to the public while not necessarily 
+                    being in its final version.
+                    <br \><br \>
+                    For some Windows 10 users, file names longer than 132 characters cannot properly be unzipped by the game and 
+                    simply vanish instead.
+                    <image>
+                        assets/docs/longFilename.jpg
+                        A file name longer than 132 characters, caused by a combination of a long title and a long difficulty name.
+                    </image>"
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

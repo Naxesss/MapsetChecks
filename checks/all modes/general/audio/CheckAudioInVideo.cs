@@ -17,7 +17,23 @@ namespace MapsetChecks.checks.general.audio
         {
             Category = "Audio",
             Message = "Audio channels in video.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Reducing the file size of videos."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    The audio track of videos will not play and usually take a similar amount of file size as any other audio file, 
+                    so not removing the audio track means a noticeable amount of resources are wasted, even if the audio track is 
+                    empty but still present."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

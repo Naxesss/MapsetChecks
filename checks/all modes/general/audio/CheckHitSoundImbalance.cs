@@ -17,7 +17,26 @@ namespace MapsetChecks.checks.general.audio
         {
             Category = "Audio",
             Message = "Imbalanced hit sounds.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Preventing the audio channels of hit sounds from being noticeably imbalanced, for example the left 
+                    channel being twice as loud as the right.
+                    <image>
+                        assets/docs/hsChannels.jpg
+                        A hit sound which is much louder in the left channel compared to the right, as shown in Audacity.
+                    </image>"
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Having noticeably imbalanced hit sounds is often jarring, especially if used frequently or consecutively."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

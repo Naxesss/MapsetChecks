@@ -17,7 +17,31 @@ namespace MapsetChecks.checks.general.audio
         {
             Category = "Audio",
             Message = "Too high or low audio bitrate.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Preventing audio quality from being noticably low or unnoticably high to save on file size.
+                    <image>
+                        assets/docs/bitrate.jpg
+                        Audio bitrate as shown in the properties of a file. For some files this is not visible.
+                    </image>"
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Once you get lower than 128 kbps the quality loss is usually quite noticeable. After 192 kbps, with the 
+                    setup of the average player, it would be difficult to tell a difference and as such would also be a 
+                    waste of resources.
+                    <note>
+                        Should no higher quality be available anywhere, less than 128 kbps may be acceptable depending on 
+                        how noticeable it is.
+                    </note>"
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

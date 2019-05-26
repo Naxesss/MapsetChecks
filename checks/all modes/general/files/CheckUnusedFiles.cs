@@ -15,7 +15,30 @@ namespace MapsetChecks.checks.general.files
         {
             Category = "Files",
             Message = "Unused files.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Reducing the overall file size of beatmapset folders and preventing potentially malicious files 
+                    from reaching the player."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Having useless files in the folder that few players will look at in no way contributes to the gameplay experience 
+                    and is a waste of resources. Unlike things like pointless bookmarks and green lines, files typically take up a way 
+                    more noticeable amount of space.
+                    <note>
+                        For comparison, you'd need about 10 000 bookmarks, if not more, to match the file size of 
+                        a regular hit sound.
+                    </note>
+                    <br \>
+                    Official content distributing malicious .exe files or similar would also not reflect very well upon the game."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
