@@ -49,7 +49,8 @@ namespace MapsetChecks.checks.general.metadata
                         "Romanized title field, \"{0}\"",
                         "romanized title")
                     .WithCause(
-                        "The romanized title field indicates some kind of version.") },
+                        "The romanized title field indicates some kind of version or size. " +
+                        "Ignores \"(TV Size)\", \"(Short Ver.)\" and \"(Game Ver.)\".") },
 
                 { "Unicode",
                     new IssueTemplate(Issue.Level.Warning,
@@ -63,17 +64,27 @@ namespace MapsetChecks.checks.general.metadata
         public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
             Beatmap beatmap = aBeatmapSet.beatmaps[0];
+            
+            Regex regex      = new Regex(@"(?i)([^A-Za-z0-9]+)?(ver(\.|sion)?|size)([^A-Za-z0-9]+)?$");
+            Regex shortRegex = new Regex(@"\(Short Ver\.\)$");
+            Regex gameRegex  = new Regex(@"\(Game Ver\.\)$");
+            Regex tvRegex    = new Regex(@"\(TV Size\)$");
 
-            // Matches additional markers, like "Speed up ver." and "Full Version".
-            Regex regex = new Regex("(?i)(( |-)ver(\\.|sion)?)(\\))?$");
+            // Matches additional markers, like "(Speed up ver.)" and "- Full Version -".
+            // Excludes any field with correct markers.
+            bool IsMatch(string aField) =>
+                regex      .IsMatch(aField) &&
+                !shortRegex.IsMatch(aField) &&
+                !gameRegex .IsMatch(aField) &&
+                !tvRegex   .IsMatch(aField);
 
-            if (regex.IsMatch(beatmap.metadataSettings.title))
+            if (IsMatch(beatmap.metadataSettings.title))
                 yield return new Issue(GetTemplate("Romanized"), null,
                     beatmap.metadataSettings.title);
 
             // Unicode fields do not exist in file version 9.
             if (beatmap.metadataSettings.titleUnicode != null &&
-                regex.IsMatch(beatmap.metadataSettings.titleUnicode))
+                IsMatch(beatmap.metadataSettings.titleUnicode))
             {
                 yield return new Issue(GetTemplate("Unicode"), null,
                     beatmap.metadataSettings.titleUnicode);
