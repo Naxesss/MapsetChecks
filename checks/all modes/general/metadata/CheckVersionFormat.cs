@@ -32,9 +32,10 @@ namespace MapsetChecks.checks.general.metadata
                 {
                     "Reasoning",
                     @"
-                    Small deviations in metadata or obvious mistakes in their formatting or capitalization are for 
-                    the most part eliminated through standardization, reducing confusion in case of multiple correct 
-                    ways to write these and contributing to making metadata more consistent across official content."
+                    Small deviations in metadata or obvious mistakes in its formatting or capitalization are for the 
+                    most part eliminated through standardization. Standardization also reduces confusion in case of 
+                    multiple correct ways to certain fields and contributes to making metadata more consistent across 
+                    official content."
                 }
             }
         };
