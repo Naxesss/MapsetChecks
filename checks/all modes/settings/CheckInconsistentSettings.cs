@@ -19,7 +19,42 @@ namespace MapsetChecks.checks.settings
         {
             Category = "Settings",
             Message = "Inconsistent mapset id, countdown, epilepsy warning, etc.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Ensuring settings across difficulties in a beatmapset are consistent where it makes sense."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Difficulties in a beatmapset using the same video or storyboard, for example, would usually want to have the same 
+                    epilepsy settings since they would share the same reason to have it. Same goes for countdown, letterboxing, 
+                    widescreen support (only when an sb is present), audio lead-in, etc. Additionally, having difficulties all be 
+                    different in terms of noticeable settings would make the set seem less coherent for someone climbing the difficulties."
+                },
+                {
+                    "Specifics",
+                    @"
+                    The following settings are checked for and are assigned their respective issue level if inconsistent: 
+                    <br \><div class=""card-detail-icon cross-icon""></div>beatmapset id
+                    <br \><div class=""card-detail-icon exclamation-icon""></div>countdown speed (if there's enough time to show it, excluded for taiko/mania)
+                    <br \><div class=""card-detail-icon exclamation-icon""></div>countdown offset (if there's enough time to show it, excluded for taiko/mania)
+                    <br \><div class=""card-detail-icon exclamation-icon""></div>countdown (if there's enough time to show it, excluded for taiko/mania)
+                    <br \><div class=""card-detail-icon exclamation-icon""></div>letterbox (if there are breaks)
+                    <br \><div class=""card-detail-icon exclamation-icon""></div>widescreen support (if there's an sb)
+                    <br \><div class=""card-detail-icon exclamation-icon""></div>storyboard
+                    <br \><div class=""card-detail-icon exclamation-icon""></div>epilepsy warning (if there's an sb or video)
+                    <br \><div class=""card-detail-icon exclamation-icon""></div>audio lead-in
+                    <br \><div class=""card-detail-icon exclamation-icon""></div>skin preference
+                    <br \><div class=""card-detail-icon exclamation-icon""></div>storyboard in front of combo fire (if there's a storyboard)
+                    <br \><div class=""card-detail-icon exclamation-icon""></div>usage of skin sprites in storyboard (if there's a storyboard)
+                    <br \><div class=""card-detail-icon minor-icon""></div>slider tick rate"
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

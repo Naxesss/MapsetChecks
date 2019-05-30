@@ -18,8 +18,36 @@ namespace MapsetChecks.checks.settings
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
         {
             Category = "Settings",
-            Message = "Illegal difficulty settings.",
-            Author = "Naxess"
+            Message = "Abnormal difficulty settings.",
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Preventing circle size from being too small or large and difficulty settings from including more than 1 decimal."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    All difficulty settings cap at 0 and 10, including circle size, making it the only setting that can go beyond its 
+                    minimum and maximum values, 2 and 7 respectively (1 and 9 for mania). These limits intentional and represent the 
+                    largest and smallest circle size acceptable.
+                    <image>
+                        assets/docs/circleSize.jpg
+                        Circle size 0 compared to circle size 10.
+                    </image>
+
+                    Settings should also not have more than 1 decimal place, as the precision for anything greater matters too little 
+                    to be worth increasing the amount of digits in the song selection screen or website for, even if it already rounds 
+                    to 2 decimal places in-game.
+                    <image>
+                        assets/docs/decimalPlaces.jpg
+                        More than 1 decimal place compared to 1 decimal place.
+                    </image>"
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
@@ -31,7 +59,8 @@ namespace MapsetChecks.checks.settings
                         "Circle Size {0} is less than {1} or greater than {2}.",
                         "setting", "min", "max")
                     .WithCause(
-                        "Circle size is less than 2 (1 for mania) or greater than 7 (9 for mania).") },
+                        "Circle size is less than 2 (1 for mania) or greater than 7 (9 for mania). " +
+                        "Ignored in taiko.") },
 
                 { "Decimals",
                     new IssueTemplate(Issue.Level.Unrankable,

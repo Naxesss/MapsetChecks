@@ -19,7 +19,26 @@ namespace MapsetChecks.checks.settings
         {
             Category = "Settings",
             Message = "Slider tick rates not aligning with any common beat snap divisor.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Ensuring that slider ticks align with the song's beat structure.
+                    <image-right>
+                        assets/docs/abnormalTickRate.jpg
+                        A 1/1 slider with an asymmetric tick rate (neither a tick in the middle nor two equally distanced from it).
+                    </image>"
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Slider ticks, just like any other object, should align with the song in some way. If slider ticks are going after a 1/5 beat 
+                    structure, for instance, that's either really rare or more likely a mistake."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
