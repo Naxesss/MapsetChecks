@@ -20,7 +20,23 @@ namespace MapsetChecks.checks.hit_sounds
         {
             Category = "Hit Sounds",
             Message = "Low volume hit sounding.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Ensuring that active hit object feedback is audible."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    All active hit objects (i.e. circles, slider heads, and starts of hold notes) should provide some feedback 
+                    so that players can hear if they're clicking too early or late. By reducing the volume to the point where 
+                    it is difficult to hear over the song, hit sounds cease to function as proper feedback."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

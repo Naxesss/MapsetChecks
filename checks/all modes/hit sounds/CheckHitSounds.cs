@@ -20,14 +20,32 @@ namespace MapsetChecks.checks.hit_sounds
         {
             Modes = new Beatmap.Mode[]
             {
-                // This check would take on another meaning if applied to taiko, since there you basically map with hit sounds
+                // This check would take on another meaning if applied to taiko, since there you basically map with hit sounds.
                 Beatmap.Mode.Standard,
                 Beatmap.Mode.Catch,
                 Beatmap.Mode.Mania
             },
             Category = "Hit Sounds",
             Message = "Long periods without hit sounding.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Ensuring varied feedback is used frequently throughout the map. Not too frequently, but mixing things up at least 
+                    once or twice every measure is preferable. This could be with hit sounds, sampleset changes or additions."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Accenting and complementing the song with hit sounds, either by reflecting it or adding to it, generally yields 
+                    better feedback than if the same sound would be used throughout. However, the option to use the same sounds for all 
+                    hit sounds and samplesets is still possible through skinning on the players' end for those who prefer the monotone 
+                    approach."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
