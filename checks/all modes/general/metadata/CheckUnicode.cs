@@ -33,9 +33,9 @@ namespace MapsetChecks.checks.general.metadata
                 {
                     "Reasoning",
                     @"
-                    The romanized title, artist and creator fields are used in the file name of the .osu and .osb, as well as by the website 
-                    to allow for updates and syncing. As such, if they contain invalid characters, the beatmapset may become corrupt when uploaded, 
-                    preventing users from properly downloading it.
+                    The romanized title, artist, creator and difficulty name fields are used in the file name of the .osu and .osb, as well as by 
+                    the website to allow for updates and syncing. As such, if they contain invalid characters, the beatmapset may become corrupt 
+                    when uploaded, preventing users from properly downloading it.
                     <br \><br \>
                     Even if it were possible to download correctly, should a character be unsupported it will be displayed as a box, questionmark 
                     or other placeholder character in-game, which makes some titles and artists impossible to interpret and distinguish."
@@ -49,10 +49,10 @@ namespace MapsetChecks.checks.general.metadata
             {
                 { "Unicode",
                     new IssueTemplate(Issue.Level.Unrankable,
-                        "{0} field contains unicode characters,\"{1}\".",
-                        "Artist/title/creator", "field")
+                        "{0} field contains unicode characters,\"{1}\", those being \"{2}\".",
+                        "Artist/title/creator/difficulty name", "field", "unicode char(s)")
                     .WithCause(
-                        "The romanized title, artist or the creator field contains unicode characters.") }
+                        "The romanized title, artist, creator, or difficulty name field contains unicode characters.") }
             };
         }
 
@@ -60,20 +60,29 @@ namespace MapsetChecks.checks.general.metadata
         {
             foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
             {
-                if (ContainsUnicode(beatmap.metadataSettings.title))
-                    yield return new Issue(GetTemplate("Unicode"), null,
-                        "Romanized title", beatmap.metadataSettings.title);
+                foreach (Issue issue in GetUnicodeIssues("Difficulty name", beatmap.metadataSettings.version))
+                    yield return issue;
 
-                if (ContainsUnicode(beatmap.metadataSettings.artist))
-                    yield return new Issue(GetTemplate("Unicode"), null,
-                        "Romanized artist", beatmap.metadataSettings.artist);
+                foreach (Issue issue in GetUnicodeIssues("Romanized title", beatmap.metadataSettings.title))
+                    yield return issue;
 
-                if (ContainsUnicode(beatmap.metadataSettings.creator))
-                    yield return new Issue(GetTemplate("Unicode"), null,
-                        "Creator", beatmap.metadataSettings.creator);
+                foreach (Issue issue in GetUnicodeIssues("Romanized artist", beatmap.metadataSettings.artist))
+                    yield return issue;
+
+                foreach (Issue issue in GetUnicodeIssues("Creator", beatmap.metadataSettings.creator))
+                    yield return issue;
             }
         }
 
-        private bool ContainsUnicode(string aString) => aString.Any(aChar => aChar > 127);
+        private IEnumerable<Issue> GetUnicodeIssues(string aFieldName, string aField)
+        {
+            if (ContainsUnicode(aField))
+                yield return new Issue(GetTemplate("Unicode"), null,
+                    aFieldName, aField, GetUnicodeCharacters(aField));
+        }
+
+        private bool   IsUnicode(char aChar)                => aChar > 127;
+        private bool   ContainsUnicode(string aString)      => aString.Any(IsUnicode);
+        private string GetUnicodeCharacters(string aString) => aString.Where(IsUnicode).ToString();
     }
 }
