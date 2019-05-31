@@ -30,8 +30,9 @@ namespace MapsetChecks.checks.timing
                 {
                     "Reasoning",
                     @"
-                    Each uninherited line contributes to rounding errors. The more of them there are, the more timing will shift 
-                    later in the map. They may also affect the nightcore mod and main menu pulsing depending on placement."
+                    When placing uninherited lines on-beat with the previous uninherited line, timing may shift 1 ms forwards 
+                    due to rounding errors. This means afer 20 uninherited lines placed in this way, timing may shift up to 
+                    20 ms at the end. They may also affect the nightcore mod and main menu pulsing depending on placement."
                 }
             }
         };
