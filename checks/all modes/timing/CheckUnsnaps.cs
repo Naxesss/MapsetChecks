@@ -15,7 +15,30 @@ namespace MapsetChecks.checks.timing
         {
             Category = "Timing",
             Message = "Unsnapped hit objects.",
-            Author = "Naxess"
+            Author = "Naxess",
+            
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Prevent hit objects from being unsnapped by more than 1 ms."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Since gameplay is based on audio cues it wouldn't make much sense to have certain hit windows happen earlier or later, 
+                    even if only by a few ms.
+                    <br \><br \>
+                    The only reason a 1 ms leniency exists is because the editor casts decimal times to integers rather than rounds them 
+                    properly, which causes these 1 ms unsnaps occasionally when copying and pasting hit objects and timing lines. This bug 
+                    happens so frequently that basically all ranked maps have multiple 1 ms unsnaps in them.
+                    <note>
+                        When asked about this a long time ago, peppy responded with that 1 ms unsnaps are not noticable, and 
+                        proceeded with adding a 1 ms leniency to AiMod to prevent them from being detected.
+                    </note>"
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

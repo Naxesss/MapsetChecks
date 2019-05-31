@@ -19,7 +19,28 @@ namespace MapsetChecks.checks.timing
         {
             Category = "Timing",
             Message = "Wrongly or inconsistently snapped hit objects.",
-            Author = "Naxess"
+            Author = "Naxess",
+            
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Preventing incorrectly snapped hit objects, for example 1/6 being used where the song only supports 
+                    1/4, or a slider tail accidentally being extended 1/16 too far."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Should hit objects not align with any audio cue or otherwise recognizable pattern, it would not only 
+                    force the player to guess when objects should be clicked, but also harm the perceived connection between 
+                    the beatmap and the song, neither of which make for good experiences.
+                    <note>
+                        Note that this check is intentionally heavy on false-positives for safety's sake due to this being a 
+                        common disqualification reason.
+                    </note>"
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
@@ -33,7 +54,9 @@ namespace MapsetChecks.checks.timing
                         "timestamp - ", "X", "timestamp - ", "X", "difficulty")
                     .WithCause(
                         "Two hit objects in separate difficulties do not have any object in the other difficulty at the same time, " +
-                        "and are close enough in time to be mistaken for one another.") },
+                        "and are close enough in time to be mistaken for one another." +
+                        "<note>Ignores cases where the divisor on the lower difficulty is less than on the higher difficulty, since " +
+                        "this is usually natural.</note>") },
 
                 { "Snap Count",
                     new IssueTemplate(Issue.Level.Warning,

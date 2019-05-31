@@ -17,7 +17,27 @@ namespace MapsetChecks.checks.timing
         {
             Category = "Timing",
             Message = "Hit object is slightly behind a line which would modify it.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Preventing unintentional side effects like wrong snappings and slider velocities 
+                    caused by hit objects or timing lines being slightly unsnapped."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Any timing line before a slider to any extent (even if just 1 ms or less), will not affect its slider velocity. 
+                    With 1 ms unsnaps being common for objects and lines (which you can see by enabling minor issues and looking any timing 
+                    category), this in turn becomes a common issue for essentially all game modes.
+                    <note>
+                        If bpm changes, this will still keep track of the effective slider velocity, thereby preventing false positives.
+                    </note>"
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

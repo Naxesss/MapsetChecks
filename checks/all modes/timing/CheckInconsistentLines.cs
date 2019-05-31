@@ -18,7 +18,26 @@ namespace MapsetChecks.checks.timing
         {
             Category = "Timing",
             Message = "Inconsistent uninherited lines, meter signatures or BPM.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Ensuring that the song is timed consistently for all difficulties."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Since all difficulties in a set are based around a single song, they should all use the same base timing, 
+                    which is made from uninherited lines. Even if a line isn't used by some difficulty due to there being a 
+                    break or similar, they still affect things like the main menu and the night core mod.
+                    <br \><br \>
+                    Similar to metadata, timing (bpm/meter/offset of uninherited lines) should really just be global for the 
+                    whole beatmapset rather than difficulty-specific."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

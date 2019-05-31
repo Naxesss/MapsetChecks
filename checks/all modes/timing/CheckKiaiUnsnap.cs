@@ -17,7 +17,22 @@ namespace MapsetChecks.checks.timing
         {
             Category = "Timing",
             Message = "Unsnapped kiai.",
-            Author = "Naxess"
+            Author = "Naxess",
+            
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Ensuring kiai starts on a distinct sound."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Since kiai is visual, unlike hit sounds, it doesn't need to be as precise in timing, but kiai being 
+                    notably unsnapped from any distinct sound is still probably something you'd want to fix."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

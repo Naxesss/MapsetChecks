@@ -18,7 +18,22 @@ namespace MapsetChecks.checks.timing
         {
             Category = "Timing",
             Message = "Unused uninherited lines.",
-            Author = "Naxess"
+            Author = "Naxess",
+            
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Ensuring there are no unused uninherited lines in the beatmap."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Each uninherited line contributes to rounding errors. The more of them there are, the more timing will shift 
+                    later in the map. They may also affect the nightcore mod and main menu pulsing depending on placement."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

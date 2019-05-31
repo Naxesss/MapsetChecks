@@ -17,7 +17,34 @@ namespace MapsetChecks.checks.timing
         {
             Category = "Timing",
             Message = "First line toggles kiai or is inherited.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Preventing effects from happening and inherited lines before the first uninherited line."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    If you toggle kiai on the first line, then when the player starts the beatmap, kiai will instantly trigger and apply 
+                    from the beginning until the next line. 
+                    <image>
+                        assets/docs/preventKiai.jpg
+                        The game preventing you from enabling kiai on the first timing line.
+                    </image>
+
+                    If you place an inherited line before the first uninherited line, then the game will 
+                    think the whole section isn't timed, causing the default bpm to be used and the inherited line to malfunction since 
+                    it has nothing to inherit.
+                    <image>
+                        assets/docs/firstInherited.jpg
+                        The first line being inherited, as seen from the timing view.
+                    </image>"
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

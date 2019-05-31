@@ -17,7 +17,31 @@ namespace MapsetChecks.checks.timing
         {
             Category = "Timing",
             Message = "Two inherited or uninherited concurrent timing lines.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Preventing issues with concurrent lines of the same type, such as them switching order when loading the beatmap.
+                    <image>
+                        assets/docs/concurrentLines.jpg
+                        Two inherited lines which were originally the other way around, but swapped places when opening the beatmap again.
+                    </image>"
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Depending on how the game loads the lines, they may be loaded in the wrong order causing certain effects to disappear, 
+                    like the editor to not see that kiai is enabled where it is in gameplay. This coupled with the fact that future versions 
+                    of the game may change how these behave make them highly unreliable.
+                    <note>
+                        Two lines of different types, however, work properly as inherited and uninherited lines are handeled seperately, 
+                        where the inherited will always apply its effects last.
+                    </note>"
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
