@@ -14,12 +14,12 @@ using System.Linq;
 
 namespace MapsetChecks.checks.compose
 {
-    public class CheckZeroNode : BeatmapCheck
+    public class CheckInvisibleSlider : BeatmapCheck
     {
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
         {
             Category = "Compose",
-            Message = "Zero node sliders.",
+            Message = "Invisible sliders.",
             Author = "Naxess",
 
             Documentation = new Dictionary<string, string>()
@@ -47,12 +47,19 @@ namespace MapsetChecks.checks.compose
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "Invisible Object",
+                { "Zero Nodes",
                     new IssueTemplate(Issue.Level.Unrankable,
-                        "{0} Invisible object.",
+                        "{0} has no slider nodes.",
                         "timestamp - ")
                     .WithCause(
-                        "A slider has no nodes.") }
+                        "A slider has no nodes.") },
+
+                { "Negative Length",
+                    new IssueTemplate(Issue.Level.Unrankable,
+                        "{0} has negative pixel length.",
+                        "timestamp - ")
+                    .WithCause(
+                        "A slider has a negative pixel length.") }
             };
         }
 
@@ -60,7 +67,10 @@ namespace MapsetChecks.checks.compose
         {
             foreach (Slider slider in aBeatmap.hitObjects.OfType<Slider>())
                 if (slider.nodePositions.Count == 0)
-                    yield return new Issue(GetTemplate("Invisible Object"), aBeatmap,
+                    yield return new Issue(GetTemplate("Zero Nodes"), aBeatmap,
+                        Timestamp.Get(slider));
+                else if (slider.pixelLength < 0)
+                    yield return new Issue(GetTemplate("Negative Length"), aBeatmap,
                         Timestamp.Get(slider));
         }
     }

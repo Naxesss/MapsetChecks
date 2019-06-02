@@ -58,7 +58,7 @@ namespace MapsetChecks
             CheckerRegistry.RegisterCheck(new CheckAudioUsage());
             CheckerRegistry.RegisterCheck(new CheckConcurrent());
             CheckerRegistry.RegisterCheck(new CheckDrainTime());
-            CheckerRegistry.RegisterCheck(new CheckZeroNode());
+            CheckerRegistry.RegisterCheck(new CheckInvisibleSlider());
 
             // All Modes > Events
             CheckerRegistry.RegisterCheck(new CheckBreaks());
