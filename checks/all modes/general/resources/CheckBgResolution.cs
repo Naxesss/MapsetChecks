@@ -26,7 +26,7 @@ namespace MapsetChecks.checks.general.resources
                     "Purpose",
                     @"
                     Preventing background quality from being noticably low or unnoticably high to save on file size.
-                    <image>
+                    <image-right>
                         assets/docs/resolution.jpg
                         The left side is half the resolution of the right side.
                     </image>"
@@ -37,7 +37,7 @@ namespace MapsetChecks.checks.general.resources
                     Anything less than 1200 x 750 is usually quite noticeable, whereas anything higher than 2560 x 1440 
                     is unlikely to be visible with the setup of the average player.
                     <note>
-                        This uses 16:10 as base, since anything outside of 16:9 will be cut off on that resolution 
+                        This uses 16:10 as base, since anything outside of 16:9 will be cut off on that aspect ratio 
                         rather than resized to fit the screen, preserving quality.
                     </note>"
                 }
