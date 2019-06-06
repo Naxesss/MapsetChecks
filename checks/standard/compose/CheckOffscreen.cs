@@ -43,7 +43,7 @@ namespace MapsetChecks.checks.standard.compose
                     "Reasoning",
                     @"
                     Although everything is technically readable and playable if an object is only partially offscreen, 
-                    it trip up players using relative movement input (for example mouse) when their cursor hits the 
+                    it trips up players using relative movement input (for example mouse) when their cursor hits the 
                     side of the screen, since the game will offset the cursor back into the screen which is difficult 
                     to correct while in the middle of gameplay.
                     <br \><br \>
