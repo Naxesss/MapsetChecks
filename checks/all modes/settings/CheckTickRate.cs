@@ -36,7 +36,7 @@ namespace MapsetChecks.checks.settings
                     "Reasoning",
                     @"
                     Slider ticks, just like any other object, should align with the song in some way. If slider ticks are going after a 1/5 beat 
-                    structure, for instance, that's either really rare or more likely a mistake."
+                    structure, for instance, that's either extremely rare or much more likely a mistake."
                 }
             }
         };
@@ -50,7 +50,8 @@ namespace MapsetChecks.checks.settings
                         "{0} {1}.",
                         "setting", "value")
                     .WithCause(
-                        "The slider tick rate setting of a beatmap is using an incorrect or otherwise extremely uncommon divisor.") }
+                        "The slider tick rate setting of a beatmap is using an incorrect or otherwise extremely uncommon divisor." +
+                        "<note>Common tick rates include any full integer as well as 1/2, 4/3, and 3/2. Excludes precision errors.</note>") }
             };
         }
         
