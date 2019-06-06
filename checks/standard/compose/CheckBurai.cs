@@ -23,7 +23,42 @@ namespace MapsetChecks.checks.standard.compose
             },
             Category = "Compose",
             Message = "Burai slider.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Preventing sliders from being excessively difficult, or even impossible, to read in gameplay.
+                    <image-right>
+                        https://i.imgur.com/fMa1hWR.png
+                        A slider which may be considered readable if it goes right, up, and then down, but would 
+                        mean going through the same slider path twice for the right and top parts.
+                    </image>"
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Largely follows the same reasoning as the overlapping slider tail/head/anchor check; if the player 
+                    needs to rely on guessing, and guessing wrong results in a slider break, then that's an unfair 
+                    gameplay experience.
+                    <br \><br \>
+                    A single path going back on itself far enough for the follow circle to not cover everything, is 
+                    neither lenient nor something players will expect considering that sliders are expected to have 
+                    a clear path. When the follow circle does cover the whole path, however, it's generally acceptable 
+                    since even if the player misreads it, it usually doesn't cause any slider breaks.
+                    <br \><br \>
+                    Should a slider go back on itself and end before it creates its own borders, players without slider 
+                    tails enabled will have a hard time seeing how far back into itself it goes, or even if it goes 
+                    back on itself at all.
+                    <image-right>
+                        https://i.imgur.com/StRTQzZ.png
+                        A slider which goes back on itself multiple times and is impossible to read for players with 
+                        slider tails hidden, which is common in skinning.
+                    </image>"
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

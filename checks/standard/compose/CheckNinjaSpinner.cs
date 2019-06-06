@@ -23,7 +23,24 @@ namespace MapsetChecks.checks.standard.compose
             },
             Category = "Compose",
             Message = "Too short spinner.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Preventing spinners from being so short that you almost need to memorize them in order to react 
+                    to them before they end."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Players generally react much slower than auto, so if auto can't even acheive 1000 points on the 
+                    spinner, players will likely not get any points at all, much less pass it without losing accuracy. 
+                    In general, these are just not fun to play due to needing to memorize them for a fair experience."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

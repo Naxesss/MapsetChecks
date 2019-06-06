@@ -22,7 +22,38 @@ namespace MapsetChecks.checks.standard.compose
             },
             Category = "Compose",
             Message = "Offscreen hit objects.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Preventing the border of hit objects from even partially becoming offscreen in 4:3 aspect ratios.
+                    <note>
+                        4:3 includes 16:9 and 16:10, the only difference is the width, so you can check for offscreens 
+                        along the top and bottom with 16:9 and 16:10 and it will be the same as what you'd see with 4:3.
+                    </note>
+                    <image-right>
+                        https://i.imgur.com/zXT4Zwr.png
+                        A slider end which is partially offscreen along the bottom of the screen.
+                    </image>"
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Although everything is technically readable and playable if an object is only partially offscreen, 
+                    it trip up players using relative movement input (for example mouse) when their cursor hits the 
+                    side of the screen, since the game will offset the cursor back into the screen which is difficult 
+                    to correct while in the middle of gameplay.
+                    <br \><br \>
+                    Since objects partially offscreen also have a smaller area to hit, if not hitting the screen 
+                    causing the problems above, it makes those objects need more precision to play which isn't 
+                    consistent with how the rest of the game works, especially considering that the punishment for 
+                    overshooting is getting your cursor offset slightly but still hitting the object and not missing 
+                    like you probably would otherwise."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
