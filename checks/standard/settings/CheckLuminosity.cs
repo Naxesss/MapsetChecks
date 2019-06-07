@@ -23,7 +23,37 @@ namespace MapsetChecks.checks.standard.settings
             },
             Category = "Settings",
             Message = "Too dark or bright combo colours or slider borders.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Preventing combo colours from blending into dimmed backgrounds or flashing too intensely in kiai."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Although objects by default have a white border around them making them visible, the approach circles are 
+                    affected by combo colour and will become impossible to see with colour 0,0,0. Stripping the game of 
+                    important gameplay indicators or generally messing with them (see check for modified breaks) is not 
+                    something beatmaps are expected to do, as they need to be consistent to work properly.
+                    <image-right>
+                        https://i.imgur.com/wxoMMQG.png
+                        A slider whose approach circle is only visible on its borders and path, due to the rest blending into 
+                        the dimmed bg.
+                    </image>
+                    <br \><br \>
+                    As for bright colours, when outside of kiai they're fine, but while in kiai the game flashes them, 
+                    attempting to make them even brighter without caring about them already being really bright, resulting in 
+                    pretty strange behaviour for some monitors and generally just unpleasant contrast.
+                    <image-right>
+                        https://i.imgur.com/9cRTvJc.png
+                        An example of a slider with colour 255,255,255 while in the middle of flashing.
+                    </image>"
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
