@@ -26,7 +26,7 @@ namespace MapsetChecks.checks.settings
                 {
                     "Purpose",
                     @"
-                    Ensuring settings across difficulties in a beatmapset are consistent where it makes sense."
+                    Ensuring settings across difficulties in a beatmapset are consistent within game modes and where it makes sense."
                 },
                 {
                     "Reasoning",
@@ -39,20 +39,23 @@ namespace MapsetChecks.checks.settings
                 {
                     "Specifics",
                     @"
-                    The following settings are checked for and are assigned their respective issue level if inconsistent: 
-                    <br \><div class=""card-detail-icon cross-icon""></div>beatmapset id
-                    <br \><div class=""card-detail-icon cross-icon""></div>countdown speed (if there's enough time to show it, excluded for taiko/mania)
-                    <br \><div class=""card-detail-icon exclamation-icon""></div>countdown offset (if there's enough time to show it, excluded for taiko/mania)
-                    <br \><div class=""card-detail-icon cross-icon""></div>countdown (if there's enough time to show it, excluded for taiko/mania)
-                    <br \><div class=""card-detail-icon cross-icon""></div>letterbox (if there are breaks)
-                    <br \><div class=""card-detail-icon cross-icon""></div>widescreen support (if there's an sb)
-                    <br \><div class=""card-detail-icon cross-icon""></div>storyboard
-                    <br \><div class=""card-detail-icon cross-icon""></div>epilepsy warning (if there's an sb or video)
-                    <br \><div class=""card-detail-icon exclamation-icon""></div>audio lead-in
-                    <br \><div class=""card-detail-icon cross-icon""></div>skin preference
-                    <br \><div class=""card-detail-icon cross-icon""></div>storyboard in front of combo fire (if there's a storyboard)
-                    <br \><div class=""card-detail-icon cross-icon""></div>usage of skin sprites in storyboard (if there's a storyboard)
-                    <br \><div class=""card-detail-icon minor-icon""></div>slider tick rate"
+                    The following settings are checked for and are assigned their respective issue level if inconsistent between 
+                    difficulties of the same mode (excluding beatmapset id): 
+                    <div style=""margin:8px 16px;"">
+                        <div class=""card-detail-icon cross-icon""></div>beatmapset id
+                        <br \><div class=""card-detail-icon cross-icon""></div>countdown speed (if there's enough time to show it, excluded for taiko/mania)
+                        <br \><div class=""card-detail-icon exclamation-icon""></div>countdown offset (if there's enough time to show it, excluded for taiko/mania)
+                        <br \><div class=""card-detail-icon cross-icon""></div>countdown (if there's enough time to show it, excluded for taiko/mania)
+                        <br \><div class=""card-detail-icon cross-icon""></div>letterbox (if there are breaks)
+                        <br \><div class=""card-detail-icon cross-icon""></div>widescreen support (if there's an sb)
+                        <br \><div class=""card-detail-icon cross-icon""></div>storyboard
+                        <br \><div class=""card-detail-icon cross-icon""></div>epilepsy warning (if there's an sb or video)
+                        <br \><div class=""card-detail-icon exclamation-icon""></div>audio lead-in
+                        <br \><div class=""card-detail-icon cross-icon""></div>skin preference
+                        <br \><div class=""card-detail-icon cross-icon""></div>storyboard in front of combo fire (if there's a storyboard)
+                        <br \><div class=""card-detail-icon cross-icon""></div>usage of skin sprites in storyboard (if there's a storyboard)
+                        <br \><div class=""card-detail-icon minor-icon""></div>slider tick rate
+                    </div>"
                 }
             }
         };
@@ -86,98 +89,95 @@ namespace MapsetChecks.checks.settings
         
         public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
-            Beatmap refBeatmap = aBeatmapSet.beatmaps.First();
             foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
             {
-                if (beatmap.metadataSettings.beatmapSetId != refBeatmap.metadataSettings.beatmapSetId)
-                    yield return new Issue(GetTemplate("Unrankable"), beatmap,
-                        "beatmapset id", refBeatmap);
-
-                // Countdown has no effect in taiko or mania.
-                if (beatmap.generalSettings.mode != Beatmap.Mode.Taiko && beatmap.generalSettings.mode != Beatmap.Mode.Mania)
-                {
-                    if (beatmap.GetCountdownStartBeat() >= 0 && refBeatmap.GetCountdownStartBeat() >= 0)
-                    {
-                        if (beatmap.generalSettings.countdown != refBeatmap.generalSettings.countdown)
-                            yield return new Issue(GetTemplate("Unrankable"), beatmap,
-                                "countdown speed", refBeatmap);
-
-                        if (beatmap.generalSettings.countdownBeatOffset != refBeatmap.generalSettings.countdownBeatOffset)
-                            yield return new Issue(GetTemplate("Warning"), beatmap,
-                                "countdown offset", refBeatmap);
-                    }
-                    else if (beatmap.GetCountdownStartBeat() >= 0 || refBeatmap.GetCountdownStartBeat() >= 0)
-                    {
-                        if (beatmap.generalSettings.countdown > 0 || refBeatmap.generalSettings.countdown > 0)
-                            yield return new Issue(GetTemplate("Unrankable"), beatmap,
-                                "countdown", refBeatmap);
-                    }
-                }
-
-                // Letterboxing only appears in breaks, so need to compare to other maps that have breaks rather than the reference.
                 foreach (Beatmap otherBeatmap in aBeatmapSet.beatmaps)
                 {
-                    if (otherBeatmap.breaks.Count > 0)
+                    if (beatmap.metadataSettings.beatmapSetId != otherBeatmap.metadataSettings.beatmapSetId)
+                        yield return new Issue(GetTemplate("Unrankable"), beatmap,
+                            "beatmapset id", otherBeatmap);
+
+                
+                    if (beatmap.generalSettings.mode == otherBeatmap.generalSettings.mode)
                     {
+                        // Countdown has no effect in taiko or mania.
+                        if (beatmap.generalSettings.mode != Beatmap.Mode.Taiko && beatmap.generalSettings.mode != Beatmap.Mode.Mania)
+                        {
+                            if (beatmap.GetCountdownStartBeat() >= 0 && otherBeatmap.GetCountdownStartBeat() >= 0)
+                            {
+                                if (beatmap.generalSettings.countdown != otherBeatmap.generalSettings.countdown)
+                                    yield return new Issue(GetTemplate("Unrankable"), beatmap,
+                                        "countdown speed", otherBeatmap);
+
+                                if (beatmap.generalSettings.countdownBeatOffset != otherBeatmap.generalSettings.countdownBeatOffset)
+                                    yield return new Issue(GetTemplate("Warning"), beatmap,
+                                        "countdown offset", otherBeatmap);
+                            }
+                            else if (beatmap.GetCountdownStartBeat() >= 0 || otherBeatmap.GetCountdownStartBeat() >= 0)
+                            {
+                                if (beatmap.generalSettings.countdown > 0 || otherBeatmap.generalSettings.countdown > 0)
+                                    yield return new Issue(GetTemplate("Unrankable"), beatmap,
+                                        "countdown", otherBeatmap);
+                            }
+                        }
+
                         if (beatmap.breaks.Count > 0 && otherBeatmap.breaks.Count > 0)
                         {
                             if (beatmap.generalSettings.letterbox != otherBeatmap.generalSettings.letterbox)
                                 yield return new Issue(GetTemplate("Unrankable"), beatmap,
                                     "letterbox", otherBeatmap);
                         }
-
-                        break;
                     }
-                }
 
-                // Widescreen support does nothing without a storyboard.
-                if (beatmap.HasDifficultySpecificStoryboard() &&
-                    refBeatmap.HasDifficultySpecificStoryboard() ||
-                    aBeatmapSet.osb != null)
-                {
-                    if (beatmap.generalSettings.widescreenSupport != refBeatmap.generalSettings.widescreenSupport)
+                    // Widescreen support does nothing without a storyboard.
+                    if (beatmap.HasDifficultySpecificStoryboard() &&
+                        otherBeatmap.HasDifficultySpecificStoryboard() ||
+                        aBeatmapSet.osb != null)
+                    {
+                        if (beatmap.generalSettings.widescreenSupport != otherBeatmap.generalSettings.widescreenSupport)
+                            yield return new Issue(GetTemplate("Unrankable"), beatmap,
+                                "widescreen support", otherBeatmap);
+
+                        if (beatmap.generalSettings.storyInFrontOfFire != otherBeatmap.generalSettings.storyInFrontOfFire)
+                            yield return new Issue(GetTemplate("Unrankable"), beatmap,
+                                "storyboard in front of combo fire", otherBeatmap);
+
+                        if (beatmap.generalSettings.useSkinSprites != otherBeatmap.generalSettings.useSkinSprites)
+                            yield return new Issue(GetTemplate("Unrankable"), beatmap,
+                                "usage of skin sprites in storyboard", otherBeatmap);
+                    }
+                    else if (
+                        aBeatmapSet.osb == null &&
+                        (beatmap.HasDifficultySpecificStoryboard() ||
+                        otherBeatmap.HasDifficultySpecificStoryboard()))
+                    {
                         yield return new Issue(GetTemplate("Unrankable"), beatmap,
-                            "widescreen support", refBeatmap);
+                            "storyboard", otherBeatmap);
+                    }
 
-                    if (beatmap.generalSettings.storyInFrontOfFire != refBeatmap.generalSettings.storyInFrontOfFire)
+                    // Epilepsy warning requires either a storyboard or video to show.
+                    if (beatmap.HasDifficultySpecificStoryboard() &&
+                        otherBeatmap.HasDifficultySpecificStoryboard() ||
+                        aBeatmapSet.osb != null ||
+                        beatmap.videos.Count > 0 && otherBeatmap.videos.Count > 0)
+                    {
+                        if (beatmap.generalSettings.epilepsyWarning != otherBeatmap.generalSettings.epilepsyWarning)
+                            yield return new Issue(GetTemplate("Unrankable"), beatmap,
+                                "epilepsy warning", otherBeatmap);
+                    }
+
+                    if (beatmap.generalSettings.audioLeadIn != otherBeatmap.generalSettings.audioLeadIn)
+                        yield return new Issue(GetTemplate("Warning"), beatmap,
+                            "audio lead-in", otherBeatmap);
+
+                    if (beatmap.generalSettings.skinPreference != otherBeatmap.generalSettings.skinPreference)
                         yield return new Issue(GetTemplate("Unrankable"), beatmap,
-                            "storyboard in front of combo fire", refBeatmap);
+                            "skin preference", otherBeatmap);
 
-                    if (beatmap.generalSettings.useSkinSprites != refBeatmap.generalSettings.useSkinSprites)
-                        yield return new Issue(GetTemplate("Unrankable"), beatmap,
-                            "usage of skin sprites in storyboard", refBeatmap);
+                    if (beatmap.difficultySettings.sliderTickRate != otherBeatmap.difficultySettings.sliderTickRate)
+                        yield return new Issue(GetTemplate("Minor"), beatmap,
+                            "slider tick rate", otherBeatmap);
                 }
-                else if (
-                    aBeatmapSet.osb == null &&
-                    (beatmap.HasDifficultySpecificStoryboard() ||
-                    refBeatmap.HasDifficultySpecificStoryboard()))
-                {
-                    yield return new Issue(GetTemplate("Unrankable"), beatmap,
-                        "storyboard", refBeatmap);
-                }
-
-                // Epilepsy warning requires either a storyboard or video to show.
-                if (beatmap.HasDifficultySpecificStoryboard() &&
-                    refBeatmap.HasDifficultySpecificStoryboard() ||
-                    aBeatmapSet.osb != null ||
-                    beatmap.videos.Count > 0 && refBeatmap.videos.Count > 0)
-                {
-                    if (beatmap.generalSettings.epilepsyWarning != refBeatmap.generalSettings.epilepsyWarning)
-                        yield return new Issue(GetTemplate("Unrankable"), beatmap,
-                            "epilepsy warning", refBeatmap);
-                }
-
-                if (beatmap.generalSettings.audioLeadIn != refBeatmap.generalSettings.audioLeadIn)
-                    yield return new Issue(GetTemplate("Unrankable"), beatmap,
-                        "audio lead-in", refBeatmap);
-
-                if (beatmap.generalSettings.skinPreference != refBeatmap.generalSettings.skinPreference)
-                    yield return new Issue(GetTemplate("Unrankable"), beatmap,
-                        "skin preference", refBeatmap);
-
-                if (beatmap.difficultySettings.sliderTickRate != refBeatmap.difficultySettings.sliderTickRate)
-                    yield return new Issue(GetTemplate("Minor"), beatmap,
-                        "slider tick rate", refBeatmap);
             }
         }
     }
