@@ -31,27 +31,27 @@ namespace MapsetChecks.checks.settings
                 {
                     "Reasoning",
                     @"
-                    Difficulties in a beatmapset using the same video or storyboard, for example, would usually want to have the same 
+                    Difficulties in a beatmapset, which should all use the same video or storyboard, would always want to have the same 
                     epilepsy settings since they would share the same reason to have it. Same goes for countdown, letterboxing, 
-                    widescreen support (only when an sb is present), audio lead-in, etc. Additionally, having difficulties all be 
-                    different in terms of noticeable settings would make the set seem less coherent for someone climbing the difficulties."
+                    widescreen support, audio lead-in, etc. Obviously excluding settings that don't apply. Having difficulties all be 
+                    different in terms of noticeable settings would make the set seem less coherent."
                 },
                 {
                     "Specifics",
                     @"
                     The following settings are checked for and are assigned their respective issue level if inconsistent: 
                     <br \><div class=""card-detail-icon cross-icon""></div>beatmapset id
-                    <br \><div class=""card-detail-icon exclamation-icon""></div>countdown speed (if there's enough time to show it, excluded for taiko/mania)
+                    <br \><div class=""card-detail-icon cross-icon""></div>countdown speed (if there's enough time to show it, excluded for taiko/mania)
                     <br \><div class=""card-detail-icon exclamation-icon""></div>countdown offset (if there's enough time to show it, excluded for taiko/mania)
-                    <br \><div class=""card-detail-icon exclamation-icon""></div>countdown (if there's enough time to show it, excluded for taiko/mania)
-                    <br \><div class=""card-detail-icon exclamation-icon""></div>letterbox (if there are breaks)
-                    <br \><div class=""card-detail-icon exclamation-icon""></div>widescreen support (if there's an sb)
-                    <br \><div class=""card-detail-icon exclamation-icon""></div>storyboard
-                    <br \><div class=""card-detail-icon exclamation-icon""></div>epilepsy warning (if there's an sb or video)
+                    <br \><div class=""card-detail-icon cross-icon""></div>countdown (if there's enough time to show it, excluded for taiko/mania)
+                    <br \><div class=""card-detail-icon cross-icon""></div>letterbox (if there are breaks)
+                    <br \><div class=""card-detail-icon cross-icon""></div>widescreen support (if there's an sb)
+                    <br \><div class=""card-detail-icon cross-icon""></div>storyboard
+                    <br \><div class=""card-detail-icon cross-icon""></div>epilepsy warning (if there's an sb or video)
                     <br \><div class=""card-detail-icon exclamation-icon""></div>audio lead-in
-                    <br \><div class=""card-detail-icon exclamation-icon""></div>skin preference
-                    <br \><div class=""card-detail-icon exclamation-icon""></div>storyboard in front of combo fire (if there's a storyboard)
-                    <br \><div class=""card-detail-icon exclamation-icon""></div>usage of skin sprites in storyboard (if there's a storyboard)
+                    <br \><div class=""card-detail-icon cross-icon""></div>skin preference
+                    <br \><div class=""card-detail-icon cross-icon""></div>storyboard in front of combo fire (if there's a storyboard)
+                    <br \><div class=""card-detail-icon cross-icon""></div>usage of skin sprites in storyboard (if there's a storyboard)
                     <br \><div class=""card-detail-icon minor-icon""></div>slider tick rate"
                 }
             }
@@ -99,7 +99,7 @@ namespace MapsetChecks.checks.settings
                     if (beatmap.GetCountdownStartBeat() >= 0 && refBeatmap.GetCountdownStartBeat() >= 0)
                     {
                         if (beatmap.generalSettings.countdown != refBeatmap.generalSettings.countdown)
-                            yield return new Issue(GetTemplate("Warning"), beatmap,
+                            yield return new Issue(GetTemplate("Unrankable"), beatmap,
                                 "countdown speed", refBeatmap);
 
                         if (beatmap.generalSettings.countdownBeatOffset != refBeatmap.generalSettings.countdownBeatOffset)
@@ -109,7 +109,7 @@ namespace MapsetChecks.checks.settings
                     else if (beatmap.GetCountdownStartBeat() >= 0 || refBeatmap.GetCountdownStartBeat() >= 0)
                     {
                         if (beatmap.generalSettings.countdown > 0 || refBeatmap.generalSettings.countdown > 0)
-                            yield return new Issue(GetTemplate("Warning"), beatmap,
+                            yield return new Issue(GetTemplate("Unrankable"), beatmap,
                                 "countdown", refBeatmap);
                     }
                 }
@@ -122,7 +122,7 @@ namespace MapsetChecks.checks.settings
                         if (beatmap.breaks.Count > 0 && otherBeatmap.breaks.Count > 0)
                         {
                             if (beatmap.generalSettings.letterbox != otherBeatmap.generalSettings.letterbox)
-                                yield return new Issue(GetTemplate("Warning"), beatmap,
+                                yield return new Issue(GetTemplate("Unrankable"), beatmap,
                                     "letterbox", otherBeatmap);
                         }
 
@@ -136,15 +136,15 @@ namespace MapsetChecks.checks.settings
                     aBeatmapSet.osb != null)
                 {
                     if (beatmap.generalSettings.widescreenSupport != refBeatmap.generalSettings.widescreenSupport)
-                        yield return new Issue(GetTemplate("Warning"), beatmap,
+                        yield return new Issue(GetTemplate("Unrankable"), beatmap,
                             "widescreen support", refBeatmap);
 
                     if (beatmap.generalSettings.storyInFrontOfFire != refBeatmap.generalSettings.storyInFrontOfFire)
-                        yield return new Issue(GetTemplate("Warning"), beatmap,
+                        yield return new Issue(GetTemplate("Unrankable"), beatmap,
                             "storyboard in front of combo fire", refBeatmap);
 
                     if (beatmap.generalSettings.useSkinSprites != refBeatmap.generalSettings.useSkinSprites)
-                        yield return new Issue(GetTemplate("Warning"), beatmap,
+                        yield return new Issue(GetTemplate("Unrankable"), beatmap,
                             "usage of skin sprites in storyboard", refBeatmap);
                 }
                 else if (
@@ -152,7 +152,7 @@ namespace MapsetChecks.checks.settings
                     (beatmap.HasDifficultySpecificStoryboard() ||
                     refBeatmap.HasDifficultySpecificStoryboard()))
                 {
-                    yield return new Issue(GetTemplate("Warning"), beatmap,
+                    yield return new Issue(GetTemplate("Unrankable"), beatmap,
                         "storyboard", refBeatmap);
                 }
 
@@ -163,16 +163,16 @@ namespace MapsetChecks.checks.settings
                     beatmap.videos.Count > 0 && refBeatmap.videos.Count > 0)
                 {
                     if (beatmap.generalSettings.epilepsyWarning != refBeatmap.generalSettings.epilepsyWarning)
-                        yield return new Issue(GetTemplate("Warning"), beatmap,
+                        yield return new Issue(GetTemplate("Unrankable"), beatmap,
                             "epilepsy warning", refBeatmap);
                 }
 
                 if (beatmap.generalSettings.audioLeadIn != refBeatmap.generalSettings.audioLeadIn)
-                    yield return new Issue(GetTemplate("Warning"), beatmap,
+                    yield return new Issue(GetTemplate("Unrankable"), beatmap,
                         "audio lead-in", refBeatmap);
 
                 if (beatmap.generalSettings.skinPreference != refBeatmap.generalSettings.skinPreference)
-                    yield return new Issue(GetTemplate("Warning"), beatmap,
+                    yield return new Issue(GetTemplate("Unrankable"), beatmap,
                         "skin preference", refBeatmap);
 
                 if (beatmap.difficultySettings.sliderTickRate != refBeatmap.difficultySettings.sliderTickRate)
