@@ -36,6 +36,7 @@ namespace MapsetChecks
             // General > Files
             CheckerRegistry.RegisterCheck(new CheckUnusedFiles());
             CheckerRegistry.RegisterCheck(new CheckUpdateValidity());
+            CheckerRegistry.RegisterCheck(new CheckZeroBytes());
 
             // General > Metadata
             CheckerRegistry.RegisterCheck(new CheckAdditionalMarkers());
