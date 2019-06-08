@@ -30,7 +30,23 @@ namespace MapsetChecks.checks.standard.spread
             },
             Category = "Spread",
             Message = "Perfect stacks too close in time.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Preventing objects from stacking when close in time for easy to insane difficulties."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Objects stacked perfectly on top of each other close in time is read almost ambigiously to a single object, even for moderately 
+                    experienced players. The lower in difficulty you get, the more beneficial it is to simply use a regular stack or overlap instead
+                    as trivializing readability gets more important."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

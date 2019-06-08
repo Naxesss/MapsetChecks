@@ -28,7 +28,24 @@ namespace MapsetChecks.checks.standard.spread
             },
             Category = "Spread",
             Message = "Multiple reverses on too short sliders.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Preventing sliders from having multiple reverses in easy and normal difficulties."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Assuming we do this on a short slider, the reverse would be visible for so short of a time that it 
+                    would be difficult to react to. If we instead do this on a long slider where they can react, it's 
+                    going to be really boring gameplay-wise due to how long the slider becomes. So no matter how it's 
+                    done, it'll be worse than alternatives."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

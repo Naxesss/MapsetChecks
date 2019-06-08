@@ -28,7 +28,28 @@ namespace MapsetChecks.checks.standard.spread
             },
             Category = "Spread",
             Message = "Objects close in time not overlapping.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Ensuring that objects close in time are indiciated as such in easy and normal difficulties.
+                    <image>
+                        https://i.imgur.com/rnIi6Pj.png
+                        Right image is harder to distinguish time distance in, despite spacings still clearly being different.
+                    </image>"
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Newer players often have trouble reading how far apart objects are in time, which is why enabling 
+                    distance spacing for lower difficulties is often recommended. However, if two spacings for different 
+                    snappings look similar, it's possible to confuse them. By forcing an overlap between objects close in 
+                    time and discouraging it for objects further apart, the difference in snappings become more apparent."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

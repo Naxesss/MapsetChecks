@@ -23,7 +23,23 @@ namespace MapsetChecks.checks.standard.spread
             },
             Category = "Spread",
             Message = "Too short spinner time or spinner recovery time.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Preventing spinners or objects following them from being too fast to react to."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Newer players need time to recognize that they should begin spinning, as well as time to regain control of their 
+                    cursor after spinning. Hence, too short spinners will often lose them accuracy or combo, and objects very close 
+                    to the end of spinners will probably be missed or clicked on in panic before the spinner has ended."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()

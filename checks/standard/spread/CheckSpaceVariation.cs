@@ -28,7 +28,28 @@ namespace MapsetChecks.checks.standard.spread
             },
             Category = "Spread",
             Message = "Object too close or far away from previous.",
-            Author = "Naxess"
+            Author = "Naxess",
+
+            Documentation = new Dictionary<string, string>()
+            {
+                {
+                    "Purpose",
+                    @"
+                    Ensuring spacing between objects with the same snapping is recognizable, and objects with different snappings are 
+                    distinguishable, for easy and normal difficulties."
+                },
+                {
+                    "Reasoning",
+                    @"
+                    Time distance equality is a fundamental concept used in low difficulties to teach newer players how to interpret 
+                    rhythm easier. By trivializing reading, these maps can better teach how base mechanics work, like approach circles, 
+                    slider follow circles, object fading, hit bursts, hit sounds, etc.
+                    <br \><br \>
+                    Once these are learnt, and by the time players move on to hard difficulties, more advanced concepts and elements 
+                    can begin to be introduced, like multiple reverses, spacing as a form of emphasis, complex rhythms, streams, and so 
+                    on."
+                }
+            }
         };
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
