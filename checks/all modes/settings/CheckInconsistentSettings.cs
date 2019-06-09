@@ -38,13 +38,7 @@ namespace MapsetChecks.checks.settings
                     Having difficulties all be different in terms of noticeable settings would make the set seem less coherent, 
                     but it can be acceptable if it differs thematically in a way that makes it seem intentional, without needing to 
                     specify that it is, for example one beatmap being old-style with a special skin and countdown while others are 
-                    more modern and exclude this.
-                    <note>
-                        The Ranking Criteria currently states that inconsistent letterboxing within the same mode is disallowed under 
-                        any circumstance, but this is simply because no one has tried ranking a beatmap with a letterbox as one of its 
-                        thematic features. Once someone attempts and succeeds at this, the rule will very likely be changed to account 
-                        for it.
-                    </note>"
+                    more modern and exclude this."
                 },
                 {
                     "Specifics",
