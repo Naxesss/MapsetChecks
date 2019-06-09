@@ -28,7 +28,7 @@ namespace MapsetChecks.checks.general.metadata
                     <image>
                         https://i.imgur.com/9w1fzvB.png
                         The romanized artist field is missing a whitespace before and after ""(CV:"". 
-                        The regular artist field is fine, though, since it's using non-alphanumeric characters.
+                        The unicode artist field is fine, though, since the characters are full-width.
                     </image>"
                 },
                 {
