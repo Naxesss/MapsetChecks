@@ -31,8 +31,8 @@ namespace MapsetChecks.checks.standard.compose
                     @"
                     Preventing the border of hit objects from even partially becoming offscreen in 4:3 aspect ratios.
                     <note>
-                        4:3 includes 16:9 and 16:10, the only difference is the width, so you can check for offscreens 
-                        along the top and bottom with 16:9 and 16:10 and it will be the same as what you'd see with 4:3.
+                        4:3 is included in 16:9 and 16:10, the only difference is the width, so you can check for 
+                        offscreens along the top and bottom in any of these aspect ratios and it will look the same.
                     </note>
                     <image-right>
                         https://i.imgur.com/zXT4Zwr.png
