@@ -31,7 +31,9 @@ namespace MapsetChecks.checks.general.resources
                     "Reasoning",
                     @"
                     When adding a guest difficulty or adding different mode difficulties, the mapset host may forget to ensure 
-                    that the videos across beatmaps in the set are consistent.
+                    that the videos across beatmaps in the set are consistent. Using multiple videos can be fine in cases like 
+                    compilations or if one difficulty is thematically different enough to warrant it, but do keep in mind that 
+                    it takes up additional space.
                     <note>
                         For taiko, videos usually need to be modified in some way since they're only visible on the bottom half 
                         of the screen, so this check ignores any inconsistency with that mode from other modes.
