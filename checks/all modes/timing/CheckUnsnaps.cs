@@ -34,8 +34,10 @@ namespace MapsetChecks.checks.timing
                     properly, which causes these 1 ms unsnaps occasionally when copying and pasting hit objects and timing lines. This bug 
                     happens so frequently that basically all ranked maps have multiple 1 ms unsnaps in them.
                     <note>
-                        When asked about this a long time ago, peppy responded with that 1 ms unsnaps are not noticable, and 
-                        proceeded with adding a 1 ms leniency to AiMod to prevent them from being detected.
+                        ""At overall difficulty 10, this would result in at most 2.4% chance of a 300 becoming a 100. It would change the 
+                        ratio of 300s to 100s by 1.6%. This is acceptable, and a much larger variable is introduced by the possibility of 
+                        lag, input latency and time calculation accuracy.""
+                        <br \>- peppy, 2009, <a href=""https://osu.ppy.sh/community/forums/topics/17711"">Ctrl+V rounding error [Resolved]</a>
                     </note>"
                 }
             }
