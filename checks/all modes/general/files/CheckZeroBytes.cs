@@ -30,7 +30,7 @@ namespace MapsetChecks.checks.general.files
                     @"
                     0-byte files prevent other files in the song folder from properly uploading. Mappers sometimes attempt to silence 
                     certain hit sound files by completely removing its audio data, but this often results in a file completely devoid 
-                    of any data which makes it 0-byte. Instead, use <a src=""https://up.ppy.sh/files/blank.wav"">this 44-byte file</a> 
+                    of any data which makes it 0-byte. Instead, use <a href=""https://up.ppy.sh/files/blank.wav"">this 44-byte file</a> 
                     which osu provides to mute hit sound files.
                     <image>
                         https://i.imgur.com/Qb9z95T.png
