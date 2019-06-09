@@ -29,7 +29,7 @@ namespace MapsetChecks.checks.compose
                     @"
                     Preventing audio files from being much longer than the beatmaps they are used for.
                     <image>
-                        assets/docs/unusedAudio.jpg
+                        https://i.imgur.com/n8bYgaP.png
                         A beatmap which has left a large portion of the song unmapped.
                     </image>"
                 },

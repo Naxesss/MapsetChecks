@@ -22,9 +22,9 @@ namespace MapsetChecks.checks.general.audio
                     "Purpose",
                     @"
                     Prevents deprecated file formats for hit sounds, as well as discourages potentially detrimental ones.
-                    <image>
-                        assets/docs/hsFormat.jpg
-                        One of the hit sound files being an mp3, as seen with extensions disabled.
+                    <image-right>
+                        https://i.imgur.com/yAF6pEq.png
+                        One of the hit sound files being an mp3.
                     </image>"
                 },
                 {

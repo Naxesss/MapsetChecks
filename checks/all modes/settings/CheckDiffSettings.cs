@@ -35,7 +35,7 @@ namespace MapsetChecks.checks.settings
                     minimum and maximum values, 2 and 7 respectively (1 and 9 for mania). These limits intentional and represent the 
                     largest and smallest circle size acceptable.
                     <image>
-                        assets/docs/circleSize.jpg
+                        https://i.imgur.com/JT9JNMb.jpg
                         Circle size 0 compared to circle size 10.
                     </image>
 
@@ -43,7 +43,7 @@ namespace MapsetChecks.checks.settings
                     to be worth increasing the amount of digits in the song selection screen or website for, even if it already rounds 
                     to 2 decimal places in-game.
                     <image>
-                        assets/docs/decimalPlaces.jpg
+                        https://i.imgur.com/ySldNaU.png
                         More than 1 decimal place compared to 1 decimal place.
                     </image>"
                 }

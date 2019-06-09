@@ -26,7 +26,7 @@ namespace MapsetChecks.checks.general.audio
                     @"
                     Preventing audio quality from being noticably low or unnoticably high to save on file size.
                     <image>
-                        assets/docs/bitrate.jpg
+                        https://i.imgur.com/701cuCD.png
                         Audio bitrate as shown in the properties of a file. For some files this is not visible.
                     </image>"
                 },

@@ -27,8 +27,9 @@ namespace MapsetChecks.checks.general.resources
                     @"
                     Preventing background quality from being noticably low or unnoticably high to save on file size.
                     <image-right>
-                        assets/docs/resolution.jpg
-                        The left side is half the resolution of the right side.
+                        https://i.imgur.com/dm6QGvz.png
+                        The right side is 1.44x the resolution of the left. This is equivalent to comparing 
+                        1200 x 750 to 1920 x 1080.
                     </image>"
                 },
                 {

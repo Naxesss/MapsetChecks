@@ -29,7 +29,7 @@ namespace MapsetChecks.checks.compose
                     @"
                     Prevents beatmaps from being too short, for example 10 seconds long.
                     <image>
-                        assets/docs/shortMap.jpg
+                        https://i.imgur.com/uNDPeJI.png
                         A beatmap with a total mp3 length of ~21 seconds.
                     </image>"
                 },

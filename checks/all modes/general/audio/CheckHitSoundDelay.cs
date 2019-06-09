@@ -26,7 +26,7 @@ namespace MapsetChecks.checks.general.audio
                     @"
                     Ensuring hit sounds provide proper feedback for how early or late the player clicked.
                     <image>
-                        assets/docs/hsDelay.jpg
+                        https://i.imgur.com/PKhGOTq.png
                         A hit sound which is delayed by more than 5 ms, as shown in Audacity.
                     </image>"
                 },

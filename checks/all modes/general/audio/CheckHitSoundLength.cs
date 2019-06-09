@@ -31,7 +31,7 @@ namespace MapsetChecks.checks.general.audio
                     @"
                     Some soundcards have issues playing audio files which are less than 100 ms in length.
                     <image>
-                        assets/docs/hsShort.jpg
+                        https://i.imgur.com/0CpU3Gh.png
                         A hit sound which is less than 100 ms long, as shown in Audacity.
                     </image>"
                 }

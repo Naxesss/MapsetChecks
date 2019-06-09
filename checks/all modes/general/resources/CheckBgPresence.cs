@@ -27,8 +27,8 @@ namespace MapsetChecks.checks.general.resources
                     @"
                     Ensuring that each beatmap in a beatmapset has a background image present.
                     <image-right>
-                        assets/docs/bgNotPresent.jpg
-                        An example of the default non-seasonal background as shown in the editor.
+                        https://i.imgur.com/P9TdA7K.jpg
+                        An example of a default non-seasonal background as shown in the editor.
                     </image>"
                 },
                 {

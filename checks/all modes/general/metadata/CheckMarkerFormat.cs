@@ -26,8 +26,8 @@ namespace MapsetChecks.checks.general.metadata
                     @"
                     Standardizing the way metadata is written for ranked content.
                     <image>
-                        assets/docs/featMarker.jpg
-                        An example of an incorrect format of ""feat."".
+                        https://i.imgur.com/e5mHEan.png
+                        An example of ""featured by"", which should be replaced by ""feat."".
                     </image>"
                 },
                 {

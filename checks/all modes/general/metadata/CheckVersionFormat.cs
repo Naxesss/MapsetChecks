@@ -25,7 +25,7 @@ namespace MapsetChecks.checks.general.metadata
                     @"
                     Standardizing the way metadata is written for ranked content.
                     <image>
-                        assets/docs/TVversion.jpg
+                        https://i.imgur.com/1ozV71n.png
                         A song using ""-TV version-"" as its official metadata, which becomes ""(TV Size)"" when standardized.
                     </image>"
                 },

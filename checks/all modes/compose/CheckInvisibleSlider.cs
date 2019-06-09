@@ -29,7 +29,7 @@ namespace MapsetChecks.checks.compose
                     @"
                     Preventing objects from being invisible.
                     <image-right>
-                        assets/docs/zeroNode.jpg
+                        https://i.imgur.com/xJIwdbA.png
                         A slider with no nodes; looks like a circle on the timeline but is invisible on the playfield.
                     </image>"
                 },

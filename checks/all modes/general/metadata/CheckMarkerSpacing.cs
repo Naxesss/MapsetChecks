@@ -26,7 +26,7 @@ namespace MapsetChecks.checks.general.metadata
                     @"
                     Standardizing the way metadata is written for ranked content.
                     <image>
-                        assets/docs/CVspacing.jpg
+                        https://i.imgur.com/9w1fzvB.png
                         The romanized artist field is missing a whitespace before and after ""(CV:"". 
                         The regular artist field is fine, though, since it's using non-alphanumeric characters.
                     </image>"

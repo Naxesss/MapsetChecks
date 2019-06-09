@@ -26,7 +26,7 @@ namespace MapsetChecks.checks.general.metadata
                     @"
                     Keeping metadata consistent between all difficulties of a beatmapset.
                     <image>
-                        assets/docs/inconsistentMetadata.jpg
+                        https://i.imgur.com/ojdxg6z.png
                         Comparing two difficulties with different titles in a beatmapset.
                     </image>"
                 },

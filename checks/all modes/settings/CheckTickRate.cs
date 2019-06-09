@@ -28,7 +28,7 @@ namespace MapsetChecks.checks.settings
                     @"
                     Ensuring that slider ticks align with the song's beat structure.
                     <image-right>
-                        assets/docs/abnormalTickRate.jpg
+                        https://i.imgur.com/2NVm2aB.png
                         A 1/1 slider with an asymmetric tick rate (neither a tick in the middle nor two equally distanced from it).
                     </image>"
                 },

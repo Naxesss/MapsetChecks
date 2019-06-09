@@ -27,7 +27,7 @@ namespace MapsetChecks.checks.general.resources
                     @"
                     Ensuring that the video aligns with the song consistently for all difficulties.
                     <image>
-                        assets/docs/videoOffset.jpg
+                        https://i.imgur.com/RDRL3qG.png
                         Two difficulties with different video offsets, as shown in the respective .osu files. The second 
                         argument, after ""Video"", is the offset in ms.
                     </image>"

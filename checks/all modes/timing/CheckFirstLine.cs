@@ -32,7 +32,7 @@ namespace MapsetChecks.checks.timing
                     If you toggle kiai on the first line, then when the player starts the beatmap, kiai will instantly trigger and apply 
                     from the beginning until the next line. 
                     <image>
-                        assets/docs/preventKiai.jpg
+                        https://i.imgur.com/9F3LoR3.png
                         The game preventing you from enabling kiai on the first timing line.
                     </image>
 
@@ -40,7 +40,7 @@ namespace MapsetChecks.checks.timing
                     think the whole section isn't timed, causing the default bpm to be used and the inherited line to malfunction since 
                     it has nothing to inherit.
                     <image>
-                        assets/docs/firstInherited.jpg
+                        https://i.imgur.com/yqSEObl.png
                         The first line being inherited, as seen from the timing view.
                     </image>"
                 }

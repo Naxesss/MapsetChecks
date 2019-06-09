@@ -27,7 +27,7 @@ namespace MapsetChecks.checks.spread
                     @"
                     Ensuring that newer players still have new content to play at the same time as encouraging mappers to map longer songs.
                     <image>
-                        assets/docs/lowestDiff.jpg
+                        https://i.imgur.com/1PFVl76.png
                         The drain time thresholds determining the highest difficulty level for the lowest difficulty in the set.
                     </image>"
                 },

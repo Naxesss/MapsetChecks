@@ -26,7 +26,7 @@ namespace MapsetChecks.checks.general.metadata
                     Preventing beatmapsets from adding unofficial markers in the song metadata, without having changed the song significantly 
                     like speeding it up, doing a DnB edit, or similar.
                     <image>
-                        assets/docs/cutVer.jpg
+                        https://i.imgur.com/QWNvp2i.png
                         A song which has been unofficially cut should not contain any marker for it, especially not ""cut ver."".
                     </image>"
                 },

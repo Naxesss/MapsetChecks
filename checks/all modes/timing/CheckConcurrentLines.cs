@@ -26,7 +26,7 @@ namespace MapsetChecks.checks.timing
                     @"
                     Preventing issues with concurrent lines of the same type, such as them switching order when loading the beatmap.
                     <image>
-                        assets/docs/concurrentLines.jpg
+                        https://i.imgur.com/whTV4aV.png
                         Two inherited lines which were originally the other way around, but swapped places when opening the beatmap again.
                     </image>"
                 },

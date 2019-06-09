@@ -26,7 +26,7 @@ namespace MapsetChecks.checks.general.metadata
                     Ensuring that all characters in the romanized metadata fields can be displayed and communicated properly across 
                     multiple operating systems, devices and internet protocols.
                     <image>
-                        assets/docs/unicodeTitle.jpg
+                        https://i.imgur.com/3UAwC97.png
                         A beatmap with its unicode title manually edited into its romanized title field.
                     </image>"
                 },

@@ -29,7 +29,7 @@ namespace MapsetChecks.checks.compose
                     @"
                     Preventing mappers from writing inappropriate or otherwise harmful messages using slider nodes.
                     <image-right>
-                        assets/docs/ohno.jpg
+                        https://i.imgur.com/rlCoEtZ.png
                         An example of text being written with slider nodes in a way which can easily be hidden offscreen.
                     </image>"
                 },

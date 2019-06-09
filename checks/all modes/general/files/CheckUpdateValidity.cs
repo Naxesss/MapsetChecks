@@ -25,7 +25,7 @@ namespace MapsetChecks.checks.general.files
                     @"
                     Ensuring that beatmaps can properly be downloaded and updated to their newest version.
                     <image>
-                        assets/docs/osuFormatting.jpg
+                        https://i.imgur.com/7Nc9Ejr.png
                         An example of a song folder where one of the difficulties' file names are incorrect, causing it to be unable to update.
                     </image>"
                 },
@@ -39,7 +39,7 @@ namespace MapsetChecks.checks.general.files
                     For some Windows 10 users, file names longer than 132 characters cannot properly be unzipped by the game and 
                     simply vanish instead.
                     <image>
-                        assets/docs/longFilename.jpg
+                        https://i.imgur.com/PO8eKvZ.png
                         A file name longer than 132 characters, caused by a combination of a long title and a long difficulty name.
                     </image>"
                 }

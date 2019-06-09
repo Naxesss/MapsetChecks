@@ -27,7 +27,7 @@ namespace MapsetChecks.checks.general.audio
                     Preventing the audio channels of hit sounds from being noticeably imbalanced, for example the left 
                     channel being twice as loud as the right.
                     <image>
-                        assets/docs/hsChannels.jpg
+                        https://i.imgur.com/6if5mJO.png
                         A hit sound which is much louder in the left channel compared to the right, as shown in Audacity.
                     </image>"
                 },

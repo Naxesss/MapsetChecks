@@ -42,7 +42,7 @@ namespace MapsetChecks.checks.compose
                     fundamental understanding. Because of this, these patterns more often than not cause confusion, even where 
                     otherwise introduced well.
                     <image-right>
-                        assets/docs/concurrentObjects.jpg
+                        https://i.imgur.com/2bTX4aQ.png
                         A slider with two concurrent circles. Can be hit without breaking combo.
                     </image>"
                 }
