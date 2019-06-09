@@ -77,14 +77,14 @@ namespace MapsetChecks.checks.timing
                 // minors
                 { "Minor Snap Count",
                     new IssueTemplate(Issue.Level.Minor,
-                        "{0} 1/{1} is used 6 or less times and sounds slightly off, ensure this makes sense.",
+                        "{0} 1/{1} is used 6 or less times, ensure this makes sense.",
                         "timestamp(s) -", "X")
                     .WithCause(
                         "Same as the other check, except with 6 as threshold instead.") },
 
                 { "Minor Snap Percent",
                     new IssueTemplate(Issue.Level.Minor,
-                        "{0} 1/{1} makes out 5% or less of snappings and sounds slightly off, ensure this makes sense.",
+                        "{0} 1/{1} makes out 5% or less of snappings, ensure this makes sense.",
                         "timestamp(s) -", "X")
                     .WithCause(
                         "Same as the other check, except with 5% as threshold instead.") }
