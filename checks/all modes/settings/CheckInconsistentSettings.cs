@@ -39,27 +39,6 @@ namespace MapsetChecks.checks.settings
                     but it can be acceptable if it differs thematically in a way that makes it seem intentional, without needing to 
                     specify that it is, for example one beatmap being old-style with a special skin and countdown while others are 
                     more modern and exclude this."
-                },
-                {
-                    "Specifics",
-                    @"
-                    The following settings are checked for and are assigned their respective issue level if inconsistent between 
-                    difficulties of the same mode (excluding beatmapset id): 
-                    <div style=""margin:8px 16px;"">
-                        <div class=""card-detail-icon cross-icon""></div>beatmapset id
-                        <br \><div class=""card-detail-icon exclamation-icon""></div>countdown speed (if there's enough time to show it, excluded for taiko/mania)
-                        <br \><div class=""card-detail-icon exclamation-icon""></div>countdown offset (if there's enough time to show it, excluded for taiko/mania)
-                        <br \><div class=""card-detail-icon exclamation-icon""></div>countdown (if there's enough time to show it, excluded for taiko/mania)
-                        <br \><div class=""card-detail-icon exclamation-icon""></div>letterbox (if there are breaks)
-                        <br \><div class=""card-detail-icon exclamation-icon""></div>widescreen support (if there's an sb)
-                        <br \><div class=""card-detail-icon exclamation-icon""></div>storyboard presence
-                        <br \><div class=""card-detail-icon exclamation-icon""></div>epilepsy warning (if there's an sb or video)
-                        <br \><div class=""card-detail-icon exclamation-icon""></div>audio lead-in
-                        <br \><div class=""card-detail-icon exclamation-icon""></div>skin preference
-                        <br \><div class=""card-detail-icon exclamation-icon""></div>storyboard in front of combo fire (if there's a storyboard)
-                        <br \><div class=""card-detail-icon exclamation-icon""></div>usage of skin sprites in storyboard (if there's a storyboard)
-                        <br \><div class=""card-detail-icon minor-icon""></div>slider tick rate
-                    </div>"
                 }
             }
         };
@@ -73,21 +52,37 @@ namespace MapsetChecks.checks.settings
                         "Inconsistent {0}, see {1}.",
                         "setting", "difficulty")
                     .WithCause(
-                        "One of the settings checked for in a beatmap was different from the reference beatmap.") },
+                        "The beatmapset id is inconsistent between any two difficulties in the set, regardless of mode.") },
 
                 { "Warning",
                     new IssueTemplate(Issue.Level.Warning,
                         "Inconsistent {0}, see {1}.",
                         "setting", "difficulty")
                     .WithCause(
-                        "Same as the other checks, but not necessarily required to be the same.") },
+                        @"Compares settings and presence of elements within the same mode. Includes the following:
+                        <ul>
+                            <li>countdown speed (if there's enough time to show it, excluded for taiko/mania)</li>
+                            <li>countdown offset (if there's enough time to show it, excluded for taiko/mania)</li>
+                            <li>countdown presence (if there's enough time to show it, excluded for taiko/mania)</li>
+                            <li>letterbox (if there are breaks)</li>
+                            <li>widescreen support (if there's a storyboard)</li>
+                            <li>storyboard presence</li>
+                            <li>epilepsy warning (if there's a storyboard or video)</li>
+                            <li>audio lead-in</li>
+                            <li>skin preference</li>
+                            <li>storyboard in front of combo fire (if there's a storyboard)</li>
+                            <li>usage of skin sprites in storyboard (if there's a storyboard)</li>
+                        </ul>
+                        <note>
+                            Inconsistent video is already covered by another check.
+                        </note>") },
 
                 { "Minor",
                     new IssueTemplate(Issue.Level.Minor,
                         "Inconsistent {0}, see {1}.",
                         "setting", "difficulty")
                     .WithCause(
-                        "Same as the other checks, but commonly different.") }
+                        "Same as the warning, but only checks for slider ticks.") }
             };
         }
         
