@@ -88,7 +88,7 @@ namespace MapsetChecks.checks.general.audio
                 {
                     if (minBitrate < 128 || maxBitrate > 192)
                         yield return new Issue(GetTemplate("CBR"), null,
-                            aBeatmapSet.GetAudioFileName(), bitrate.ToString(CultureInfo.InvariantCulture),
+                            aBeatmapSet.GetAudioFileName(), $"{bitrate:0.##}",
                             (bitrate < 128 ? "low" : "high"));
                 }
                 else
@@ -98,17 +98,15 @@ namespace MapsetChecks.checks.general.audio
                         if (Math.Round(bitrate) < 128 || Math.Round(bitrate) > 192)
                         {
                             yield return new Issue(GetTemplate("VBR"), null,
-                                aBeatmapSet.GetAudioFileName(), bitrate.ToString(CultureInfo.InvariantCulture),
-                                minBitrate.ToString(CultureInfo.InvariantCulture),
-                                maxBitrate.ToString(CultureInfo.InvariantCulture),
+                                aBeatmapSet.GetAudioFileName(),
+                                $"{bitrate:0.##}", $"{minBitrate:0.##}", $"{maxBitrate:0.##}",
                                 (bitrate < 128 ? "low" : "high"));
                         }
                         else
                         {
                             yield return new Issue(GetTemplate("Exact VBR"), null,
-                                aBeatmapSet.GetAudioFileName(), bitrate.ToString(CultureInfo.InvariantCulture),
-                                minBitrate.ToString(CultureInfo.InvariantCulture),
-                                maxBitrate.ToString(CultureInfo.InvariantCulture),
+                                aBeatmapSet.GetAudioFileName(),
+                                $"{bitrate:0.##}", $"{minBitrate:0.##}", $"{maxBitrate:0.##}",
                                 (bitrate < 128 ? "low" : "high"));
                         }
                     }

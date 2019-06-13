@@ -77,18 +77,15 @@ namespace MapsetChecks.checks.timing
         private IEnumerable<Issue> GetUnsnapIssue(string aType, double aTime, Beatmap aBeatmap)
         {
             double? unsnapIssue = aBeatmap.GetUnsnapIssue(aTime);
-
             double unsnap = aBeatmap.GetPracticalUnsnap(aTime);
-            double roundedUnsnap = Math.Round(unsnap * 1000) / 1000;
-            string unsnapString = roundedUnsnap.ToString(CultureInfo.InvariantCulture);
 
             if (unsnapIssue != null)
                 yield return new Issue(GetTemplate("Unrankable"), aBeatmap,
-                    Timestamp.Get(aTime), aType, unsnapString);
+                    Timestamp.Get(aTime), aType, $"{unsnap:0.###}");
 
             else if (Math.Abs(unsnap) >= 1)
                 yield return new Issue(GetTemplate("Minor"), aBeatmap,
-                    Timestamp.Get(aTime), aType, unsnapString);
+                    Timestamp.Get(aTime), aType, $"{unsnap:0.###}");
         }
     }
 }

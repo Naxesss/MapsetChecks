@@ -84,7 +84,7 @@ namespace MapsetChecks.checks.compose
                     double unusedPercentage = 1 - lastEndTime / audioDuration;
                     if (unusedPercentage >= 0.2)
                     {
-                        string roundedPercentage = (Math.Round(unusedPercentage * 1000) / 10.0f).ToString(CultureInfo.InvariantCulture);
+                        string roundedPercentage = $"{unusedPercentage * 100:0.##}";
                         string templateKey = (hasStoryboard || hasVideo ? "With" : "Without") + " Video/Storyboard";
 
                         yield return new Issue(GetTemplate(templateKey), beatmap,

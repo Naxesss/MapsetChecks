@@ -12,6 +12,7 @@ using MapsetChecks.checks.standard.settings;
 using MapsetChecks.checks.standard.spread;
 using MapsetChecks.checks.timing;
 using MapsetVerifier;
+using System.Globalization;
 
 namespace MapsetChecks
 {
@@ -21,6 +22,10 @@ namespace MapsetChecks
         /// which is executed from the MapsetVerifier application when its .dll file is provided in "/checks". </summary>
         public static void Run()
         {
+            // Ensures that numbers are displayed consistently across cultures, for example
+            // that decimals are indicated by a period and not a comma.
+            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+
             // CheckerRegistry is what MapsetVerifier uses to determine which checks to run, so by adding an
             // instance of a check to it, it will be executed and loaded exactly like any other check.
 

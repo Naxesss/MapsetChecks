@@ -93,12 +93,11 @@ namespace MapsetChecks.checks.general.files
 
                     // Updating .osu files larger than 1 mb will cause the update to stop at the 1 mb mark
                     FileInfo fileInfo = new FileInfo(aBeatmapSet.songFilePaths[i]);
-                    double approxMB = Math.Round(fileInfo.Length / 10000d) / 100;
-                    string approxMBString = (approxMB).ToString(CultureInfo.InvariantCulture);
+                    double MB = fileInfo.Length / Math.Pow(1024, 2);
 
-                    if (approxMB > 1)
+                    if (MB > 1)
                         yield return new Issue(GetTemplate("File Size"), null,
-                            filePath, approxMBString);
+                            filePath, $"{MB:0.##}");
                 }
             }
         }

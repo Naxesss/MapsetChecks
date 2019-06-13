@@ -112,15 +112,15 @@ namespace MapsetChecks.checks.settings
             {
                 if (aType == "Circle Size")
                     return new Issue(GetTemplate("CS"), aBeatmap,
-                        (Math.Round(aDifficulty * 1000) / 1000).ToString(CultureInfo.InvariantCulture), aMin, aMax);
+                        $"{aDifficulty:0.####}", aMin, aMax);
                 else
                     return new Issue(GetTemplate("Other"), aBeatmap,
-                        (Math.Round(aDifficulty * 1000) / 1000).ToString(CultureInfo.InvariantCulture), aType);
+                        $"{aDifficulty:0.####}", aType);
             }
             else if (aDifficulty - (float)Math.Floor(aDifficulty * 10) / 10 > 0)
             {
                 return new Issue(GetTemplate("Decimals"), aBeatmap,
-                    (Math.Round(aDifficulty * 1000) / 1000).ToString(CultureInfo.InvariantCulture), aType);
+                    $"{aDifficulty:0.####}", aType);
             }
 
             return null;

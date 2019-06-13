@@ -219,7 +219,7 @@ namespace MapsetChecks.checks.hit_sounds
             {
                 return new Issue(GetTemplate("Unrankable"), aBeatmap,
                     Timestamp.Get(aCurrentTime - timeDifference), Timestamp.Get(aCurrentTime),
-                    (Math.Round(timeDifference / 10) / 100).ToString(CultureInfo.InvariantCulture));
+                    $"{timeDifference / 1000:0.##}");
             }
 
             else if (
@@ -229,7 +229,7 @@ namespace MapsetChecks.checks.hit_sounds
             {
                 return new Issue(GetTemplate("Warning"), aBeatmap,
                     Timestamp.Get(aCurrentTime - timeDifference), Timestamp.Get(aCurrentTime),
-                    (Math.Round(timeDifference / 10) / 100).ToString(CultureInfo.InvariantCulture));
+                    $"{timeDifference / 1000:0.##}");
             }
             
             return null;

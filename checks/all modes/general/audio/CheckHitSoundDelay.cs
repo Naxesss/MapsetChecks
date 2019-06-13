@@ -102,15 +102,14 @@ namespace MapsetChecks.checks.general.audio
                         }
 
                         double delay = i / (double)50;
-                        string delayString = (Math.Round(delay * 100) / 100).ToString(CultureInfo.InvariantCulture);
 
                         if (Math.Round(delay) >= 5)
                             yield return new Issue(GetTemplate("Delay"), null,
-                                hsFile, delayString);
+                                hsFile, $"{delay:0.##}");
 
                         else if (delay >= 0.5)
                             yield return new Issue(GetTemplate("Minor Delay"), null,
-                                hsFile, delayString);
+                                hsFile, $"{delay:0.##}");
                     }
                     else
                     {

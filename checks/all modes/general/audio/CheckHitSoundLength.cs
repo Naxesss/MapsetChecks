@@ -76,7 +76,7 @@ namespace MapsetChecks.checks.general.audio
                         double length = left.Length / (double)44100 * 1000;
                         if (length < 100)
                             yield return new Issue(GetTemplate("Length"), null,
-                                hsFile, length);
+                                hsFile, $"{length:0.##}");
                     }
                     else
                     {

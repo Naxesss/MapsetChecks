@@ -96,7 +96,7 @@ namespace MapsetChecks.checks.timing
                     deltaEffectiveBPM > 1)
                 {
                     yield return new Issue(GetTemplate("Behind"), aBeatmap,
-                        Timestamp.Get(aTime), aType, timeDiff.ToString(CultureInfo.InvariantCulture));
+                        Timestamp.Get(aTime), aType, $"{timeDiff:0.##}");
                 }
             }
         }

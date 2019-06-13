@@ -188,8 +188,8 @@ namespace MapsetChecks.checks.standard.spread
                         distance / deltaTime - ratioLeniencyAbsolute > avrRatio * (1 + ratioLeniencyPercent) ||
                         distance / deltaTime + ratioLeniencyAbsolute < avrRatio * (1 - ratioLeniencyPercent)))
                     {
-                        string ratio = ((int)Math.Round(distance / deltaTime * 100) / 100f).ToString(CultureInfo.InvariantCulture);
-                        string ratioExpected = ((int)Math.Round(avrRatio * 100) / 100f).ToString(CultureInfo.InvariantCulture);
+                        string ratio         = $"{distance / deltaTime:0.##}";
+                        string ratioExpected = $"{avrRatio:0.##}";
 
                         yield return new Issue(GetTemplate("Ratio"), aBeatmap,
                             Timestamp.Get(hitObject, nextObject),

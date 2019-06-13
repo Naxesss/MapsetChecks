@@ -96,16 +96,16 @@ namespace MapsetChecks.checks.standard.spread
                     float radius = aBeatmap.difficultySettings.GetCircleRadius();
                     if (distance >= radius * 2)
                     {
-                        if(nextHitObject.time - hitObject.time < unrankableThreshold)
+                        if (nextHitObject.time - hitObject.time < unrankableThreshold)
                             yield return new Issue(GetTemplate("Unrankable"), aBeatmap,
                                 Timestamp.Get(hitObject, nextHitObject),
-                                (Math.Round((nextHitObject.time - hitObject.time) * 100) / 100).ToString(CultureInfo.InvariantCulture),
+                                $"{nextHitObject.time - hitObject.time:0.##}",
                                 unrankableThreshold);
 
                         else
                             yield return new Issue(GetTemplate("Warning"), aBeatmap,
                                 Timestamp.Get(hitObject, nextHitObject),
-                                (Math.Round((nextHitObject.time - hitObject.time) * 100) / 100).ToString(CultureInfo.InvariantCulture));
+                                $"{nextHitObject.time - hitObject.time:0.##}");
                     }
                 }
             }

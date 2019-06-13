@@ -69,7 +69,7 @@ namespace MapsetChecks.checks.standard.spread
                 if (slider.endTime - slider.time < timeThreshold)
                     yield return new Issue(GetTemplate("Too Short"), aBeatmap,
                         Timestamp.Get(slider),
-                        (Math.Round((slider.endTime - slider.time) * 100) / 100).ToString(CultureInfo.InvariantCulture),
+                        $"{slider.endTime - slider.time:0.##}",
                         timeThreshold);
         }
     }
