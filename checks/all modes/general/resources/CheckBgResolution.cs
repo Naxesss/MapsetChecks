@@ -27,15 +27,15 @@ namespace MapsetChecks.checks.general.resources
                     @"
                     Preventing background quality from being noticably low or unnoticably high to save on file size.
                     <image-right>
-                        https://i.imgur.com/dm6QGvz.png
-                        The right side is 1.44x the resolution of the left. This is equivalent to comparing 
-                        1200 x 750 to 1920 x 1080.
+                        https://i.imgur.com/VrKRzse.png
+                        The left side is ~2.25x the resolution of the right side, which is the equivalent of comparing 
+                        2560 x 1440 to 1024 x 640.
                     </image>"
                 },
                 {
                     "Reasoning",
                     @"
-                    Anything less than 1200 x 750 is usually quite noticeable, whereas anything higher than 2560 x 1440 
+                    Anything less than 1024 x 640 is usually quite noticeable, whereas anything higher than 2560 x 1440 
                     is unlikely to be visible with the setup of the average player.
                     <note>
                         This uses 16:10 as base, since anything outside of 16:9 will be cut off on that aspect ratio 
