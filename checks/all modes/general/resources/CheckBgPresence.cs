@@ -44,20 +44,20 @@ namespace MapsetChecks.checks.general.resources
             return new Dictionary<string, IssueTemplate>()
             {
                 { "All",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "All difficulties are missing backgrounds.")
                     .WithCause(
                         "None of the difficulties have a background present.") },
 
                 { "One",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} has no background.",
                         "difficulty")
                     .WithCause(
                         "One or more difficulties are missing backgrounds, but not all.") },
 
                 { "Missing",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} is missing its background file, \"{1}\".",
                         "difficulty", "path")
                     .WithCause(

@@ -46,14 +46,14 @@ namespace MapsetChecks.checks.general.resources
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Resolution",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "\"{0}\"",
                         "file name")
                     .WithCause(
                         "A video has a width exceeding 1280 pixels or a height exceeding 720 pixels.") },
                 
                 { "Leaves Folder",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "\"{0}\" leaves the current song folder, which shouldn't ever happen.",
                         "file name")
                     .WithCause(

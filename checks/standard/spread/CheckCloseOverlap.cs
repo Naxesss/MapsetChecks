@@ -56,8 +56,8 @@ namespace MapsetChecks.checks.standard.spread
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "Unrankable",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                { "Problem",
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} {1} ms apart, should either be overlapped or at least {2} ms apart.",
                         "timestamp - ", "gap", "threshold")
                     .WithCause(

@@ -47,7 +47,7 @@ namespace MapsetChecks.checks.standard.spread
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Unrankable Length",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} Spinner length is too short ({1} ms, expected {2}).",
                         "timestamp - ", "duration", "duration")
                     .WithCause(
@@ -61,7 +61,7 @@ namespace MapsetChecks.checks.standard.spread
                         "Same as the first check, except 20% more lenient, implying that 200 bpm is assumed instead.") },
 
                 { "Unrankable Recovery",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} Spinner recovery time is too short ({1} ms, expected {2}).",
                         "timestamp - ", "duration", "duration")
                     .WithCause(

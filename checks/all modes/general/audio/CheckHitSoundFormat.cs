@@ -45,14 +45,14 @@ namespace MapsetChecks.checks.general.audio
             return new Dictionary<string, IssueTemplate>()
             {
                 { "ogg",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "\"{0}\" The .ogg format is deprecated and is no longer allowed.",
                         "path")
                     .WithCause(
                         "A hit sound file is using the .ogg format.") },
 
                 { "mp3",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "\"{0}\" This .mp3 file is used for active hit sounding, see {1}.",
                         "path", "timestamp - ")
                     .WithCause(

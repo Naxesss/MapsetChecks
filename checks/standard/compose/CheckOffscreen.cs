@@ -61,7 +61,7 @@ namespace MapsetChecks.checks.standard.compose
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Offscreen",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} {1} is offscreen.",
                         "timestamp - ", "object")
                     .WithCause(

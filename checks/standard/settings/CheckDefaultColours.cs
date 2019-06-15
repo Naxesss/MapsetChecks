@@ -56,7 +56,7 @@ namespace MapsetChecks.checks.standard.settings
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Default",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "Default combo colours without preferred skin.")
                     .WithCause(
                         "A beatmap has no custom combo colours and does not have any preferred skin.") }

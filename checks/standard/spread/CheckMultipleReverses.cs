@@ -52,8 +52,8 @@ namespace MapsetChecks.checks.standard.spread
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "Unrankable",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                { "Problem",
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} This slider is way too short to have multiple reverses.",
                         "timestamp - ")
                     .WithCause(

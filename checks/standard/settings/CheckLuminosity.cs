@@ -61,7 +61,7 @@ namespace MapsetChecks.checks.standard.settings
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Unrankable Combo",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "Combo colour {0} is way too dark.",
                         "number")
                     .WithCause(
@@ -75,7 +75,7 @@ namespace MapsetChecks.checks.standard.settings
                         "Same as the first check, but lower than 43 instead.") },
 
                 { "Unrankable Border",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "Slider border is way too dark.")
                     .WithCause(
                         "Same as the first check, except applies on the slider border instead.") },

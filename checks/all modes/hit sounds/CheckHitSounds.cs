@@ -53,13 +53,13 @@ namespace MapsetChecks.checks.hit_sounds
             return new Dictionary<string, IssueTemplate>()
             {
                 { "No Hit Sounds",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "This beatmap contains no hit sounds or sampleset changes.")
                     .WithCause(
                         "There are no hit sounds or sampleset changes anywhere in a difficulty.") },
 
-                { "Unrankable",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                { "Problem",
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} No hit sounds or sampleset changes from here to {1}, ({2} s).",
                         "timestamp - ", "timestamp - ", "duration")
                     .WithCause(

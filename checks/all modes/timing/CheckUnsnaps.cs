@@ -49,8 +49,8 @@ namespace MapsetChecks.checks.timing
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "Unrankable",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                { "Problem",
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} {1} unsnapped by {2} ms.",
                         "timestamp - ", "object", "unsnap")
                     .WithCause(

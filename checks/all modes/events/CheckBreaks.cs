@@ -49,7 +49,7 @@ namespace MapsetChecks.checks.events
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Too early or late",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} to {1} {2}.",
                         "timestamp - ", "timestamp - ", "details")
                     .WithCause(

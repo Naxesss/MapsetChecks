@@ -45,7 +45,7 @@ namespace MapsetChecks.checks.general.metadata
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Tags",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "Inconsistent tags between {0} and {1}, difference being \"{2}\".",
                         "difficulty", "difficulty", "difference")
                     .WithCause(
@@ -54,7 +54,7 @@ namespace MapsetChecks.checks.general.metadata
                         "simply that the tags themselves are consistent.</note>") },
 
                 { "Other Field",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "Inconsistent {0} fields between {1} and {2}; \"{3}\" and \"{4}\" respectively.",
                         "field", "difficulty", "difficulty", "field", "field")
                     .WithCause(

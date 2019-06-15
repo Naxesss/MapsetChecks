@@ -46,8 +46,8 @@ namespace MapsetChecks.checks.compose
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "Unrankable",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                { "Problem",
+                    new IssueTemplate(Issue.Level.Problem,
                         "Less than 30 seconds of drain time, currently {0}.",
                         "drain time")
                     .WithCause(

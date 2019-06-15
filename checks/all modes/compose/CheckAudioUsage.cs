@@ -48,7 +48,7 @@ namespace MapsetChecks.checks.compose
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Without Video/Storyboard",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "Currently {0}% unused audio.",
                         "percent")
                     .WithCause(

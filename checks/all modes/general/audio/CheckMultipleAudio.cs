@@ -42,7 +42,7 @@ namespace MapsetChecks.checks.general.audio
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Multiple",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0}",
                         "audio file : difficulties")
                     .WithCause(

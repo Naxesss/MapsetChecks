@@ -46,7 +46,7 @@ namespace MapsetChecks.checks.general.metadata
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Wrong Format",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} {1} field, \"{2}\".",
                         "Romanized/unicode", "artist/title", "field")
                     .WithCause(

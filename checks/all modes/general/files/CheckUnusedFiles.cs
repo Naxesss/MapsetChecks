@@ -46,7 +46,7 @@ namespace MapsetChecks.checks.general.files
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Unused",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "\"{0}\"",
                         "path")
                     .WithCause(

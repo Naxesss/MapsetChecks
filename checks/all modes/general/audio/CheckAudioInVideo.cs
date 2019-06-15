@@ -41,21 +41,21 @@ namespace MapsetChecks.checks.general.audio
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Audio",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "\"{0}\"",
                         "file name")
                     .WithCause(
                         "An audio track is present in one of the video files.") },
                 
                 { "Leaves Folder",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "\"{0}\" leaves the current song folder, which shouldn't ever happen.",
                         "file name")
                     .WithCause(
                         "The file path of an audio file starts with two dots.") },
 
                 { "Missing",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "\"{0}\" is missing, so unable to check that.",
                         "file name")
                     .WithCause(

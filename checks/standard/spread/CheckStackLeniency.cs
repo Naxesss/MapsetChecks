@@ -53,8 +53,8 @@ namespace MapsetChecks.checks.standard.spread
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "Unrankable",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                { "Problem",
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} Stack leniency should be at least {1}.",
                         "timestamp - ", "stack leniency")
                     .WithCause(

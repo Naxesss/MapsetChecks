@@ -47,7 +47,7 @@ namespace MapsetChecks.checks.general.resources
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Multiple",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0}",
                         "video offset : difficulties")
                     .WithCause(

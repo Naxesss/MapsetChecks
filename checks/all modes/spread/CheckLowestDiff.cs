@@ -51,8 +51,8 @@ namespace MapsetChecks.checks.spread
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "Unrankable",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                { "Problem",
+                    new IssueTemplate(Issue.Level.Problem,
                         "With a lowest difficulty {0}, the drain/play time of {1} must be at least {2}, currently {3}.",
                         "lowest diff", "beatmap", "lowest drain", "current drain")
                     .WithCause(

@@ -66,8 +66,8 @@ namespace MapsetChecks.checks.standard.compose
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "Unrankable",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                { "Problem",
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} Tail and head are perfectly overlapping.",
                         "timestamp - ")
                     .WithCause(

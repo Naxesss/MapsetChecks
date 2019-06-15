@@ -46,7 +46,7 @@ namespace MapsetChecks.checks.settings
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Tick Rate",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} {1}.",
                         "setting", "value")
                     .WithCause(

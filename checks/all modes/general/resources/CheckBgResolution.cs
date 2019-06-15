@@ -50,7 +50,7 @@ namespace MapsetChecks.checks.general.resources
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Too high",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "\"{0}\" greater than 2560 x 1440 ({1} x {2})",
                         "file name", "width", "height")
                     .WithCause(
@@ -64,7 +64,7 @@ namespace MapsetChecks.checks.general.resources
                         "A background file has a width lower than 1024 pixels or a height lower than 640 pixels.") },
 
                 { "File size",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "\"{0}\" has a file size exceeding 2.5 MB ({1} MB)",
                         "file name", "file size")
                     .WithCause(
@@ -72,14 +72,14 @@ namespace MapsetChecks.checks.general.resources
 
                 // parsing results
                 { "Leaves Folder",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "\"{0}\" leaves the current song folder, which shouldn't ever happen.",
                         "file name")
                     .WithCause(
                         "The file path of a background file starts with two dots.") },
 
                 { "Missing",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "\"{0}\" is missing, so unable to check that.",
                         "file name")
                     .WithCause(

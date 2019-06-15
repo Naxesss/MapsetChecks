@@ -44,13 +44,13 @@ namespace MapsetChecks.checks.timing
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Not Set",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "Preview time is not set.")
                     .WithCause(
                         "The preview time of a beatmap is missing.") },
 
                 { "Inconsistent",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "Preview time is inconsistent, see {0}.",
                         "difficulty")
                     .WithCause(

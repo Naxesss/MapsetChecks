@@ -41,14 +41,14 @@ namespace MapsetChecks.checks.general.resources
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Resolution",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "\"{0}\"",
                         "file name")
                     .WithCause(
                         "A storyboard image has a width height product exceeding 17,000,000 pixels.") },
 
                 { "Resolution Animation Frame",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "\"{0}\" (Animation Frame)",
                         "file name")
                     .WithCause(
@@ -56,7 +56,7 @@ namespace MapsetChecks.checks.general.resources
 
                 // parsing results
                 { "Leaves Folder",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "\"{0}\" leaves the current song folder, which shouldn't ever happen.",
                         "file name")
                     .WithCause(

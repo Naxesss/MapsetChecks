@@ -47,8 +47,8 @@ namespace MapsetChecks.checks.standard.compose
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "Unrankable",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                { "Problem",
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} Spinner is too short, auto cannot achieve 1000 points on this.",
                         "timestamp - ")
                     .WithCause(

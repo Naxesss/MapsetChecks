@@ -55,7 +55,7 @@ namespace MapsetChecks.checks.settings
             return new Dictionary<string, IssueTemplate>()
             {
                 { "CS",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "Circle Size {0} is less than {1} or greater than {2}.",
                         "setting", "min", "max")
                     .WithCause(
@@ -63,7 +63,7 @@ namespace MapsetChecks.checks.settings
                         "Ignored in taiko.") },
 
                 { "Decimals",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} {1} has more than 1 decimal place.",
                         "value", "setting")
                     .WithCause(

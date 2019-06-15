@@ -46,8 +46,8 @@ namespace MapsetChecks.checks.general.metadata
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "Unrankable",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                { "Problem",
+                    new IssueTemplate(Issue.Level.Problem,
                         "Missing {0} in {1}; \"{2}\".",
                         "something", "field", "field")
                     .WithCause(

@@ -48,7 +48,7 @@ namespace MapsetChecks.checks.general.metadata
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Unicode",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} field contains unicode characters,\"{1}\", those being \"{2}\".",
                         "Artist/title/creator/difficulty name", "field", "unicode char(s)")
                     .WithCause(

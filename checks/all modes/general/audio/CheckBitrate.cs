@@ -49,14 +49,14 @@ namespace MapsetChecks.checks.general.audio
             return new Dictionary<string, IssueTemplate>()
             {
                 { "CBR",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "Audio bitrate for CBR encoded \"{0}\", {1} kbps, is too {2}.",
                         "path", "bitrate", "high/low")
                     .WithCause(
                         "The bitrate of the audio file is constant and is either higher than 192 kbps or lower than 128 kbps.") },
 
                 { "VBR",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "Average audio bitrate for VBR encoded \"{0}\", {1} kbps (ranging from {2} to {3} kbps), is too {4}.",
                         "path", "average bitrate", "minimum bitrate", "maximum bitrate", "high/low")
                     .WithCause(

@@ -42,7 +42,7 @@ namespace MapsetChecks.checks.timing
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Unrankable Nothing",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} Changes nothing.",
                         "timestamp - ")
                     .WithCause(
@@ -50,7 +50,7 @@ namespace MapsetChecks.checks.timing
                         "and changes no settings.") },
 
                 { "Unrankable Inherited",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} Changes nothing that can't be changed with an inherited line.",
                         "timestamp - ")
                     .WithCause(

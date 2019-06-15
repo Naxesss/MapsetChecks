@@ -54,7 +54,7 @@ namespace MapsetChecks.checks.compose
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Concurrent Objects",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} Concurrent {1}.",
                         "timestamp - ", "hit objects")
                     .WithCause(

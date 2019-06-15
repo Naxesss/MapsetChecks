@@ -45,7 +45,7 @@ namespace MapsetChecks.checks.general.files
             return new Dictionary<string, IssueTemplate>()
             {
                 { "0-byte",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "\"{0}\"",
                         "path")
                     .WithCause(

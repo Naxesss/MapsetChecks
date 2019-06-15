@@ -52,21 +52,21 @@ namespace MapsetChecks.checks.timing
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Inherited",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} First timing line is inherited.",
                         "timestamp - ")
                     .WithCause(
                         "The first timing line of a beatmap is inherited.") },
 
                 { "Toggles Kiai",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} First timing line toggles kiai.",
                         "timestamp - ")
                     .WithCause(
                         "The first timing line of a beatmap has kiai enabled.") },
 
                 { "No Lines",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "There are no timing lines.")
                     .WithCause(
                         "A beatmap has no timing lines.") }

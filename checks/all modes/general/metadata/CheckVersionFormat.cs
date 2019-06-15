@@ -45,21 +45,21 @@ namespace MapsetChecks.checks.general.metadata
             return new Dictionary<string, IssueTemplate>()
             {
                 { "TV Size",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} title field; \"{1}\" incorrect format of (TV Size).",
                         "Romanized/unicode", "field")
                     .WithCause(
                         "The format of \"(TV Size)\" in either the romanized or unicode title is incorrect.") },
 
                 { "Game Ver",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} title field; \"{1}\" incorrect format of (Game Ver.).",
                         "Romanized/unicode", "field")
                     .WithCause(
                         "The format of \"(Game Ver.)\" in either the romanized or unicode title is incorrect.") },
 
                 { "Short Ver",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} title field; \"{1}\" incorrect format of (Short Ver.).",
                         "Romanized/unicode", "field")
                     .WithCause(

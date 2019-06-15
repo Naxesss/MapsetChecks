@@ -48,14 +48,14 @@ namespace MapsetChecks.checks.compose
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Zero Nodes",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} has no slider nodes.",
                         "timestamp - ")
                     .WithCause(
                         "A slider has no nodes.") },
 
                 { "Negative Length",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} has negative pixel length.",
                         "timestamp - ")
                     .WithCause(

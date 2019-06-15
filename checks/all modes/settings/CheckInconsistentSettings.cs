@@ -47,8 +47,8 @@ namespace MapsetChecks.checks.settings
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "Unrankable",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                { "Problem",
+                    new IssueTemplate(Issue.Level.Problem,
                         "Inconsistent {0}, see {1}.",
                         "setting", "difficulty")
                     .WithCause(

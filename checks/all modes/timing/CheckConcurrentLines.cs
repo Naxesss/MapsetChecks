@@ -49,7 +49,7 @@ namespace MapsetChecks.checks.timing
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Concurrent",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} Concurrent {1} lines.",
                         "timestamp - ", "inherited/uninherited")
                     .WithCause(

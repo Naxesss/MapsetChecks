@@ -51,7 +51,7 @@ namespace MapsetChecks.checks.general.files
             return new Dictionary<string, IssueTemplate>()
             {
                 { "File Size",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "\"{0}\" will cut any update at the 1 MB mark ({1} MB), causing objects to disappear.",
                         "path", "file size")
                     .WithCause(

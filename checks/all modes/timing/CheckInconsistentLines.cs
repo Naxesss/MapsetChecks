@@ -45,21 +45,21 @@ namespace MapsetChecks.checks.timing
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Missing",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} Missing uninherited line, see {1}.",
                         "timestamp - ", "difficulty")
                     .WithCause(
                         "A beatmap does not have an uninherited line which the reference beatmap does, or visa versa.") },
 
                 { "Inconsistent Meter",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                         "{0} Inconsistent meter signature, see {1}.",
                         "timestamp - ", "difficulty")
                     .WithCause(
                         "The meter signature of an uninherited timing line is different from the reference beatmap.") },
 
                 { "Inconsistent BPM",
-                    new IssueTemplate(Issue.Level.Unrankable,
+                    new IssueTemplate(Issue.Level.Problem,
                          "{0} Inconsistent BPM, see {1}.",
                         "timestamp - ", "difficulty")
                     .WithCause(
