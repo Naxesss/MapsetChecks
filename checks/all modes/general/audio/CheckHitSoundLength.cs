@@ -29,7 +29,8 @@ namespace MapsetChecks.checks.general.audio
                 {
                     "Reasoning",
                     @"
-                    Some soundcards have issues playing audio files which are less than 100 ms in length.
+                    Some soundcards have issues playing audio files which are less than 100 ms in length. Muted hit sounds are 
+                    fine having 0 ms duration though, since they don't play audio anyway.
                     <image>
                         https://i.imgur.com/0CpU3Gh.png
                         A hit sound which is less than 100 ms long, as shown in Audacity.
@@ -47,7 +48,7 @@ namespace MapsetChecks.checks.general.audio
                         "\"{0}\" is less than 100 ms long ({1} ms).",
                         "path", "length")
                     .WithCause(
-                        "A hit sound file is less than 100 ms long.") },
+                        "A hit sound file is less than 100 ms long, but greater than 0 ms to allow for muted hit sound files.") },
 
                 { "Unable to check",
                     new IssueTemplate(Issue.Level.Error,
