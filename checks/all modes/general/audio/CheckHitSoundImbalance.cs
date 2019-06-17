@@ -63,28 +63,40 @@ namespace MapsetChecks.checks.general.audio
         {
             foreach (string hsFile in aBeatmapSet.hitSoundFiles)
             {
-                AudioFile audioFile = new AudioFile(aBeatmapSet.songPath + Path.DirectorySeparatorChar + hsFile);
-                
-                string errorMessage =
-                    audioFile.ReadWav(
-                        out float[] left,
-                        out float[] right);
+                string hsPath = Path.Combine(aBeatmapSet.songPath, hsFile);
 
-                if (errorMessage == null)
+                int channels = 0;
+                List<float[]> peaks = null;
+                Exception exception = null;
+                try
                 {
-                    if (right != null)
-                    {
-                        double totalLeft = left.Select(aValue => Math.Abs(aValue)).Sum();
-                        double totalRight = right.Select(aValue => Math.Abs(aValue)).Sum();
+                    channels = Audio.GetChannels(hsPath);
+                    peaks    = Audio.GetPeaks(hsPath);
+                }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
 
-                        if (totalLeft / 2 > totalRight || totalRight / 2 > totalLeft)
+                if (exception == null)
+                {
+                    // Mono can't be imbalanced since it's the same audio on both sides.
+                    if (channels >= 2)
+                    {
+                        float leftSum = 0;
+                        float rightSum = 0;
+
+                        leftSum = peaks.Sum(aPeak => aPeak?[0] ?? 0);
+                        rightSum = peaks.Sum(aPeak => aPeak.Count() > 1 ? aPeak?[1] ?? 0 : 0);
+                        
+                        if (leftSum / 2 > rightSum || rightSum / 2 > leftSum)
                             yield return new Issue(GetTemplate("Imbalance"), null,
-                                hsFile, (totalLeft - totalRight > 0 ? "left" : "right"));
+                                hsFile, (leftSum - rightSum > 0 ? "left" : "right"));
                     }
                 }
                 else
                     yield return new Issue(GetTemplate("Unable to check"), null,
-                        hsFile, errorMessage);
+                        hsFile, String.Join(" ", exception));
             }
         }
     }

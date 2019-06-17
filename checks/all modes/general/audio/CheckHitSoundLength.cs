@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using ManagedBass;
 
 namespace MapsetChecks.checks.general.audio
 {
@@ -63,30 +64,29 @@ namespace MapsetChecks.checks.general.audio
         {
             foreach (string hsFile in aBeatmapSet.hitSoundFiles)
             {
-                AudioFile audioFile = new AudioFile(aBeatmapSet.songPath + Path.DirectorySeparatorChar + hsFile);
+                string hsPath = Path.Combine(aBeatmapSet.songPath, hsFile);
 
-                string errorMessage =
-                    audioFile.ReadWav(
-                        out float[] left,
-                        out float[] right);
-
-                if (errorMessage == null)
+                double duration = 0;
+                Exception exception = null;
+                try
                 {
-                    if (left.Length > 0)
-                    {
-                        double length = left.Length / (double)44100 * 1000;
-                        if (length < 100)
-                            yield return new Issue(GetTemplate("Length"), null,
-                                hsFile, $"{length:0.##}");
-                    }
-                    else
-                    {
-                        // file is muted, so there's no length
-                    }
+                    duration = Audio.GetDuration(hsPath);
+                }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+
+                if (exception == null)
+                {
+                    // Greater than 0 since 44-byte muted hit sounds are fine.
+                    if (duration <= 100 && duration > 0)
+                        yield return new Issue(GetTemplate("Length"), null,
+                            hsFile, $"{duration:0.##}");
                 }
                 else
                     yield return new Issue(GetTemplate("Unable to check"), null,
-                        hsFile, errorMessage);
+                        hsFile, String.Join(" ", exception));
             }
         }
     }

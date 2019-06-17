@@ -72,29 +72,31 @@ namespace MapsetChecks.checks.general.audio
         {
             foreach (string hsFile in aBeatmapSet.hitSoundFiles)
             {
-                AudioFile audioFile = new AudioFile(aBeatmapSet.songPath + Path.DirectorySeparatorChar + hsFile);
-                
-                string errorMessage =
-                    audioFile.ReadWav(
-                        out float[] left,
-                        out float[] right);
+                string hsPath = Path.Combine(aBeatmapSet.songPath, hsFile);
 
-                if (errorMessage == null)
+                List<float[]> peaks = null;
+                Exception exception = null;
+                try
                 {
-                    if (left.Length > 0 && (left.Max() > 0 || left.Min() < 0))
-                    {
-                        double maxStrength = left.Select(aValue => Math.Abs(aValue)).Max();
-                        if (right != null)
-                            maxStrength = (maxStrength + right.Select(aValue => Math.Abs(aValue)).Max()) / 2;
+                    peaks = Audio.GetPeaks(hsPath);
+                }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
 
-                        int i = 0;
+                if (exception == null)
+                {
+                    // Ignore muted files since they don't have anything to be delayed.
+                    if (peaks?.Count > 0 && peaks.Sum(aPeak => aPeak.Sum()) > 0)
+                    {
+                        double maxStrength = peaks.Select(aValue => Math.Abs(aValue.Sum())).Max();
+
+                        int delay = 0;
                         double strength = 0;
-                        for (; i < left.Length; ++i)
+                        for (; delay < peaks.Count; ++delay)
                         {
-                            if (right != null)
-                                strength += (Math.Abs(left[i]) + Math.Abs(right[i])) / 2;
-                            else
-                                strength += Math.Abs(left[i]);
+                            strength += Math.Abs(peaks[delay].Sum());
 
                             if (strength >= maxStrength / 2)
                                 break;
@@ -102,24 +104,18 @@ namespace MapsetChecks.checks.general.audio
                             strength *= 0.75;
                         }
 
-                        double delay = i / (double)50;
-
-                        if (Math.Round(delay) >= 5)
+                        if (delay >= 5)
                             yield return new Issue(GetTemplate("Delay"), null,
                                 hsFile, $"{delay:0.##}");
 
-                        else if (delay >= 0.5)
+                        else if (delay >= 1)
                             yield return new Issue(GetTemplate("Minor Delay"), null,
                                 hsFile, $"{delay:0.##}");
-                    }
-                    else
-                    {
-                        // file is muted, so there's no delay
                     }
                 }
                 else
                     yield return new Issue(GetTemplate("Unable to check"), null,
-                        hsFile, errorMessage);
+                        hsFile, exception);
             }
         }
     }

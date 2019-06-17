@@ -60,7 +60,14 @@ namespace MapsetChecks.checks.compose
                         "Currently {0}% unused audio. Ensure this is being occupied by the video or storyboard.",
                         "percent")
                     .WithCause(
-                        "Same as the other check, except with a storyboard or video present.") }
+                        "Same as the other check, except with a storyboard or video present.") },
+
+                { "Unable to check",
+                    new IssueTemplate(Issue.Level.Error,
+                        "\"{0}\" {1}, so unable to check that.",
+                        "path", "error")
+                    .WithCause(
+                        "There was an error parsing the audio file.") }
             };
         }
 
@@ -76,20 +83,34 @@ namespace MapsetChecks.checks.compose
                 string audioPath = beatmap.GetAudioFilePath();
                 if (audioPath != null)
                 {
-                    AudioFile audioFile = new AudioFile(audioPath);
-
-                    double audioDuration = audioFile.GetDuration();
-                    double lastEndTime = beatmap.hitObjects.LastOrDefault()?.GetEndTime() ?? 0;
-
-                    double unusedPercentage = 1 - lastEndTime / audioDuration;
-                    if (unusedPercentage >= 0.2)
+                    double duration = 0;
+                    Exception exception = null;
+                    try
                     {
-                        string roundedPercentage = $"{unusedPercentage * 100:0.##}";
-                        string templateKey = (hasStoryboard || hasVideo ? "With" : "Without") + " Video/Storyboard";
-
-                        yield return new Issue(GetTemplate(templateKey), beatmap,
-                            roundedPercentage);
+                        duration = Audio.GetDuration(audioPath);
                     }
+                    catch (Exception ex)
+                    {
+                        exception = ex;
+                    }
+
+                    if (exception == null)
+                    {
+                        double lastEndTime = beatmap.hitObjects.LastOrDefault()?.GetEndTime() ?? 0;
+
+                        double unusedPercentage = 1 - lastEndTime / duration;
+                        if (unusedPercentage >= 0.2)
+                        {
+                            string roundedPercentage = $"{unusedPercentage * 100:0.##}";
+                            string templateKey = (hasStoryboard || hasVideo ? "With" : "Without") + " Video/Storyboard";
+
+                            yield return new Issue(GetTemplate(templateKey), beatmap,
+                                roundedPercentage);
+                        }
+                    }
+                    else
+                        yield return new Issue(GetTemplate("Unable to check"), null,
+                        PathStatic.RelativePath(audioPath, beatmap.songPath), exception);
                 }
             }
         }
