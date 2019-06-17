@@ -83,17 +83,17 @@ namespace MapsetChecks.checks.spread
                 double effectiveTime = canUsePlayTime ? playTime : drainTime;
                 
                 if (effectiveTime < hardThreshold)
-                    yield return new Issue(GetTemplate("Unrankable"), lowestBeatmap,
+                    yield return new Issue(GetTemplate("Problem"), lowestBeatmap,
                         Beatmap.Difficulty.Hard, beatmap, Timestamp.Get(hardThreshold), Timestamp.Get(effectiveTime))
                         .WithInterpretation("difficulty", (int)Beatmap.Difficulty.Hard);
 
                 if (effectiveTime < insaneThreshold)
-                    yield return new Issue(GetTemplate("Unrankable"), lowestBeatmap,
+                    yield return new Issue(GetTemplate("Problem"), lowestBeatmap,
                         Beatmap.Difficulty.Insane, beatmap, Timestamp.Get(insaneThreshold), Timestamp.Get(effectiveTime))
                         .WithInterpretation("difficulty", (int)Beatmap.Difficulty.Insane);
 
                 if (effectiveTime < expertThreshold)
-                    yield return new Issue(GetTemplate("Unrankable"), lowestBeatmap,
+                    yield return new Issue(GetTemplate("Problem"), lowestBeatmap,
                         Beatmap.Difficulty.Expert, beatmap, Timestamp.Get(expertThreshold), Timestamp.Get(effectiveTime))
                         .WithInterpretation("difficulty", (int)Beatmap.Difficulty.Expert, (int)Beatmap.Difficulty.Ultra);
             }

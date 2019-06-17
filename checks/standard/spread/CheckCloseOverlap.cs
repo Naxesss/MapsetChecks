@@ -74,8 +74,8 @@ namespace MapsetChecks.checks.standard.spread
 
         public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
         {
-            double unrankableThreshold = 125; // Shortest acceptable gap is 1/2 in 240 BPM, 125 ms.
-            double warningThreshold    = 188; // Shortest gap before warning is 1/2 in 160 BPM, 188 ms.
+            double problemThreshold = 125; // Shortest acceptable gap is 1/2 in 240 BPM, 125 ms.
+            double warningThreshold = 188; // Shortest gap before warning is 1/2 in 160 BPM, 188 ms.
 
             for (int i = 0; i < aBeatmap.hitObjects.Count - 1; ++i)
             {
@@ -96,11 +96,11 @@ namespace MapsetChecks.checks.standard.spread
                     float radius = aBeatmap.difficultySettings.GetCircleRadius();
                     if (distance >= radius * 2)
                     {
-                        if (nextHitObject.time - hitObject.time < unrankableThreshold)
-                            yield return new Issue(GetTemplate("Unrankable"), aBeatmap,
+                        if (nextHitObject.time - hitObject.time < problemThreshold)
+                            yield return new Issue(GetTemplate("Problem"), aBeatmap,
                                 Timestamp.Get(hitObject, nextHitObject),
                                 $"{nextHitObject.time - hitObject.time:0.##}",
-                                unrankableThreshold);
+                                problemThreshold);
 
                         else
                             yield return new Issue(GetTemplate("Warning"), aBeatmap,

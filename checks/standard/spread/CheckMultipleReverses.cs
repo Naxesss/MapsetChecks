@@ -72,7 +72,7 @@ namespace MapsetChecks.checks.standard.spread
 
         public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
         {
-            double rankableThreshold = 60000 / 240d;
+            double problemThreshold = 60000 / 240d;
             double warningThreshold  = 60000 / 180d;
 
             foreach (Slider slider in aBeatmap.hitObjects.OfType<Slider>())
@@ -81,7 +81,7 @@ namespace MapsetChecks.checks.standard.spread
                 {
                     // 1/1 for Easy
                     string easyTemplate =
-                        slider.endTime - slider.time < rankableThreshold ? "Unrankable" :
+                        slider.endTime - slider.time < problemThreshold ? "Problem" :
                         slider.endTime - slider.time < warningThreshold ? "Warning" :
                         null;
 
@@ -91,7 +91,7 @@ namespace MapsetChecks.checks.standard.spread
 
                     // 1/2 for Normal
                     string normalTemplate =
-                        slider.endTime - slider.time < rankableThreshold * 0.5 ? "Unrankable" :
+                        slider.endTime - slider.time < problemThreshold * 0.5 ? "Problem" :
                         slider.endTime - slider.time < warningThreshold * 0.5 ? "Warning" :
                         null;
 

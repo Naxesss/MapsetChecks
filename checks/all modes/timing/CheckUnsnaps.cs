@@ -80,7 +80,7 @@ namespace MapsetChecks.checks.timing
             double unsnap = aBeatmap.GetPracticalUnsnap(aTime);
 
             if (unsnapIssue != null)
-                yield return new Issue(GetTemplate("Unrankable"), aBeatmap,
+                yield return new Issue(GetTemplate("Problem"), aBeatmap,
                     Timestamp.Get(aTime), aType, $"{unsnap:0.###}");
 
             else if (Math.Abs(unsnap) >= 1)

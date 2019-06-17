@@ -209,15 +209,15 @@ namespace MapsetChecks.checks.hit_sounds
             int warningTime     = 8 * 1500;     // 12 seconds (8 measures of 160 BPM, usually makes up a whole section in the song)
             int warningObject   = 2 * 200;      // 2 objects (difficulty invariant, so needs to work for easy diffs too)
 
-            int unrankableTotal     = 30000;
-            int unrankableTime      = 24 * 1500;    // 36 seconds (24 measures of 160 BPM, usually makes up multiple sections in the song)
-            int unrankableObject    = 8 * 200;      // 8 objects
+            int problemTotal     = 30000;
+            int problemTime      = 24 * 1500;    // 36 seconds (24 measures of 160 BPM, usually makes up multiple sections in the song)
+            int problemObject    = 8 * 200;      // 8 objects
             
-            if (timeRatio + objectRatio > unrankableTotal &&    // at least this much of the combined
-                timeRatio > unrankableTime &&                   // at least this much of the individual
-                objectRatio > unrankableObject)
+            if (timeRatio + objectRatio > problemTotal &&    // at least this much of the combined
+                timeRatio > problemTime &&                   // at least this much of the individual
+                objectRatio > problemObject)
             {
-                return new Issue(GetTemplate("Unrankable"), aBeatmap,
+                return new Issue(GetTemplate("Problem"), aBeatmap,
                     Timestamp.Get(aCurrentTime - timeDifference), Timestamp.Get(aCurrentTime),
                     $"{timeDifference / 1000:0.##}");
             }

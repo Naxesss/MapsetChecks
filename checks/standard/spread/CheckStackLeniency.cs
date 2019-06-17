@@ -83,7 +83,7 @@ namespace MapsetChecks.checks.standard.spread
                                 (int)Math.Ceiling((otherHitObject.time - hitObject.time) /
                                     (aBeatmap.difficultySettings.GetFadeInTime() * 0.1));
 
-                            yield return new Issue(GetTemplate("Unrankable"), aBeatmap,
+                            yield return new Issue(GetTemplate("Problem"), aBeatmap,
                                 Timestamp.Get(hitObject, otherHitObject), requiredStackLeniency)
                                 .WithInterpretation("difficulty", diffIndex);
                         }

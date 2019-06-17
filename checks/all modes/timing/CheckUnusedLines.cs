@@ -41,7 +41,7 @@ namespace MapsetChecks.checks.timing
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "Unrankable Nothing",
+                { "Problem Nothing",
                     new IssueTemplate(Issue.Level.Problem,
                         "{0} Changes nothing.",
                         "timestamp - ")
@@ -49,7 +49,7 @@ namespace MapsetChecks.checks.timing
                         "An uninherited line is placed on a multiple of 4 downbeats away from the previous uninherited line, " +
                         "and changes no settings.") },
 
-                { "Unrankable Inherited",
+                { "Problem Inherited",
                     new IssueTemplate(Issue.Level.Problem,
                         "{0} Changes nothing that can't be changed with an inherited line.",
                         "timestamp - ")
@@ -99,7 +99,7 @@ namespace MapsetChecks.checks.timing
                         // In the nightcore mod, every 4th downbeat is inherently a
                         // finish sound, so that technically changes things
                         if (GetBeatOffset(lines[i - 1], lines[i], 16) <= 1)
-                            yield return new Issue(GetTemplate("Unrankable Nothing"),
+                            yield return new Issue(GetTemplate("Problem Nothing"),
                             aBeatmap, Timestamp.Get(lines[i].offset));
                         else
                             yield return new Issue(GetTemplate("Warning Nothing"),
@@ -108,7 +108,7 @@ namespace MapsetChecks.checks.timing
                     else
                     {
                         if (GetBeatOffset(lines[i - 1], lines[i], 16) <= 1)
-                            yield return new Issue(GetTemplate("Unrankable Inherited"),
+                            yield return new Issue(GetTemplate("Problem Inherited"),
                                 aBeatmap, Timestamp.Get(lines[i].offset));
                         else
                             yield return new Issue(GetTemplate("Warning Inherited"),

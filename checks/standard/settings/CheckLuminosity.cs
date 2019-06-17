@@ -60,7 +60,7 @@ namespace MapsetChecks.checks.standard.settings
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "Unrankable Combo",
+                { "Problem Combo",
                     new IssueTemplate(Issue.Level.Problem,
                         "Combo colour {0} is way too dark.",
                         "number")
@@ -74,7 +74,7 @@ namespace MapsetChecks.checks.standard.settings
                     .WithCause(
                         "Same as the first check, but lower than 43 instead.") },
 
-                { "Unrankable Border",
+                { "Problem Border",
                     new IssueTemplate(Issue.Level.Problem,
                         "Slider border is way too dark.")
                     .WithCause(
@@ -108,7 +108,7 @@ namespace MapsetChecks.checks.standard.settings
                 float luminosity = GetLuminosity(colour);
 
                 if (luminosity < luminosityMinRankable)
-                    yield return new Issue(GetTemplate("Unrankable Border"), aBeatmap);
+                    yield return new Issue(GetTemplate("Problem Border"), aBeatmap);
 
                 if (luminosity < luminosityMinWarning)
                     yield return new Issue(GetTemplate("Warning Border"), aBeatmap);
@@ -138,7 +138,7 @@ namespace MapsetChecks.checks.standard.settings
                 int displayedColourIndex = aBeatmap.GetDisplayedComboColourIndex(i);
                 
                 if (luminosity < luminosityMinRankable)
-                    yield return new Issue(GetTemplate("Unrankable Combo"), aBeatmap,
+                    yield return new Issue(GetTemplate("Problem Combo"), aBeatmap,
                         displayedColourIndex);
 
                 else if (luminosity < luminosityMinWarning)

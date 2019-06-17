@@ -131,7 +131,7 @@ namespace MapsetChecks.checks.general.metadata
             }
 
             foreach (Tuple<Tuple<string, string>, string, bool> messageTuple in issueMessages)
-                yield return new Issue(GetTemplate(messageTuple.Item3 ? "Unrankable" : "Warning"), null,
+                yield return new Issue(GetTemplate(messageTuple.Item3 ? "Problem" : "Warning"), null,
                     messageTuple.Item2, messageTuple.Item1.Item2,
                     messageTuple.Item1.Item1);
         }

@@ -59,7 +59,7 @@ namespace MapsetChecks.checks.compose
         public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
         {
             if (aBeatmap.GetDrainTime() < 30 * 1000)
-                yield return new Issue(GetTemplate("Unrankable"), aBeatmap,
+                yield return new Issue(GetTemplate("Problem"), aBeatmap,
                     Timestamp.Get(aBeatmap.GetDrainTime()));
         }
     }

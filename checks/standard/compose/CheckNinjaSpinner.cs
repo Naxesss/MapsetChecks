@@ -73,10 +73,10 @@ namespace MapsetChecks.checks.standard.compose
                     double od = aBeatmap.difficultySettings.overallDifficulty;
 
                     double warningThreshold    = 500 + (od < 5 ? (5 - od) * -21.8 : (od - 5) * 20);  // anything above this works fine
-                    double unrankableThreshold = 475 + (od < 5 ? (5 - od) * -17.5 : (od - 5) * 20);  // anything above this only works sometimes
+                    double problemThreshold = 475 + (od < 5 ? (5 - od) * -17.5 : (od - 5) * 20);  // anything above this only works sometimes
 
-                    if (unrankableThreshold > spinner.endTime - spinner.time)
-                        yield return new Issue(GetTemplate("Unrankable"),
+                    if (problemThreshold > spinner.endTime - spinner.time)
+                        yield return new Issue(GetTemplate("Problem"),
                             aBeatmap, Timestamp.Get(spinner));
 
                     else if (warningThreshold > spinner.endTime - spinner.time)

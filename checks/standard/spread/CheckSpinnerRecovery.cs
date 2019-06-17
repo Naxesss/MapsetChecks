@@ -46,7 +46,7 @@ namespace MapsetChecks.checks.standard.spread
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "Unrankable Length",
+                { "Problem Length",
                     new IssueTemplate(Issue.Level.Problem,
                         "{0} Spinner length is too short ({1} ms, expected {2}).",
                         "timestamp - ", "duration", "duration")
@@ -60,7 +60,7 @@ namespace MapsetChecks.checks.standard.spread
                     .WithCause(
                         "Same as the first check, except 20% more lenient, implying that 200 bpm is assumed instead.") },
 
-                { "Unrankable Recovery",
+                { "Problem Recovery",
                     new IssueTemplate(Issue.Level.Problem,
                         "{0} Spinner recovery time is too short ({1} ms, expected {2}).",
                         "timestamp - ", "duration", "duration")
@@ -107,7 +107,7 @@ namespace MapsetChecks.checks.standard.spread
                         for (int i = 0; i < spinnerTimeExpected.Length; ++i)
                         {
                             if (spinnerTime < spinnerTimeExpected[i])
-                                yield return new Issue(GetTemplate("Unrankable Length"), aBeatmap,
+                                yield return new Issue(GetTemplate("Problem Length"), aBeatmap,
                                     Timestamp.Get(spinner), spinnerTime, Math.Ceiling(spinnerTimeExpected[i] * expectedMultiplier))
                                     .WithInterpretation("difficulty", i);
 
@@ -126,7 +126,7 @@ namespace MapsetChecks.checks.standard.spread
                             double expectedScaledMultiplier = (bpmScaling < 1 ? bpmScaling : 1);
 
                             if (recoveryTimeScaled < recoveryTimeExpected[i] && recoveryTime < recoveryTimeExpected[i])
-                                yield return new Issue(GetTemplate("Unrankable Recovery"), aBeatmap,
+                                yield return new Issue(GetTemplate("Problem Recovery"), aBeatmap,
                                     Timestamp.Get(spinner, nextObject), recoveryTime,
                                     Math.Ceiling(recoveryTimeExpected[i] * expectedScaledMultiplier * expectedMultiplier))
                                     .WithInterpretation("difficulty", i);

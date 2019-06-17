@@ -139,7 +139,7 @@ namespace MapsetChecks.checks.standard.compose
                     {
                         // Note that this may false positive in places with slight but readable overlapping curves.
                         if (totalBuraiScore > 5)
-                            yield return new Issue(GetTemplate("Unrankable"), aBeatmap,
+                            yield return new Issue(GetTemplate("Problem"), aBeatmap,
                                 Timestamp.Get(hitObject));
 
                         else if (totalBuraiScore > 2)

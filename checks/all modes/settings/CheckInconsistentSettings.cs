@@ -93,7 +93,7 @@ namespace MapsetChecks.checks.settings
                 foreach (Beatmap otherBeatmap in aBeatmapSet.beatmaps)
                 {
                     if (beatmap.metadataSettings.beatmapSetId != otherBeatmap.metadataSettings.beatmapSetId)
-                        yield return new Issue(GetTemplate("Unrankable"), beatmap,
+                        yield return new Issue(GetTemplate("Problem"), beatmap,
                             "beatmapset id", otherBeatmap);
 
                 

@@ -100,7 +100,7 @@ namespace MapsetChecks.checks.standard.compose
                     float headTailDistance = Vector2.Distance(slider.Position, tailPosition);
 
                     if (headTailDistance <= 2)
-                        yield return new Issue(GetTemplate("Unrankable"), aBeatmap,
+                        yield return new Issue(GetTemplate("Problem"), aBeatmap,
                             Timestamp.Get(hitObject));
 
                     else if (headTailDistance <= 5)
