@@ -46,21 +46,21 @@ namespace MapsetChecks.checks.general.metadata
             {
                 { "TV Size",
                     new IssueTemplate(Issue.Level.Problem,
-                        "{0} title field; \"{1}\" incorrect format of (TV Size).",
+                        "{0} title field; \"{1}\" incorrect format of \"(TV Size)\".",
                         "Romanized/unicode", "field")
                     .WithCause(
                         "The format of \"(TV Size)\" in either the romanized or unicode title is incorrect.") },
 
                 { "Game Ver",
                     new IssueTemplate(Issue.Level.Problem,
-                        "{0} title field; \"{1}\" incorrect format of (Game Ver.).",
+                        "{0} title field; \"{1}\" incorrect format of \"(Game Ver.)\".",
                         "Romanized/unicode", "field")
                     .WithCause(
                         "The format of \"(Game Ver.)\" in either the romanized or unicode title is incorrect.") },
 
                 { "Short Ver",
                     new IssueTemplate(Issue.Level.Problem,
-                        "{0} title field; \"{1}\" incorrect format of (Short Ver.).",
+                        "{0} title field; \"{1}\" incorrect format of \"(Short Ver.)\".",
                         "Romanized/unicode", "field")
                     .WithCause(
                         "The format of \"(Short Ver.)\" in either the romanized or unicode title is incorrect.") }
@@ -70,22 +70,22 @@ namespace MapsetChecks.checks.general.metadata
         public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
             Beatmap beatmap = aBeatmapSet.beatmaps[0];
-
+            
             // Matches any string containing some form of TV Size but not exactly "(TV Size)".
-            Regex tvSizeRegex = new Regex("(?i)(tv.(size|ver))");
-            Regex tvSizeExactRegex = new Regex("\\(TV Size\\)");
+            Regex tvSizeRegex = new Regex(@"(?i)(tv.(size|ver))");
+            Regex tvSizeExactRegex = new Regex(@"\(TV Size\)");
 
             foreach (Issue issue in GetIssuesFromRegex(beatmap, tvSizeRegex, tvSizeExactRegex, "TV Size"))
                 yield return issue;
             
-            Regex gameVerRegex = new Regex("(?i)(game.(size|ver))");
-            Regex gameVerExactRegex = new Regex("\\(TV Size\\)");
+            Regex gameVerRegex = new Regex(@"(?i)(game.(size|ver))");
+            Regex gameVerExactRegex = new Regex(@"\(Game Ver\.\)");
 
             foreach (Issue issue in GetIssuesFromRegex(beatmap, gameVerRegex, gameVerExactRegex, "Game Ver"))
                 yield return issue;
             
-            Regex shortVerRegex = new Regex("(?i)((short|cut).(size|ver))");
-            Regex shortVerExactRegex = new Regex("\\(TV Size\\)");
+            Regex shortVerRegex = new Regex(@"(?i)((short|cut).(size|ver))");
+            Regex shortVerExactRegex = new Regex(@"\(Short Ver\.\)");
 
             foreach (Issue issue in GetIssuesFromRegex(beatmap, shortVerRegex, shortVerExactRegex, "Short Ver"))
                 yield return issue;
