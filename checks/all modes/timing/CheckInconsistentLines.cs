@@ -34,11 +34,7 @@ namespace MapsetChecks.checks.timing
                     which is made from uninherited lines. Even if a line isn't used by some difficulty due to there being a 
                     break or similar, they still affect things like the main menu flashing and beats/snares/finishes in the 
                     nightcore mod.
-                    <note>
-                        This matters less for sections without hit objects or with spinners as it's less intrusive to gameplay, 
-                        which is the same reason why you don't need to perfectly time intro/breaks in complex timing either.
-                    </note>
-                    <br \>
+                    <br \><br \>
                     Similar to metadata, timing (bpm/meter/offset of uninherited lines) should really just be global for the 
                     whole beatmapset rather than difficulty-specific."
                 }
@@ -49,47 +45,26 @@ namespace MapsetChecks.checks.timing
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "Missing Problem",
+                { "Missing",
                     new IssueTemplate(Issue.Level.Problem,
                         "{0} Missing uninherited line, see {1}.",
                         "timestamp - ", "difficulty")
                     .WithCause(
                         "A beatmap does not have an uninherited line which the reference beatmap does, or visa versa.") },
 
-                { "Missing Warning",
-                    new IssueTemplate(Issue.Level.Warning,
-                        "{0} Missing uninherited line, see {1}. If complex timing this is optional, since there are no hit objects.",
-                        "timestamp - ", "difficulty")
-                    .WithCause(
-                        "Same as the other check, but there are no hit objects from where this line starts to the next uninherited.") },
-
-                { "Inconsistent Meter Problem",
+                { "Inconsistent Meter",
                     new IssueTemplate(Issue.Level.Problem,
                         "{0} Inconsistent meter signature, see {1}.",
                         "timestamp - ", "difficulty")
                     .WithCause(
                         "The meter signature of an uninherited timing line is different from the reference beatmap.") },
 
-                { "Inconsistent Meter Warning",
-                    new IssueTemplate(Issue.Level.Warning,
-                        "{0} Inconsistent meter signature, see {1}. If complex timing this is optional, since there are no hit objects.",
-                        "timestamp - ", "difficulty")
-                    .WithCause(
-                        "Same as the other check, but there are no hit objects from where this line starts to the next uninherited.") },
-
-                { "Inconsistent BPM Problem",
+                { "Inconsistent BPM",
                     new IssueTemplate(Issue.Level.Problem,
                          "{0} Inconsistent BPM, see {1}.",
                         "timestamp - ", "difficulty")
                     .WithCause(
-                        "Same as the meter check, except checks BPM instead.") },
-
-                { "Inconsistent BPM Warning",
-                    new IssueTemplate(Issue.Level.Problem,
-                         "{0} Inconsistent BPM, see {1}. If complex timing this is optional, since there are no hit objects.",
-                        "timestamp - ", "difficulty")
-                    .WithCause(
-                        "Same as the other check, but there are no hit objects from where this line starts to the next uninherited.") }
+                        "Same as the meter check, except checks BPM instead.") }
             };
         }
 
@@ -106,27 +81,19 @@ namespace MapsetChecks.checks.timing
                             beatmap.timingLines.OfType<UninheritedLine>().FirstOrDefault(
                                 aLine => aLine.offset == uninheritLine.offset);
                         
-                        HitObject nextHitObject = beatmap.GetNextHitObject(uninheritLine.offset);
-                        while(nextHitObject is Spinner || nextHitObject.time == beatmap.GetNextHitObject(nextHitObject.time).time)
-                            nextHitObject = beatmap.GetNextHitObject(nextHitObject.time);
-
-                        // TODO: Waiting for pishi's thoughts on having inconsistent uninherited line presence in intro/breaks be a warning instead of problem
-                        bool hasHitObjects = beatmap.GetNextTimingLine<UninheritedLine>(nextHitObject.time).offset == uninheritLine.offset;
-                        string templateSeverity = hasHitObjects ? " Problem" : " Warning";
-
                         double offset = Timestamp.Round(uninheritLine.offset);
                         
                         if (otherUninheritLine == null)
-                            yield return new Issue(GetTemplate("Missing" + templateSeverity), beatmap,
+                            yield return new Issue(GetTemplate("Missing"), beatmap,
                                 Timestamp.Get(offset), refBeatmap);
                         else
                         {
                             if (uninheritLine.meter != otherUninheritLine.meter)
-                                yield return new Issue(GetTemplate("Inconsistent Meter" + templateSeverity), beatmap,
+                                yield return new Issue(GetTemplate("Inconsistent Meter"), beatmap,
                                     Timestamp.Get(offset), refBeatmap);
 
                             if (uninheritLine.msPerBeat != otherUninheritLine.msPerBeat)
-                                yield return new Issue(GetTemplate("Inconsistent BPM" + templateSeverity), beatmap,
+                                yield return new Issue(GetTemplate("Inconsistent BPM"), beatmap,
                                     Timestamp.Get(offset), refBeatmap);
                         }
                     }
