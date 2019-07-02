@@ -30,11 +30,12 @@ namespace MapsetChecks.checks.timing
                 {
                     "Reasoning",
                     @"
-                    Any timing line before a slider to any extent (even if just 1 ms or less), will not affect its slider velocity. 
+                    Sliders before a timing line (even if just by 1 ms or less), will not be affected by its slider velocity. 
                     With 1 ms unsnaps being common for objects and lines (which you can see by enabling minor issues and looking any timing 
                     category), this in turn becomes a common issue for essentially all game modes.
                     <note>
-                        If bpm changes, this will still keep track of the effective slider velocity, thereby preventing false positives.
+                        If bpm changes, this will still keep track of the effective slider velocity, thereby preventing false positives. 
+                        So if it wouldn't make a difference, it's not pointed out.
                     </note>"
                 }
             }
