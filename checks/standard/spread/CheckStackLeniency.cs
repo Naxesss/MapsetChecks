@@ -85,7 +85,7 @@ namespace MapsetChecks.checks.standard.spread
 
                             yield return new Issue(GetTemplate("Problem"), aBeatmap,
                                 Timestamp.Get(hitObject, otherHitObject), requiredStackLeniency)
-                                .WithInterpretation("difficulty", diffIndex);
+                                .ForDifficulties((Beatmap.Difficulty)diffIndex);
                         }
                     }
                 }

@@ -87,7 +87,7 @@ namespace MapsetChecks.checks.standard.spread
 
                     if (easyTemplate != null)
                         yield return new Issue(GetTemplate(easyTemplate), aBeatmap, Timestamp.Get(slider))
-                            .WithInterpretation("difficulty", (int)Beatmap.Difficulty.Easy);
+                            .ForDifficulties(Beatmap.Difficulty.Easy);
 
                     // 1/2 for Normal
                     string normalTemplate =
@@ -97,7 +97,7 @@ namespace MapsetChecks.checks.standard.spread
 
                     if (normalTemplate != null)
                         yield return new Issue(GetTemplate(normalTemplate), aBeatmap, Timestamp.Get(slider))
-                            .WithInterpretation("difficulty", (int)Beatmap.Difficulty.Normal);
+                            .ForDifficulties(Beatmap.Difficulty.Normal);
                 }
             }
         }

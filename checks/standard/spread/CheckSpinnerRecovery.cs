@@ -104,38 +104,38 @@ namespace MapsetChecks.checks.standard.spread
                         
                         double[] spinnerTimeExpected = new double[] { 1000, 500, 250 }; // 4, 2 and 1 beats respectively, 240 bpm
 
-                        for (int i = 0; i < spinnerTimeExpected.Length; ++i)
+                        for (int diffIndex = 0; diffIndex < spinnerTimeExpected.Length; ++diffIndex)
                         {
-                            if (spinnerTime < spinnerTimeExpected[i])
+                            if (spinnerTime < spinnerTimeExpected[diffIndex])
                                 yield return new Issue(GetTemplate("Problem Length"), aBeatmap,
-                                    Timestamp.Get(spinner), spinnerTime, Math.Ceiling(spinnerTimeExpected[i] * expectedMultiplier))
-                                    .WithInterpretation("difficulty", i);
+                                    Timestamp.Get(spinner), spinnerTime, Math.Ceiling(spinnerTimeExpected[diffIndex] * expectedMultiplier))
+                                    .ForDifficulties((Beatmap.Difficulty)diffIndex);
 
-                            else if (spinnerTime < spinnerTimeExpected[i] * 1.2) // same thing but 200 bpm instead
+                            else if (spinnerTime < spinnerTimeExpected[diffIndex] * 1.2) // same thing but 200 bpm instead
                                 yield return new Issue(GetTemplate("Warning Length"), aBeatmap,
-                                    Timestamp.Get(spinner), spinnerTime, Math.Ceiling(spinnerTimeExpected[i] * expectedMultiplier))
-                                    .WithInterpretation("difficulty", i);
+                                    Timestamp.Get(spinner), spinnerTime, Math.Ceiling(spinnerTimeExpected[diffIndex] * expectedMultiplier))
+                                    .ForDifficulties((Beatmap.Difficulty)diffIndex);
                         }
                         
                         double[] recoveryTimeExpected = new double[] { 1000, 500, 250 }; // 4, 2 and 1 beats respectively, 240 bpm
                         
                         // Tries both scaled and regular recoveries, and only if both are exceeded does it create an issue.
-                        for (int i = 0; i < recoveryTimeExpected.Length; ++i)
+                        for (int diffIndex = 0; diffIndex < recoveryTimeExpected.Length; ++diffIndex)
                         {
                             // Picks whichever is greatest of the scaled and regular versions.
                             double expectedScaledMultiplier = (bpmScaling < 1 ? bpmScaling : 1);
 
-                            if (recoveryTimeScaled < recoveryTimeExpected[i] && recoveryTime < recoveryTimeExpected[i])
+                            if (recoveryTimeScaled < recoveryTimeExpected[diffIndex] && recoveryTime < recoveryTimeExpected[diffIndex])
                                 yield return new Issue(GetTemplate("Problem Recovery"), aBeatmap,
                                     Timestamp.Get(spinner, nextObject), recoveryTime,
-                                    Math.Ceiling(recoveryTimeExpected[i] * expectedScaledMultiplier * expectedMultiplier))
-                                    .WithInterpretation("difficulty", i);
+                                    Math.Ceiling(recoveryTimeExpected[diffIndex] * expectedScaledMultiplier * expectedMultiplier))
+                                    .ForDifficulties((Beatmap.Difficulty)diffIndex);
 
-                            else if (recoveryTimeScaled < recoveryTimeExpected[i] * 1.2 && recoveryTime < recoveryTimeExpected[i] * 1.2)
+                            else if (recoveryTimeScaled < recoveryTimeExpected[diffIndex] * 1.2 && recoveryTime < recoveryTimeExpected[diffIndex] * 1.2)
                                 yield return new Issue(GetTemplate("Warning Recovery"), aBeatmap,
                                     Timestamp.Get(spinner, nextObject), recoveryTime,
-                                    Math.Ceiling(recoveryTimeExpected[i] * expectedScaledMultiplier * expectedMultiplier))
-                                    .WithInterpretation("difficulty", i);
+                                    Math.Ceiling(recoveryTimeExpected[diffIndex] * expectedScaledMultiplier * expectedMultiplier))
+                                    .ForDifficulties((Beatmap.Difficulty)diffIndex);
                         }
                     }
                 }
