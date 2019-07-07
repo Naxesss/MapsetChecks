@@ -2,9 +2,9 @@
 using MapsetParser.objects.hitobjects;
 using MapsetParser.objects.timinglines;
 using MapsetParser.statics;
-using MapsetVerifier;
-using MapsetVerifier.objects;
-using MapsetVerifier.objects.metadata;
+using MapsetVerifierFramework;
+using MapsetVerifierFramework.objects;
+using MapsetVerifierFramework.objects.metadata;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

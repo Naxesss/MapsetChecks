@@ -1,8 +1,8 @@
 ﻿using MapsetParser.objects;
 using MapsetParser.objects.hitobjects;
 using MapsetParser.statics;
-using MapsetVerifier.objects;
-using MapsetVerifier.objects.metadata;
+using MapsetVerifierFramework.objects;
+using MapsetVerifierFramework.objects.metadata;
 using System.Collections.Generic;
 using System.Linq;
 

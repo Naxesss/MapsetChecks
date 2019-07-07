@@ -11,7 +11,7 @@ using MapsetChecks.checks.standard.compose;
 using MapsetChecks.checks.standard.settings;
 using MapsetChecks.checks.standard.spread;
 using MapsetChecks.checks.timing;
-using MapsetVerifier;
+using MapsetVerifierFramework;
 using System.Globalization;
 
 namespace MapsetChecks
