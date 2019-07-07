@@ -15,6 +15,14 @@ namespace MapsetChecks.checks.timing
     {
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
         {
+            // Mania doesn't have this issue since SV affects scroll speed rather than properties of objects.
+            Modes = new Beatmap.Mode[]
+            {
+                Beatmap.Mode.Standard,
+                Beatmap.Mode.Taiko,
+                Beatmap.Mode.Catch
+            },
+
             Category = "Timing",
             Message = "Hit object is slightly behind a line which would modify it.",
             Author = "Naxess",
@@ -32,7 +40,7 @@ namespace MapsetChecks.checks.timing
                     @"
                     Sliders before a timing line (even if just by 1 ms or less), will not be affected by its slider velocity. 
                     With 1 ms unsnaps being common for objects and lines due to rounding errors when copy pasting, this in turn 
-                    becomes a common issue for essentially all game modes.
+                    becomes a common issue for all game modes (excluding mania since SV works differently there).
                     <note>
                         If bpm changes, this will still keep track of the effective slider velocity, thereby preventing false positives. 
                         So if it wouldn't make a difference, it's not pointed out.
