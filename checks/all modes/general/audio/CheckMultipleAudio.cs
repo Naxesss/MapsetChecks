@@ -1,5 +1,6 @@
 ﻿using MapsetChecks.objects;
 using MapsetParser.objects;
+using MapsetParser.statics;
 using MapsetVerifierFramework;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.metadata;
@@ -54,7 +55,7 @@ namespace MapsetChecks.checks.general.audio
         {
             foreach (Issue issue in Common.GetInconsistencies(
                     aBeatmapSet,
-                    aBeatmap => aBeatmap.GetAudioFilePath(),
+                    aBeatmap => PathStatic.RelativePath(aBeatmap.GetAudioFilePath(), aBeatmap.songPath),
                     GetTemplate("Multiple")))
                 yield return issue;
         }
