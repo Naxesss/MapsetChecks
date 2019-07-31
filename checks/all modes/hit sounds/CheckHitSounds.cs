@@ -252,6 +252,8 @@ namespace MapsetChecks.checks.hit_sounds
                     Issue maniaIssue = GetIssueFromUpdate(storyHitSound.time, ref anObjectsPassed, ref aPrevTime, aBeatmap);
                     if (maniaIssue != null)
                         issues.Add(maniaIssue);
+
+                    aStartTime = aPrevTime;
                 }
             }
             return issues;
