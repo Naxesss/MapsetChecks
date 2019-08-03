@@ -1,4 +1,5 @@
 ﻿using MapsetParser.objects;
+using MapsetParser.statics;
 using MapsetVerifierFramework;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.metadata;
@@ -61,7 +62,7 @@ namespace MapsetChecks.checks.general.files
 
                 if (file.Length == 0)
                     yield return new Issue(GetTemplate("0-byte"), null,
-                        filePath);
+                        PathStatic.RelativePath(filePath, aBeatmapSet.songPath));
             }
         }
     }
