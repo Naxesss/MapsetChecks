@@ -90,7 +90,7 @@ namespace MapsetChecks.checks.compose
                                 type + " and " + otherType;
 
                         yield return new Issue(GetTemplate("Concurrent Objects"), aBeatmap,
-                            Timestamp.Get(otherHitObject), argument);
+                            Timestamp.Get(hitObject, otherHitObject), argument);
                     }
                 }
             }
