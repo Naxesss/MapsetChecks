@@ -99,6 +99,9 @@ namespace MapsetChecks.checks.standard.compose
                 if (hitObject is Circle || hitObject is Slider)
                 {
                     float circleRadius = aBeatmap.difficultySettings.GetCircleRadius();
+                    Vector2 stackedOffset = new Vector2(0, 0);
+                    if (hitObject is Stackable stackable)
+                        stackedOffset = stackable.Position - stackable.UnstackedPosition;
 
                     if (hitObject.Position.Y + circleRadius > 428)
                         yield return new Issue(GetTemplate("Offscreen"), aBeatmap,
@@ -120,7 +123,7 @@ namespace MapsetChecks.checks.standard.compose
                             bool offscreenBodyFound = false;
                             foreach(Vector2 pathPosition in slider.pathPxPositions)
                             {
-                                if (GetOffscreenBy(pathPosition, aBeatmap) > 0)
+                                if (GetOffscreenBy(pathPosition + stackedOffset, aBeatmap) > 0)
                                 {
                                     yield return new Issue(GetTemplate("Offscreen"), aBeatmap,
                                         Timestamp.Get(hitObject), "Slider body");
@@ -137,7 +140,7 @@ namespace MapsetChecks.checks.standard.compose
                             {
                                 foreach (Vector2 pathPosition in slider.pathPxPositions)
                                 {
-                                    Vector2 exactPathPosition = pathPosition;
+                                    Vector2 exactPathPosition = pathPosition + stackedOffset;
                                     if (GetOffscreenBy(exactPathPosition, aBeatmap, 2) > 0 && slider.curveType != Slider.CurveType.Linear)
                                     {
                                         bool isOffscreen = false;
