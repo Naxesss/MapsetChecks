@@ -49,10 +49,6 @@ namespace MapsetChecks.checks.standard.compose
                     themselves if they guessed wrong, whereas fast sliders often do not include as many slider ticks and are 
                     as such more lenient. Sliders that do not require that the player move their cursor are also hard to fail 
                     from guessing wrong since there it often doesn't matter if they know how to position their cursor.
-                    <note>
-                        Perfectly overlapping tail and head, despite possible to read reliably if implied movemnet is used 
-                        consistently, is currently unrankable.
-                    </note>
                     <image-right>
                         https://i.imgur.com/LPVmy81.png
                         Two sliders which are practically the same in gameplay. The left one has a much higher chance of 
