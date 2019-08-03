@@ -66,19 +66,12 @@ namespace MapsetChecks.checks.standard.compose
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "Problem",
-                    new IssueTemplate(Issue.Level.Problem,
-                        "{0} Tail and head are perfectly overlapping.",
-                        "timestamp - ")
-                    .WithCause(
-                        "The start and end of a slider are a distance of 2 px or less away from each other.") },
-
                 { "Warning",
                     new IssueTemplate(Issue.Level.Warning,
                         "{0} Tail and head are almost perfectly overlapping.",
                         "timestamp - ")
                     .WithCause(
-                        "Same as the other check, except 5 px or less instead.") },
+                        "The head and tail of a slider are 5 px or less apart.") },
 
                 { "Anchor",
                     new IssueTemplate(Issue.Level.Warning,
@@ -99,11 +92,7 @@ namespace MapsetChecks.checks.standard.compose
                     Vector2 tailPosition = slider.GetPathPosition(slider.time + slider.GetCurveDuration());
                     float headTailDistance = Vector2.Distance(slider.Position, tailPosition);
 
-                    if (headTailDistance <= 2)
-                        yield return new Issue(GetTemplate("Problem"), aBeatmap,
-                            Timestamp.Get(hitObject));
-
-                    else if (headTailDistance <= 5)
+                    if (headTailDistance <= 5)
                         yield return new Issue(GetTemplate("Warning"), aBeatmap,
                             Timestamp.Get(hitObject));
 
