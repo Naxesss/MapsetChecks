@@ -8,6 +8,7 @@ using MapsetVerifierFramework.objects.metadata;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace MapsetChecks.checks.timing
 {
@@ -57,7 +58,7 @@ namespace MapsetChecks.checks.timing
 
         public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
         {
-            foreach (TimingLine line in aBeatmap.timingLines)
+            foreach (TimingLine line in aBeatmap.timingLines.Where(aLine => aLine.kiai))
             {
                 double unsnap = aBeatmap.GetPracticalUnsnap(line.offset);
 
