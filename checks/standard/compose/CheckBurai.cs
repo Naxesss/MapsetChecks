@@ -65,15 +65,15 @@ namespace MapsetChecks.checks.standard.compose
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "Problem",
-                    new IssueTemplate(Issue.Level.Problem,
+                { "Definitely",
+                    new IssueTemplate(Issue.Level.Warning,
                         "{0} Burai.",
                         "timestamp - ")
                     .WithCause(
                         "The burai score of a slider shape, based on the distance and delta angle between intersecting parts of " +
                         "the curve, is very high.") },
 
-                { "Warning",
+                { "Potentially",
                     new IssueTemplate(Issue.Level.Warning,
                         "{0} Potentially burai.",
                         "timestamp - ")
@@ -139,11 +139,11 @@ namespace MapsetChecks.checks.standard.compose
                     {
                         // Note that this may false positive in places with slight but readable overlapping curves.
                         if (totalBuraiScore > 5)
-                            yield return new Issue(GetTemplate("Problem"), aBeatmap,
+                            yield return new Issue(GetTemplate("Definitely"), aBeatmap,
                                 Timestamp.Get(hitObject));
 
                         else if (totalBuraiScore > 2)
-                            yield return new Issue(GetTemplate("Warning"), aBeatmap,
+                            yield return new Issue(GetTemplate("Potentially"), aBeatmap,
                                 Timestamp.Get(hitObject));
                     }
                 }
