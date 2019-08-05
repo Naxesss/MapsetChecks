@@ -59,7 +59,7 @@ namespace MapsetChecks.checks.hit_sounds
 
                 { "Passive",
                     new IssueTemplate(Issue.Level.Minor,
-                        "{0} {1}% volume slider {2}, ensure there is no distinct sound here in the song.",
+                        "{0} {1}% volume {2}, ensure there is no distinct sound here in the song.",
                         "timestamp - ", "percent", "tick/reverse/tail")
                     .WithCause(
                         "A passive hit object is at 10% or lower volume.") }
