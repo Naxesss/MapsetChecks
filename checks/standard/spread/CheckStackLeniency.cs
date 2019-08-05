@@ -58,7 +58,14 @@ namespace MapsetChecks.checks.standard.spread
                         "{0} Stack leniency should be at least {1}.",
                         "timestamp - ", "stack leniency")
                     .WithCause(
-                        "Two objects are overlapping perfectly and are less than 1/1, 1/1, 1/2, or 1/4 apart (assuming 160 BPM), for E/N/H/I respectively.") }
+                        "Two objects are overlapping perfectly and are less than 1/1, 1/1, 1/2, or 1/4 apart (assuming 160 BPM), for E/N/H/I respectively.") },
+
+                { "Warning",
+                    new IssueTemplate(Issue.Level.Warning,
+                        "{0} Stack leniency should be at least {1}.",
+                        "timestamp - ", "stack leniency")
+                    .WithCause(
+                        "Same as the other check, except only appears for insane difficulties, as this becomes a guideline.") }
             };
         }
 
@@ -83,7 +90,9 @@ namespace MapsetChecks.checks.standard.spread
                                 (int)Math.Ceiling((otherHitObject.time - hitObject.time) /
                                     (aBeatmap.difficultySettings.GetFadeInTime() * 0.1));
 
-                            yield return new Issue(GetTemplate("Problem"), aBeatmap,
+                            string template = diffIndex == (int)Beatmap.Difficulty.Insane ? "Warning" : "Problem";
+
+                            yield return new Issue(GetTemplate(template), aBeatmap,
                                 Timestamp.Get(hitObject, otherHitObject), requiredStackLeniency)
                                 .ForDifficulties((Beatmap.Difficulty)diffIndex);
                         }
