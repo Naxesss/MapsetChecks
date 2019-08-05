@@ -74,10 +74,10 @@ namespace MapsetChecks.checks.general.metadata
                 aField => FormalSpaceRegex(aField, "feat\\."),
                 aField => FormalSpaceRegex(aField, "&"),
 
-                aField => new Regex("[a-zA-Z0-9]\\(CV:").IsMatch(aField) ? "whitespace before \"(CV:\"" : null,
+                aField => new Regex("[a-zA-Z0-9]\\(CV:").IsMatch(aField) ? "whitespace before \"(CV:\" or full-width bracket \"（\"" : null,
                     // also check before any parenthesis CV: might have before it
                 
-                aField => new Regex("(?<!\\()CV:").IsMatch(aField) ? "\"(\" before \"CV:\"" : null,
+                aField => new Regex("(?<!(\\(|（))CV:").IsMatch(aField) ? "\"(\" before \"CV:\"" : null,
                     // implied from the "Character (CV: Voice Actor)" format requirement
                 
                 aField => new Regex(",[a-zA-Z0-9]").IsMatch(aField) ? "whitespace after \",\"" : null,
