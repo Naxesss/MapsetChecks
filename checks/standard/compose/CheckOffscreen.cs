@@ -70,7 +70,7 @@ namespace MapsetChecks.checks.standard.compose
                 { "Prevented",
                     new IssueTemplate(Issue.Level.Warning,
                         "{0} {1} would be offscreen, but the game prevents it.",
-                        "timestamp - ", "object", "osu!pixels")
+                        "timestamp - ", "object")
                     .WithCause(
                         "The .osu code implies the hit object is in a place where it would be off the 512x512 playfield area, but the game has " +
                         "moved it back inside the screen automatically.") },
