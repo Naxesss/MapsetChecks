@@ -109,8 +109,7 @@ namespace MapsetChecks.checks.standard.settings
 
                 if (luminosity < luminosityMinRankable)
                     yield return new Issue(GetTemplate("Problem Border"), aBeatmap);
-
-                if (luminosity < luminosityMinWarning)
+                else if (luminosity < luminosityMinWarning)
                     yield return new Issue(GetTemplate("Warning Border"), aBeatmap);
             }
             
