@@ -115,18 +115,22 @@ namespace MapsetChecks.checks.general.metadata
             List<Tuple<Tuple<string, string>, string, bool>> issueMessages = new List<Tuple<Tuple<string, string>, string, bool>>();
             foreach (Tuple<string, string> field in fields)
             {
-                foreach (Func<string, string> problemTest in problemTests)
+                // old osu versions didn't have unicode fields
+                if (field.Item1 != null)
                 {
-                    string message = problemTest(field.Item1);
-                    if (message != null && !issueMessages.Any(aTuple => aTuple.Item2 == message && aTuple.Item1 == field))
-                        issueMessages.Add(new Tuple<Tuple<string, string>, string, bool>(field, message, true));
-                }
+                    foreach (Func<string, string> problemTest in problemTests)
+                    {
+                        string message = problemTest(field.Item1);
+                        if (message != null && !issueMessages.Any(aTuple => aTuple.Item2 == message && aTuple.Item1 == field))
+                            issueMessages.Add(new Tuple<Tuple<string, string>, string, bool>(field, message, true));
+                    }
 
-                foreach (Func<string, string> warningTest in warningTests)
-                {
-                    string message = warningTest(field.Item1);
-                    if (message != null && !issueMessages.Any(aTuple => aTuple.Item2 == message && aTuple.Item1 == field))
-                        issueMessages.Add(new Tuple<Tuple<string, string>, string, bool>(field, message, false));
+                    foreach (Func<string, string> warningTest in warningTests)
+                    {
+                        string message = warningTest(field.Item1);
+                        if (message != null && !issueMessages.Any(aTuple => aTuple.Item2 == message && aTuple.Item1 == field))
+                            issueMessages.Add(new Tuple<Tuple<string, string>, string, bool>(field, message, false));
+                    }
                 }
             }
 
