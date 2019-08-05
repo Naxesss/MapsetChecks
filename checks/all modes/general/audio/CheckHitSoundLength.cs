@@ -80,7 +80,7 @@ namespace MapsetChecks.checks.general.audio
                 if (exception == null)
                 {
                     // Greater than 0 since 44-byte muted hit sounds are fine.
-                    if (duration <= 100 && duration > 0)
+                    if (duration < 100 && duration > 0)
                         yield return new Issue(GetTemplate("Length"), null,
                             hsFile, $"{duration:0.##}");
                 }
