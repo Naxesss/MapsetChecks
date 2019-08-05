@@ -69,7 +69,7 @@ namespace MapsetChecks.checks.standard.compose
 
                 { "Prevented",
                     new IssueTemplate(Issue.Level.Warning,
-                        "{0} {1} would be offscreen by {2} px, but the game prevents it.",
+                        "{0} {1} would be offscreen, but the game prevents it.",
                         "timestamp - ", "object", "osu!pixels")
                     .WithCause(
                         "The .osu code implies the hit object is in a place where it would be off the 512x512 playfield area, but the game has " +
@@ -103,15 +103,38 @@ namespace MapsetChecks.checks.standard.compose
                     if (hitObject is Stackable stackable)
                         stackedOffset = stackable.Position - stackable.UnstackedPosition;
 
-                    if (hitObject.Position.Y + circleRadius > 428)
+                    if (hitObject.Position.Y + circleRadius > LOWER_LIMIT)
                         yield return new Issue(GetTemplate("Offscreen"), aBeatmap,
                             Timestamp.Get(hitObject), type);
 
                     // The game prevents the head of objects from going offscreen inside a 512 by 512 px square,
                     // meaning heads can still go offscreen at the bottom due to how aspect ratios work.
                     else if (GetOffscreenBy(hitObject.Position, aBeatmap) > 0)
-                        yield return new Issue(GetTemplate("Prevented"), aBeatmap,
-                            Timestamp.Get(hitObject), type);
+                    {
+                        // It does not prevent stacked objects from going offscreen, though.
+
+                        // for each stackindex it goes 3px up and left, so for it to be prevented it'd be
+                        // top, left : stackindex <= 0
+                        // right     : stackindex >= 0
+
+                        Stackable stackableObject = hitObject as Stackable;
+
+                        bool goesOffscreenTopOrLeft =
+                            (stackableObject.UnstackedPosition.Y - circleRadius < UPPER_LIMIT ||
+                            stackableObject.UnstackedPosition.X - circleRadius < LEFT_LIMIT) &&
+                            stackableObject.stackIndex > 0;
+
+                        bool goesOffscreenRight =
+                            stackableObject.UnstackedPosition.X + circleRadius > RIGHT_LIMIT &&
+                            stackableObject.stackIndex < 0;
+
+                        if (goesOffscreenTopOrLeft || goesOffscreenRight)
+                            yield return new Issue(GetTemplate("Offscreen"), aBeatmap,
+                                Timestamp.Get(hitObject), type);
+                        else
+                            yield return new Issue(GetTemplate("Prevented"), aBeatmap,
+                                Timestamp.Get(hitObject), type);
+                    }
                     
                     if (hitObject is Slider slider)
                     {
