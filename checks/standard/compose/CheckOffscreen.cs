@@ -120,12 +120,12 @@ namespace MapsetChecks.checks.standard.compose
                         Stackable stackableObject = hitObject as Stackable;
 
                         bool goesOffscreenTopOrLeft =
-                            (stackableObject.UnstackedPosition.Y - circleRadius < UPPER_LIMIT ||
-                            stackableObject.UnstackedPosition.X - circleRadius < LEFT_LIMIT) &&
+                            (stackableObject.Position.Y - circleRadius < UPPER_LIMIT ||
+                            stackableObject.Position.X - circleRadius < LEFT_LIMIT) &&
                             stackableObject.stackIndex > 0;
 
                         bool goesOffscreenRight =
-                            stackableObject.UnstackedPosition.X + circleRadius > RIGHT_LIMIT &&
+                            stackableObject.Position.X + circleRadius > RIGHT_LIMIT &&
                             stackableObject.stackIndex < 0;
 
                         if (goesOffscreenTopOrLeft || goesOffscreenRight)
