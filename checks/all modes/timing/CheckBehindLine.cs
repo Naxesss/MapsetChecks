@@ -59,7 +59,14 @@ namespace MapsetChecks.checks.timing
                         "timestamp - ", "object", "unsnap")
                     .WithCause(
                         "A hit object is snapped 5 ms or less behind a timing line which would otherwise modify its slider velocity. " +
-                        "For standard and catch this only looks at slider heads.") }
+                        "For standard and catch this only looks at slider heads.") },
+
+                { "After",
+                    new IssueTemplate(Issue.Level.Warning,
+                        "{0} {1} is snapped {2} ms after a line which would modify its slider velocity.",
+                        "timestamp - ", "object", "unsnap")
+                    .WithCause(
+                        "Same as the other check, except after instead of before. Only applies to taiko.") }
             };
         }
 
@@ -102,9 +109,18 @@ namespace MapsetChecks.checks.timing
                 double timeDiff = nextLine.offset - aTime;
                 if (timeDiff > 0 && timeDiff <= 5 &&
                     Math.Abs(unsnap) <= 1 &&
-                    deltaEffectiveBPM > 1)
+                    Math.Abs(deltaEffectiveBPM) > 1)
                 {
                     yield return new Issue(GetTemplate("Behind"), aBeatmap,
+                        Timestamp.Get(aTime), aType, $"{timeDiff:0.##}");
+                }
+                
+                if (aBeatmap.generalSettings.mode == Beatmap.Mode.Taiko &&
+                    timeDiff < 0 && timeDiff >= -5 &&
+                    Math.Abs(unsnap) <= 1 &&
+                    Math.Abs(deltaEffectiveBPM) > 1)
+                {
+                    yield return new Issue(GetTemplate("After"), aBeatmap,
                         Timestamp.Get(aTime), aType, $"{timeDiff:0.##}");
                 }
             }
