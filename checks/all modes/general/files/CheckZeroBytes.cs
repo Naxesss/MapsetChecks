@@ -50,7 +50,14 @@ namespace MapsetChecks.checks.general.files
                         "\"{0}\"",
                         "path")
                     .WithCause(
-                        "A file in the song folder contains no data; consists of 0 bytes.") }
+                        "A file in the song folder contains no data; consists of 0 bytes.") },
+
+                { "Exception",
+                    new IssueTemplate(Issue.Level.Error,
+                        "\"{0}\" threw \"{1}\"",
+                        "path", "exception")
+                    .WithCause(
+                        "A file which was attempted to be checked could not be opened.") }
             };
         }
 
@@ -58,7 +65,24 @@ namespace MapsetChecks.checks.general.files
         {
             foreach (string filePath in aBeatmapSet.songFilePaths)
             {
-                FileInfo file = new FileInfo(filePath);
+                Issue errorIssue = null;
+                FileInfo file = null;
+                try
+                {
+                    file = new FileInfo(filePath);
+                }
+                catch (Exception exception)
+                {
+                    errorIssue = new Issue(GetTemplate("Exception"), null,
+                        PathStatic.RelativePath(filePath, aBeatmapSet.songPath),
+                        exception);
+                }
+
+                if (errorIssue != null)
+                {
+                    yield return errorIssue;
+                    continue;
+                }
 
                 if (file.Length == 0)
                     yield return new Issue(GetTemplate("0-byte"), null,
