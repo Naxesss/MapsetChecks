@@ -94,6 +94,10 @@ namespace MapsetChecks.checks.standard.compose
 
                     foreach (HitObject otherHitObject in hitObjectsRightBeforeReverse)
                     {
+                        // Spinners don't really obscure anything and are handled by recovery time anyway.
+                        if (otherHitObject is Spinner)
+                            continue;
+
                         float distanceToReverse;
                         if (otherHitObject is Slider otherSlider)
                             distanceToReverse =
