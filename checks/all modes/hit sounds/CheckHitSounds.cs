@@ -88,7 +88,7 @@ namespace MapsetChecks.checks.hit_sounds
             void ApplyFeedbackUpdate(HitObject.HitSound aHitSound, Beatmap.Sampleset aSampleSet, HitObject hitObject, double aTime)
             {
                 if (aHitSound > 0 ||
-                    aSampleSet != prevSample && prevSample != null ||
+                    aSampleSet != prevSample || prevSample == null ||
                     aBeatmap.generalSettings.mode == Beatmap.Mode.Mania && hitObject.filename != "")
                 {
                     prevSample = aSampleSet;
