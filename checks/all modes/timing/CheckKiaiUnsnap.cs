@@ -52,7 +52,14 @@ namespace MapsetChecks.checks.timing
                         "{0} Kiai is unsnapped by {1} ms.",
                         "timestamp - ", "unsnap")
                     .WithCause(
-                        "Same as the other check, but by 1 ms or more instead.") }
+                        "Same as the other check, but by 1 ms or more instead.") },
+
+                { "Minor End",
+                    new IssueTemplate(Issue.Level.Minor,
+                        "{0} Kiai end is unsnapped by {1} ms.",
+                        "timestamp - ", "unsnap")
+                    .WithCause(
+                        "Same as the second check, except looks for where kiai ends.") }
             };
         }
 
@@ -69,6 +76,20 @@ namespace MapsetChecks.checks.timing
                 else if (Math.Abs(unsnap) >= 1)
                     yield return new Issue(GetTemplate("Minor"), aBeatmap,
                         Timestamp.Get(line.offset), unsnap);
+                
+                // Prevents duplicate issues occuring from both red and green line on same tick picking next line.
+                if (aBeatmap.timingLines.Any(aLine => aLine.offset == line.offset && !aLine.uninherited && line.uninherited))
+                    continue;
+
+                TimingLine nextLine = aBeatmap.GetNextTimingLine(line.offset);
+                if (!nextLine.kiai)
+                {
+                    unsnap = aBeatmap.GetPracticalUnsnap(nextLine.offset);
+
+                    if (Math.Abs(unsnap) >= 1)
+                        yield return new Issue(GetTemplate("Minor End"), aBeatmap,
+                            Timestamp.Get(nextLine.offset), unsnap);
+                }
             }
         }
     }
