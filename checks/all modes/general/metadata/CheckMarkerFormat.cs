@@ -65,7 +65,7 @@ namespace MapsetChecks.checks.general.metadata
 
             Regex regexVsExact   = new Regex("vs\\.");
             Regex regexCVExact   = new Regex("CV(:|：)");
-            Regex regexFeatExact = new Regex("feat.");
+            Regex regexFeatExact = new Regex("feat\\.");
 
             foreach (Issue issue in GetFormattingIssues(refBeatmap.metadataSettings, aField =>
                     regexVs.IsMatch(aField) && !regexVsExact.IsMatch(aField) ||
