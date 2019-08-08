@@ -102,7 +102,7 @@ namespace MapsetChecks.checks.general.resources
 
             foreach (Issue issue in Common.GetTagOsuIssues(
                 aBeatmapSet,
-                aBeatmap => aBeatmap.animations.Count > 0 ? aBeatmap.animations.Select(aAnimation => aAnimation.path) : null,
+                aBeatmap => aBeatmap.animations.Count > 0 ? aBeatmap.animations.SelectMany(aAnimation => aAnimation.framePaths) : null,
                 aTemplateArg => GetTemplate(aTemplateArg),
                 aTagFile =>
                 {
@@ -137,7 +137,7 @@ namespace MapsetChecks.checks.general.resources
 
             foreach (Issue issue in Common.GetTagOsbIssues(
                 aBeatmapSet,
-                anOsb => anOsb.animations.Count > 0 ? anOsb.animations.Select(aAnimation => aAnimation.path) : null,
+                anOsb => anOsb.animations.Count > 0 ? anOsb.animations.SelectMany(aAnimation => aAnimation.framePaths) : null,
                 aTemplateArg => GetTemplate(aTemplateArg),
                 aTagFile =>
                 {
