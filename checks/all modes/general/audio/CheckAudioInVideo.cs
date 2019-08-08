@@ -52,21 +52,21 @@ namespace MapsetChecks.checks.general.audio
                         "\"{0}\" leaves the current song folder, which shouldn't ever happen.",
                         "file name")
                     .WithCause(
-                        "The file path of an audio file starts with two dots.") },
+                        "The file path of a video file starts with two dots.") },
 
                 { "Missing",
-                    new IssueTemplate(Issue.Level.Problem,
-                        "\"{0}\" is missing, so unable to check that.",
+                    new IssueTemplate(Issue.Level.Warning,
+                        "\"{0}\" is missing, so unable to check that. Make sure you've downloaded with video.",
                         "file name")
                     .WithCause(
-                        "An audio file referenced is not present.") },
+                        "A video file referenced is not present.") },
 
                 { "Exception",
                     new IssueTemplate(Issue.Level.Error,
                         "\"{0}\" returned exception \"{1}\", so unable to check that.",
                         "file name", "exception")
                     .WithCause(
-                        "An exception occurred trying to parse an audio file.") }
+                        "An exception occurred trying to parse a video file.") }
             };
         }
 
