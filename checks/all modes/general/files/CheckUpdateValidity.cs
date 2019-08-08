@@ -65,8 +65,8 @@ namespace MapsetChecks.checks.general.files
                         "A .osu file is not named after the mentioned format using its respective properties.") },
 
                 { "Too Long Name",
-                    new IssueTemplate(Issue.Level.Warning,
-                        "\"{0}\" has a file name longer than 132 characters ({1}), which causes the .osz to fail to unzip for some users.",
+                    new IssueTemplate(Issue.Level.Minor,
+                        "\"{0}\" has a file name longer than 132 characters ({1}), which causes the .osz to fail to unzip for a few users.",
                         "path", "length")
                     .WithCause(
                         "A .osu file has a file name longer than 132 characters.") }
