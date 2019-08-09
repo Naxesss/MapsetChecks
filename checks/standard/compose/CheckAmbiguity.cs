@@ -116,20 +116,26 @@ namespace MapsetChecks.checks.standard.compose
                             float? headAnchorDistance = null;
                             float? tailAnchorDistance = null;
 
-                            // We only consider ones over 30 px apart since things like zig-zag patterns would otherwise be false-positives.
-                            if (curDistance > 30)
+                            // We only consider ones over 60 px apart since things like zig-zag patterns would otherwise be false-positives.
+                            if (curDistance > 60)
                                 headAnchorDistance = Vector2.Distance(slider.Position, anchorPosition);
 
-                            if (totalDistance - curDistance > 30)
+                            if (totalDistance - curDistance > 60)
                                 tailAnchorDistance = Vector2.Distance(anchorPosition, tailPosition);
 
-                            if (headAnchorDistance != null && headAnchorDistance <= 10)
+                            if (headAnchorDistance != null && headAnchorDistance <= 5)
+                            {
                                 yield return new Issue(GetTemplate("Anchor"), aBeatmap,
                                     Timestamp.Get(hitObject), "Head");
+                                break;
+                            }
 
-                            if (tailAnchorDistance != null && tailAnchorDistance <= 10)
+                            if (tailAnchorDistance != null && tailAnchorDistance <= 5)
+                            {
                                 yield return new Issue(GetTemplate("Anchor"), aBeatmap,
                                     Timestamp.Get(hitObject), "Tail");
+                                break;
+                            }
 
                             prevAnchorPosition = anchorPosition;
                         }
