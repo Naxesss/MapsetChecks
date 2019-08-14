@@ -94,6 +94,6 @@ namespace MapsetChecks.checks.general.metadata
 
         private bool   IsUnicode(char aChar)                => aChar > 127;
         private bool   ContainsUnicode(string aString)      => aString.Any(IsUnicode);
-        private string GetUnicodeCharacters(string aString) => aString.Where(IsUnicode).ToString();
+        private string GetUnicodeCharacters(string aString) => String.Join("", aString.Where(IsUnicode));
     }
 }
