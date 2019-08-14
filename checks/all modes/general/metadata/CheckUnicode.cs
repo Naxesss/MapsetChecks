@@ -38,7 +38,11 @@ namespace MapsetChecks.checks.general.metadata
                     when uploaded, preventing users from properly downloading it.
                     <br \><br \>
                     Even if it were possible to download correctly, should a character be unsupported it will be displayed as a box, questionmark 
-                    or other placeholder character in-game, which makes some titles and artists impossible to interpret and distinguish."
+                    or other placeholder character in-game, which makes some titles and artists impossible to interpret and distinguish.
+                    <br \><br \>
+                    Some unicode characters do seem to work, however. The title and artist fields are regulated by the Ranking Criteria, and 
+                    creator names filtered upon creation, but difficulty names are not regulated or filtered by anything, so we do those case by 
+                    case."
                 }
             }
         };
@@ -47,12 +51,19 @@ namespace MapsetChecks.checks.general.metadata
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "Unicode",
+                { "Problem",
                     new IssueTemplate(Issue.Level.Problem,
                         "{0} field contains unicode characters,\"{1}\", those being \"{2}\".",
-                        "Artist/title/creator/difficulty name", "field", "unicode char(s)")
+                        "Artist/title/creator", "field", "unicode char(s)")
                     .WithCause(
-                        "The romanized title, artist, creator, or difficulty name field contains unicode characters.") }
+                        "The romanized title, artist, or creator field contains unicode characters.") },
+
+                { "Warning",
+                    new IssueTemplate(Issue.Level.Warning,
+                        "{0} field contains unicode characters,\"{1}\", those being \"{2}\". If the map can still be downloaded this is probably ok.",
+                        "difficulty name", "field", "unicode char(s)")
+                    .WithCause(
+                        "The difficulty name field contains unicode characters.") }
             };
         }
 
@@ -60,7 +71,7 @@ namespace MapsetChecks.checks.general.metadata
         {
             foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
             {
-                foreach (Issue issue in GetUnicodeIssues("Difficulty name", beatmap.metadataSettings.version))
+                foreach (Issue issue in GetUnicodeIssues("Difficulty name", beatmap.metadataSettings.version, "Warning"))
                     yield return issue;
 
                 foreach (Issue issue in GetUnicodeIssues("Romanized title", beatmap.metadataSettings.title))
@@ -74,10 +85,10 @@ namespace MapsetChecks.checks.general.metadata
             }
         }
 
-        private IEnumerable<Issue> GetUnicodeIssues(string aFieldName, string aField)
+        private IEnumerable<Issue> GetUnicodeIssues(string aFieldName, string aField, string aTemplate = "Problem")
         {
             if (ContainsUnicode(aField))
-                yield return new Issue(GetTemplate("Unicode"), null,
+                yield return new Issue(GetTemplate(aTemplate), null,
                     aFieldName, aField, GetUnicodeCharacters(aField));
         }
 
