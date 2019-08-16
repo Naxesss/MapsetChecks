@@ -4,7 +4,10 @@ using MapsetParser.statics;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.metadata;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using NAudio.Wave;
+using NVorbis;
 
 namespace MapsetChecks.checks.general.audio
 {
@@ -66,12 +69,27 @@ namespace MapsetChecks.checks.general.audio
             {
                 foreach (string hitSoundFile in aBeatmapSet.hitSoundFiles)
                 {
-                    if (hitSoundFile.EndsWith(".ogg"))
+                    var hsType = Path.GetExtension(hitSoundFile);
+                    try {
+                        new Mp3FileReader(hitSoundFile);
+                        hsType = "mp3";
+                    } catch {
+                        
+                    }
+
+                    try {
+                        new VorbisReader(hitSoundFile);
+                        hsType = "ogg";
+                    } catch {
+
+                    }
+
+                    if (hsType == "ogg")
                         yield return new Issue(GetTemplate("ogg"), null,
                             hitSoundFile);
                     
                     // The .mp3 format includes inherent delays and are as such not fit for active hit sounding.
-                    if (hitSoundFile.EndsWith(".mp3"))
+                    if (hsType == "mp3")
                     {
                         foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
                         {
