@@ -63,6 +63,32 @@ namespace MapsetChecks.checks.general.audio
             };
         }
 
+        public string GetFormat(string hsFullPath)
+        {
+            try {
+                new WaveFileReader(hsFullPath);
+                return "wav";
+            } catch {
+                // Seems not to be a .wav file, continue.
+            }
+
+            try {
+                new Mp3FileReader(hsFullPath);
+                return "mp3";
+            } catch {
+                // Not .mp3 file.
+            }
+            try {
+                new VorbisReader(hsFullPath);
+                return "ogg";
+            } catch {
+                // Not .ogg file.
+            }
+
+            // Return file's extension instead.
+            return Path.GetExtension(hsFullPath);
+        }
+
         public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
             if (aBeatmapSet.hitSoundFiles != null)
@@ -70,21 +96,7 @@ namespace MapsetChecks.checks.general.audio
                 foreach (string hitSoundFile in aBeatmapSet.hitSoundFiles)
                 {
                     string hsPath = Path.Combine(aBeatmapSet.songPath, hitSoundFile);
-                    var hsType = Path.GetExtension(hsPath);
-                    try {
-                        new Mp3FileReader(hsPath);
-                        hsType = "mp3";
-                    } catch {
-                        
-                    }
-
-                    try {
-                        new VorbisReader(hsPath);
-                        hsType = "ogg";
-                    } catch {
-
-                    }
-
+                    string hsType = GetFormat(hsPath);
                     if (hsType == "ogg")
                         yield return new Issue(GetTemplate("ogg"), null,
                             hitSoundFile);
