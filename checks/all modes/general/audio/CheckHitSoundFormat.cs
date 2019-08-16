@@ -69,16 +69,17 @@ namespace MapsetChecks.checks.general.audio
             {
                 foreach (string hitSoundFile in aBeatmapSet.hitSoundFiles)
                 {
-                    var hsType = Path.GetExtension(hitSoundFile);
+                    string hsPath = Path.Combine(aBeatmapSet.songPath, hitSoundFile);
+                    var hsType = Path.GetExtension(hsPath);
                     try {
-                        new Mp3FileReader(hitSoundFile);
+                        new Mp3FileReader(hsPath);
                         hsType = "mp3";
                     } catch {
                         
                     }
 
                     try {
-                        new VorbisReader(hitSoundFile);
+                        new VorbisReader(hsPath);
                         hsType = "ogg";
                     } catch {
 
