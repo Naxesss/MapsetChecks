@@ -78,6 +78,7 @@ namespace MapsetChecks.checks.general.audio
             } catch {
                 // Not .mp3 file.
             }
+
             try {
                 new VorbisReader(hsFullPath);
                 return "ogg";
@@ -97,6 +98,7 @@ namespace MapsetChecks.checks.general.audio
                 {
                     string hsPath = Path.Combine(aBeatmapSet.songPath, hitSoundFile);
                     string hsType = GetFormat(hsPath);
+                    
                     if (hsType == "ogg")
                         yield return new Issue(GetTemplate("ogg"), null,
                             hitSoundFile);
