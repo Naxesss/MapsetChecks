@@ -89,11 +89,11 @@ namespace MapsetChecks.checks.events
                     string issueMessage = "";
 
                     if (diffStart > leniency && diffEnd > leniency)
-                        issueMessage = "starts " + diffStart + " ms too early and ends " + diffEnd + " ms too late";
+                        issueMessage = $"starts {diffStart:0.##} ms too early and ends {diffEnd:0.##} ms too late";
                     else if (diffStart > leniency)
-                        issueMessage = "starts " + diffStart + " ms too early";
+                        issueMessage = $"starts {diffStart:0.##} ms too early";
                     else if (diffEnd > leniency)
-                        issueMessage = "ends " + diffEnd + " ms too late";
+                        issueMessage = $"ends {diffEnd:0.##} ms too late";
                     
                     yield return new Issue(GetTemplate("Too early or late"), aBeatmap,
                         Timestamp.Get(@break.time), Timestamp.Get(@break.endTime),
