@@ -49,7 +49,7 @@ namespace MapsetChecks.checks.events
             {
                 { "Too early or late",
                     new IssueTemplate(Issue.Level.Problem,
-                        "{0} to {1} {2}.",
+                        "{0} to {1} {2}. Saving the beatmap should fix this.",
                         "timestamp - ", "timestamp - ", "details")
                     .WithCause(
                         "Either the break starts less than 200 ms after the object before the end of the break, or the break ends less " +
