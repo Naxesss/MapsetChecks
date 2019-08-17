@@ -41,11 +41,11 @@ namespace MapsetChecks.checks.general.audio
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Length",
-                    new IssueTemplate(Issue.Level.Warning,
+                    new IssueTemplate(Issue.Level.Problem,
                         "\"{0}\" is less than 100 ms long ({1} ms).",
                         "path", "length")
                     .WithCause(
-                        "A hit sound file is less than 100 ms long, but greater than 0 ms to allow for muted hit sound files.") },
+                        "A hit sound file is less than 100 ms long, but greater than 0 ms.") },
 
                 { "Unable to check",
                     new IssueTemplate(Issue.Level.Error,
