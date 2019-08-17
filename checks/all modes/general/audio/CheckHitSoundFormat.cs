@@ -50,17 +50,31 @@ namespace MapsetChecks.checks.general.audio
             {
                 { "ogg",
                     new IssueTemplate(Issue.Level.Problem,
-                        "\"{0}\" The .ogg format is deprecated and is no longer allowed.",
+                        "\"{0}\" is using the OGG format, which is deprecated and no longer allowed.",
                         "path")
                     .WithCause(
                         "A hit sound file is using the .ogg format.") },
 
                 { "mp3",
                     new IssueTemplate(Issue.Level.Problem,
-                        "\"{0}\" This .mp3 file is used for active hit sounding, see {1}.",
-                        "path", "timestamp - ")
+                        "\"{0}\" is using the MP3 format and is used for active hit sounding, see {1} in {2} for example.",
+                        "path", "timestamp - ", "beatmap")
                     .WithCause(
-                        "A hit sound file is using the .mp3 format.") }
+                        "A hit sound file is using the .mp3 format.") },
+
+                { "Unexpected Format",
+                    new IssueTemplate(Issue.Level.Warning,
+                        "\"{0}\" is using an unexpected format: \"{1}\".",
+                        "path", "actual format")
+                    .WithCause(
+                        "A hit sound file is using a format which is neither OGG, Wave, or MP3.") },
+
+                { "Incorrect Extension",
+                    new IssueTemplate(Issue.Level.Warning,
+                        "\"{0}\" is using the {1} format, but doesn't use the .wav extension.",
+                        "path", "actual format")
+                    .WithCause(
+                        "A hit sound file is using an incorrect extension.") }
             };
         }
 
@@ -70,13 +84,17 @@ namespace MapsetChecks.checks.general.audio
             {
                 foreach (string hitSoundFile in aBeatmapSet.hitSoundFiles)
                 {
-                    if (hitSoundFile.EndsWith(".ogg"))
+                    string fullPath = Path.Combine(aBeatmapSet.songPath, hitSoundFile);
+                    ManagedBass.ChannelType actualFormat = Audio.GetFormat(fullPath);
+
+                    if (actualFormat == ManagedBass.ChannelType.OGG)
                         yield return new Issue(GetTemplate("ogg"), null,
                             hitSoundFile);
-                    
+
                     // The .mp3 format includes inherent delays and are as such not fit for active hit sounding.
-                    if (hitSoundFile.EndsWith(".mp3"))
+                    else if (actualFormat == ManagedBass.ChannelType.MP3)
                     {
+                        bool foundPassiveMp3 = false;
                         foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
                         {
                             foreach (HitObject hitObject in beatmap.hitObjects)
@@ -88,13 +106,29 @@ namespace MapsetChecks.checks.general.audio
                                 if (hitObject.GetUsedHitSamples().Any(aSample =>
                                         aSample.time == hitObject.time &&
                                         aSample.hitSource == HitSample.HitSource.Edge &&
-                                        aSample.GetFileName() == hitSoundFile))
+                                        hitSoundFile.StartsWith(aSample.GetFileName() + ".")))
                                 {
                                     yield return new Issue(GetTemplate("mp3"), null,
-                                        hitSoundFile, Timestamp.Get(hitObject));
+                                        hitSoundFile, Timestamp.Get(hitObject), beatmap);
+
+                                    foundPassiveMp3 = true;
+                                    break;
                                 }
                             }
+                            if (foundPassiveMp3)
+                                break;
                         }
+                    }
+                    else
+                    {
+                        if ((ManagedBass.ChannelType.Wave & actualFormat) == 0)
+                            yield return new Issue(GetTemplate("Unexpected Format"), null,
+                                hitSoundFile, Audio.EnumToString(actualFormat));
+
+                        else if (!hitSoundFile.EndsWith(".wav"))
+                            yield return new Issue(GetTemplate("Incorrect Extension"), null,
+                                hitSoundFile, Audio.EnumToString(actualFormat));
+
                     }
                 }
             }
