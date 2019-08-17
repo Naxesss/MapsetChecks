@@ -1,14 +1,10 @@
-﻿using MapsetChecks.objects;
-using MapsetParser.objects;
-using MapsetVerifierFramework;
+﻿using MapsetParser.objects;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.metadata;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Linq;
-using ManagedBass;
+using MapsetVerifierFramework.objects.resources;
 
 namespace MapsetChecks.checks.general.audio
 {

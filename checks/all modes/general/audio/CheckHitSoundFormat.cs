@@ -3,7 +3,11 @@ using MapsetParser.objects.hitobjects;
 using MapsetParser.statics;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.metadata;
+using MapsetVerifierFramework.objects.resources;
+using NAudio.Wave;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace MapsetChecks.checks.general.audio

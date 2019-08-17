@@ -1,5 +1,4 @@
-﻿using MapsetChecks.objects;
-using MapsetParser.objects;
+﻿using MapsetParser.objects;
 using MapsetVerifierFramework;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.metadata;

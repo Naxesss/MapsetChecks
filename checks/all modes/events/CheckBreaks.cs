@@ -1,5 +1,4 @@
-﻿using MapsetChecks.objects;
-using MapsetParser.objects;
+﻿using MapsetParser.objects;
 using MapsetParser.objects.events;
 using MapsetParser.objects.hitobjects;
 using MapsetParser.statics;

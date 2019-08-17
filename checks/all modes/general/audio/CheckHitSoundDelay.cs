@@ -1,8 +1,8 @@
-﻿using MapsetChecks.objects;
-using MapsetParser.objects;
+﻿using MapsetParser.objects;
 using MapsetVerifierFramework;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.metadata;
+using MapsetVerifierFramework.objects.resources;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

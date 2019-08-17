@@ -1,11 +1,11 @@
-﻿using MapsetChecks.objects;
-using MapsetParser.objects;
+﻿using MapsetParser.objects;
 using MapsetParser.objects.events;
 using MapsetParser.objects.hitobjects;
 using MapsetParser.statics;
 using MapsetVerifierFramework;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.metadata;
+using MapsetVerifierFramework.objects.resources;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
