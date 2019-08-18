@@ -92,9 +92,13 @@ namespace MapsetChecks.checks.timing
                     TimingLine prevLine = aBeatmap.GetTimingLine(lines[i].offset - 1);
                     TimingLine curLine = aBeatmap.GetTimingLine<UninheritedLine>(lines[i].offset);
 
-                    if (prevLine.kiai == curLine.kiai
-                        && prevLine.sampleset == curLine.sampleset
-                        && prevLine.volume == curLine.volume)
+                    // If a line omits the first bar line we just treat it as used.
+                    if (curLine.omitsBarLine)
+                        continue;
+
+                    if (prevLine.kiai == curLine.kiai &&
+                        prevLine.sampleset == curLine.sampleset &&
+                        prevLine.volume == curLine.volume)
                     {
                         // In the nightcore mod, every 4th downbeat is inherently a
                         // finish sound, so that technically changes things
