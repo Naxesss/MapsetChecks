@@ -82,7 +82,7 @@ namespace MapsetChecks.checks.timing
                     continue;
 
                 TimingLine nextLine = aBeatmap.GetNextTimingLine(line.offset);
-                if (!nextLine.kiai)
+                if (nextLine != null && !nextLine.kiai)
                 {
                     unsnap = aBeatmap.GetPracticalUnsnap(nextLine.offset);
 
