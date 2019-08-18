@@ -90,7 +90,7 @@ namespace MapsetChecks.checks.timing
                     // Check the lines in effect both here and before to see if an inherited
                     // line is placed on top of the red line negating its changes.
                     TimingLine prevLine = aBeatmap.GetTimingLine(lines[i].offset - 1);
-                    TimingLine curLine = aBeatmap.GetTimingLine(lines[i].offset);
+                    TimingLine curLine = aBeatmap.GetTimingLine<UninheritedLine>(lines[i].offset);
 
                     if (prevLine.kiai == curLine.kiai
                         && prevLine.sampleset == curLine.sampleset
