@@ -16,7 +16,7 @@ namespace MapsetChecks.checks.general.audio
         public override CheckMetadata GetMetadata() => new CheckMetadata()
         {
             Category = "Audio",
-            Message = "Multiple audio files.",
+            Message = "Multiple or missing audio files.",
             Author = "Naxess",
 
             Documentation = new Dictionary<string, string>()
@@ -46,17 +46,32 @@ namespace MapsetChecks.checks.general.audio
                         "{0}",
                         "audio file : difficulties")
                     .WithCause(
-                        "There is more than one audio file used between all difficulties.") }
+                        "There is more than one audio file used between all difficulties.") },
+
+                { "Missing",
+                    new IssueTemplate(Issue.Level.Problem,
+                        "No audio file could be found.")
+                    .WithCause(
+                        "There is no audio file used in any difficulty.") }
             };
         }
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
         {
-            foreach (Issue issue in Common.GetInconsistencies(
-                    aBeatmapSet,
-                    aBeatmap => PathStatic.RelativePath(aBeatmap.GetAudioFilePath(), aBeatmap.songPath),
-                    GetTemplate("Multiple")))
-                yield return issue;
+            if (aBeatmapSet.beatmaps.All(aBeatmap => aBeatmap.GetAudioFilePath() == null))
+                foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
+                    yield return new Issue(GetTemplate("Missing"), beatmap);
+            else
+            {
+                foreach (Issue issue in Common.GetInconsistencies(
+                        aBeatmapSet,
+                        aBeatmap =>
+                            aBeatmap.GetAudioFilePath() != null ?
+                                PathStatic.RelativePath(aBeatmap.GetAudioFilePath(), aBeatmap.songPath) :
+                                "None",
+                        GetTemplate("Multiple")))
+                    yield return issue;
+            }
         }
     }
 }
