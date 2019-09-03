@@ -74,7 +74,14 @@ namespace MapsetChecks.checks.general.audio
                         "\"{0}\" is using the {1} format, but doesn't use the .wav extension.",
                         "path", "actual format")
                     .WithCause(
-                        "A hit sound file is using an incorrect extension.") }
+                        "A hit sound file is using an incorrect extension.") },
+
+                { "Exception",
+                    new IssueTemplate(Issue.Level.Error,
+                        "\"{0}\" returned exception \"{1}\", so unable to check that.",
+                        "path", "exception")
+                    .WithCause(
+                        "An error occurred trying to check the format of a hit sound file.") }
             };
         }
 
@@ -85,7 +92,20 @@ namespace MapsetChecks.checks.general.audio
                 foreach (string hitSoundFile in aBeatmapSet.hitSoundFiles)
                 {
                     string fullPath = Path.Combine(aBeatmapSet.songPath, hitSoundFile);
-                    ManagedBass.ChannelType actualFormat = Audio.GetFormat(fullPath);
+
+                    ManagedBass.ChannelType actualFormat = 0;
+                    Exception exception = null;
+                    try
+                    { actualFormat = Audio.GetFormat(fullPath); }
+                    catch (Exception ex)
+                    { exception = ex; }
+
+                    if (exception != null)
+                    {
+                        yield return new Issue(GetTemplate("Exception"), null,
+                            hitSoundFile, exception.Message);
+                        continue;
+                    }
 
                     if (actualFormat == ManagedBass.ChannelType.OGG)
                         yield return new Issue(GetTemplate("ogg"), null,
