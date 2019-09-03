@@ -52,6 +52,13 @@ namespace MapsetChecks.checks.timing
                     .WithCause(
                         "A beatmap does not have an uninherited line which the reference beatmap does, or visa versa.") },
 
+                { "Missing Minor",
+                    new IssueTemplate(Issue.Level.Minor,
+                        "{0} Has a decimally different offset to the one in {1}.",
+                        "timestamp - ", "difficulty")
+                    .WithCause(
+                        "Same as the first check, except includes issues caused by decimal unsnaps of uninherited lines.") },
+
                 { "Inconsistent Meter",
                     new IssueTemplate(Issue.Level.Problem,
                         "{0} Inconsistent meter signature, see {1}.",
@@ -73,45 +80,59 @@ namespace MapsetChecks.checks.timing
             Beatmap refBeatmap = aBeatmapSet.beatmaps[0];
             foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
             {
-                foreach (TimingLine line in refBeatmap.timingLines)
+                foreach (UninheritedLine line in refBeatmap.timingLines.OfType<UninheritedLine>())
                 {
-                    if (line is UninheritedLine uninheritLine)
-                    {
-                        UninheritedLine otherUninheritLine =
-                            beatmap.timingLines.OfType<UninheritedLine>().FirstOrDefault(
-                                aLine => aLine.offset == uninheritLine.offset);
-                        
-                        double offset = Timestamp.Round(uninheritLine.offset);
-                        
-                        if (otherUninheritLine == null)
-                            yield return new Issue(GetTemplate("Missing"), beatmap,
-                                Timestamp.Get(offset), refBeatmap);
-                        else
-                        {
-                            if (uninheritLine.meter != otherUninheritLine.meter)
-                                yield return new Issue(GetTemplate("Inconsistent Meter"), beatmap,
-                                    Timestamp.Get(offset), refBeatmap);
+                    UninheritedLine otherLine =
+                        beatmap.timingLines.OfType<UninheritedLine>().FirstOrDefault(
+                            aLine => Timestamp.Round(aLine.offset) == Timestamp.Round(line.offset));
 
-                            if (uninheritLine.msPerBeat != otherUninheritLine.msPerBeat)
-                                yield return new Issue(GetTemplate("Inconsistent BPM"), beatmap,
-                                    Timestamp.Get(offset), refBeatmap);
-                        }
+                    double offset = Timestamp.Round(line.offset);
+
+                    if (otherLine == null)
+                        yield return new Issue(GetTemplate("Missing"), beatmap,
+                            Timestamp.Get(offset), refBeatmap);
+                    else
+                    {
+                        if (line.meter != otherLine.meter)
+                            yield return new Issue(GetTemplate("Inconsistent Meter"), beatmap,
+                                Timestamp.Get(offset), refBeatmap);
+
+                        if (line.msPerBeat != otherLine.msPerBeat)
+                            yield return new Issue(GetTemplate("Inconsistent BPM"), beatmap,
+                                Timestamp.Get(offset), refBeatmap);
+
+                        // Including decimal unsnaps
+                        UninheritedLine otherLineExact =
+                        beatmap.timingLines.OfType<UninheritedLine>().FirstOrDefault(
+                            aLine => aLine.offset == line.offset);
+
+                        if (otherLineExact == null)
+                            yield return new Issue(GetTemplate("Missing Minor"), beatmap,
+                                Timestamp.Get(offset), refBeatmap);
                     }
                 }
                 
                 // Check the other way around as well, to make sure the reference map has all uninherited lines this map has.
-                foreach (TimingLine line in beatmap.timingLines)
+                foreach (UninheritedLine line in beatmap.timingLines.OfType<UninheritedLine>())
                 {
-                    if (line is UninheritedLine)
+                    UninheritedLine otherLine =
+                        refBeatmap.timingLines.OfType<UninheritedLine>().FirstOrDefault(
+                            aLine => Timestamp.Round(aLine.offset) == Timestamp.Round(line.offset));
+
+                    double offset = Timestamp.Round(line.offset);
+
+                    if (otherLine == null)
+                        yield return new Issue(GetTemplate("Missing"), refBeatmap,
+                            Timestamp.Get(offset), beatmap);
+                    else
                     {
-                        UninheritedLine otherLine =
+                        // Including decimal unsnaps
+                        UninheritedLine otherLineExact =
                             refBeatmap.timingLines.OfType<UninheritedLine>().FirstOrDefault(
                                 aLine => aLine.offset == line.offset);
 
-                        double offset = (int)Math.Floor(line.offset);
-                        
-                        if (otherLine == null)
-                            yield return new Issue(GetTemplate("Missing"), refBeatmap,
+                        if (otherLineExact == null)
+                            yield return new Issue(GetTemplate("Missing Minor"), refBeatmap,
                                 Timestamp.Get(offset), beatmap);
                     }
                 }
