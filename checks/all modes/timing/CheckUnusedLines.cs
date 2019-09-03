@@ -102,7 +102,7 @@ namespace MapsetChecks.checks.timing
                     {
                         // In the nightcore mod, every 4th downbeat is inherently a
                         // finish sound, so that technically changes things
-                        if (GetBeatOffset(lines[i - 1], lines[i], 16) <= 1)
+                        if (GetBeatOffset(lines[i - 1], lines[i], 4 * lines[i - 1].meter) <= 1)
                             yield return new Issue(GetTemplate("Problem Nothing"),
                             aBeatmap, Timestamp.Get(lines[i].offset));
                         else
@@ -111,7 +111,7 @@ namespace MapsetChecks.checks.timing
                     }
                     else
                     {
-                        if (GetBeatOffset(lines[i - 1], lines[i], 16) <= 1)
+                        if (GetBeatOffset(lines[i - 1], lines[i], 4 * lines[i - 1].meter) <= 1)
                             yield return new Issue(GetTemplate("Problem Inherited"),
                                 aBeatmap, Timestamp.Get(lines[i].offset));
                         else
