@@ -51,6 +51,14 @@ namespace MapsetChecks.checks.standard.settings
                     <image-right>
                         https://i.imgur.com/9cRTvJc.png
                         An example of a slider with colour 255,255,255 while in the middle of flashing.
+                    </image>
+                    <br \><br \>
+                    This check uses the <a href=""http://alienryderflex.com/hsp.html"">HSP colour system</a> to better approximate 
+                    the way humans perceive luminosity in colours, as opposed to the HSL system where green is regarded the same 
+                    luminosity as deep blue, see image.
+                    <image-center>
+                        https://i.imgur.com/CjPhf0b.png
+                        The HSP colour system compared to the in-game HSL system.
                     </image>"
                 }
             }
@@ -65,7 +73,9 @@ namespace MapsetChecks.checks.standard.settings
                         "Combo colour {0} is way too dark.",
                         "number")
                     .WithCause(
-                        "The HSL luminosity value of a combo colour is lower than 30.") },
+                        "The HSP luminosity value of a combo colour is lower than 30. These " +
+                        "values are visible in the overview section as tooltips for each colour " +
+                        "if you want to check them manually.") },
 
                 { "Warning Combo",
                     new IssueTemplate(Issue.Level.Warning,
