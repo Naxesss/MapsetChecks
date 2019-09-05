@@ -47,8 +47,8 @@ namespace MapsetChecks.checks.general.resources
             {
                 { "Resolution",
                     new IssueTemplate(Issue.Level.Problem,
-                        "\"{0}\"",
-                        "file name")
+                        "\"{0}\" greater than 1280 x 720 ({1} x {2})",
+                        "file name", "width", "height")
                     .WithCause(
                         "A video has a width exceeding 1280 pixels or a height exceeding 720 pixels.") },
                 
@@ -89,7 +89,9 @@ namespace MapsetChecks.checks.general.resources
                         aTagFile.file.Properties.VideoHeight > 720)
                     {
                         issues.Add(new Issue(GetTemplate("Resolution"), null,
-                            aTagFile.templateArgs[0]));
+                            aTagFile.templateArgs[0],
+                            aTagFile.file.Properties.VideoWidth,
+                            aTagFile.file.Properties.VideoHeight));
                     }
 
                     return issues;
