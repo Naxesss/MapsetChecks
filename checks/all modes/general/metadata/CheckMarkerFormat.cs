@@ -60,8 +60,8 @@ namespace MapsetChecks.checks.general.metadata
 
             // Matches strings which contain some version of "vs.", "CV:" or "feat." markers but not exactly.
             Regex regexVs   = new Regex("(?i)( vs.)");
-            Regex regexCV   = new Regex("(?i)((\\(| )cv(:|：)?.)");
-            Regex regexFeat = new Regex("(?i)((\\(| )(ft|feat)(\\.)?.)");
+            Regex regexCV   = new Regex("(?i)((\\(| |（)cv(:|：)?.)");
+            Regex regexFeat = new Regex("(?i)((\\(| |（)(ft|feat)(\\.)?.)");
 
             Regex regexVsExact   = new Regex("vs\\.");
             Regex regexCVExact   = new Regex("CV(:|：)");

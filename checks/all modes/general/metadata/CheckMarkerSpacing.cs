@@ -92,10 +92,10 @@ namespace MapsetChecks.checks.general.metadata
 
                 // The regex "[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]" matches all japanese characters.
                 
-                aField => new Regex("(?<! |\\()feat\\.").IsMatch(aField) ? "whitespace before \"feat.\""    : null,
-                aField => new Regex("(?<! )\\(feat\\.") .IsMatch(aField) ? "whitespace before \"(feat.\""   : null,
-                aField => new Regex("(?<! )vs\\.")      .IsMatch(aField) ? "whitespace before \"vs.\""      : null,
-                aField => new Regex("(?<! )&")          .IsMatch(aField) ? "whitespace before \"&\""        : null,
+                aField => new Regex("(?<! |\\(|（)feat\\.") .IsMatch(aField) ? "whitespace before \"feat.\""    : null,
+                aField => new Regex("(?<! )(\\(|（)feat\\.").IsMatch(aField) ? "whitespace before \"(feat.\""   : null,
+                aField => new Regex("(?<! )vs\\.")          .IsMatch(aField) ? "whitespace before \"vs.\""      : null,
+                aField => new Regex("(?<! )&")              .IsMatch(aField) ? "whitespace before \"&\""        : null,
 
                 aField => new Regex("CV(?!:[ 一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]|：)")  .IsMatch(aField) ? "whitespace after \"CV:\" or full-width colon \"：\"" : null,
                 aField => new Regex(",(?![ 一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])")       .IsMatch(aField) ? "whitespace after \",\" or full-width comma \"、\""   : null,

@@ -66,9 +66,9 @@ namespace MapsetChecks.checks.general.metadata
             Beatmap beatmap = aBeatmapSet.beatmaps[0];
             
             Regex regex      = new Regex(@"(?i)([^A-Za-z0-9]+)?(ver(\.|sion)?|size)([^A-Za-z0-9]+)?$");
-            Regex shortRegex = new Regex(@"\(Short Ver\.\)$");
-            Regex gameRegex  = new Regex(@"\(Game Ver\.\)$");
-            Regex tvRegex    = new Regex(@"\(TV Size\)$");
+            Regex shortRegex = new Regex(@"(\(|（)Short Ver\.(\)|）)$");
+            Regex gameRegex  = new Regex(@"(\(|（)Game Ver\.(\)|）)$");
+            Regex tvRegex    = new Regex(@"(\(|（)TV Size(\)|）)$");
 
             // Matches additional markers, like "(Speed up ver.)" and "- Full Version -".
             // Excludes any field with correct markers.
