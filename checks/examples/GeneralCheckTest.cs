@@ -1,11 +1,14 @@
 ﻿using MapsetParser.objects;
 using MapsetVerifierFramework.objects;
+using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
 using System;
 using System.Collections.Generic;
 
 namespace MapsetChecks.checks.examples
 {
+    // This attribute tells the framework that it's a check it should register.
+    [Check]
     public class GeneralCheckTest : GeneralCheck
     {
         /// <summary> Determines which modes the check shows for, in which category the check appears, the message for the check, etc. </summary>

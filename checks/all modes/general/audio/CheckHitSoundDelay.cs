@@ -1,6 +1,7 @@
 ﻿using MapsetParser.objects;
 using MapsetVerifierFramework;
 using MapsetVerifierFramework.objects;
+using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
 using MapsetVerifierFramework.objects.resources;
 using System;
@@ -11,6 +12,7 @@ using System.Linq;
 
 namespace MapsetChecks.checks.general.audio
 {
+    [Check]
     public class CheckHitSoundDelay : GeneralCheck
     {
         public override CheckMetadata GetMetadata() => new CheckMetadata()

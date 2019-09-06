@@ -2,6 +2,7 @@
 using MapsetParser.objects.hitobjects;
 using MapsetParser.statics;
 using MapsetVerifierFramework.objects;
+using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
 using MapsetVerifierFramework.objects.resources;
 using NAudio.Wave;
@@ -12,6 +13,7 @@ using System.Linq;
 
 namespace MapsetChecks.checks.general.audio
 {
+    [Check]
     public class CheckHitSoundFormat : GeneralCheck
     {
         public override CheckMetadata GetMetadata() => new CheckMetadata()

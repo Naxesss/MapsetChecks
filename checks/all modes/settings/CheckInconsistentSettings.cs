@@ -3,6 +3,7 @@ using MapsetParser.objects.events;
 using MapsetParser.objects.hitobjects;
 using MapsetVerifierFramework;
 using MapsetVerifierFramework.objects;
+using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ using System.Linq;
 
 namespace MapsetChecks.checks.settings
 {
+    [Check]
     public class CheckInconsistentSettings : BeatmapSetCheck
     {
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()

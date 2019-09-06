@@ -1,6 +1,7 @@
 ﻿using MapsetParser.objects;
 using MapsetVerifierFramework;
 using MapsetVerifierFramework.objects;
+using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Linq;
 
 namespace MapsetChecks.checks.general.audio
 {
+    [Check]
     public class CheckAudioInVideo : GeneralCheck
     {
         public override CheckMetadata GetMetadata() => new CheckMetadata()

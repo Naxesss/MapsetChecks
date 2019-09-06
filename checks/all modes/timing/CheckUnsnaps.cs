@@ -2,6 +2,7 @@
 using MapsetParser.statics;
 using MapsetVerifierFramework;
 using MapsetVerifierFramework.objects;
+using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Globalization;
 
 namespace MapsetChecks.checks.timing
 {
+    [Check]
     public class CheckUnsnaps : BeatmapCheck
     {
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()

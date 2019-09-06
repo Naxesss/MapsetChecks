@@ -4,6 +4,7 @@ using MapsetParser.objects.timinglines;
 using MapsetParser.statics;
 using MapsetVerifierFramework;
 using MapsetVerifierFramework.objects;
+using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ using System.Numerics;
 
 namespace MapsetChecks.checks.standard.spread
 {
+    [Check]
     public class CheckMultipleReverses : BeatmapCheck
     {
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()

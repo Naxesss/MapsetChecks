@@ -4,6 +4,7 @@ using MapsetParser.objects.hitobjects;
 using MapsetParser.statics;
 using MapsetVerifierFramework;
 using MapsetVerifierFramework.objects;
+using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
 using MapsetVerifierFramework.objects.resources;
 using System;
@@ -14,6 +15,7 @@ using System.Linq;
 
 namespace MapsetChecks.checks.compose
 {
+    [Check]
     public class CheckAudioUsage : BeatmapSetCheck
     {
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
