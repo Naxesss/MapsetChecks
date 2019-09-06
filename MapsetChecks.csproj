@@ -15,4 +15,10 @@
     <PackageReference Include="TagLib.Portable" Version="1.0.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="MapsetVerifierFramework">
+      <HintPath>..\MapsetVerifierFramework\bin\Debug\netcoreapp2.0\MapsetVerifierFramework.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
