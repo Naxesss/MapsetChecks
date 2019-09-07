@@ -81,13 +81,21 @@ namespace MapsetChecks.checks.timing
             List<UninheritedLine> lines = aBeatmap.timingLines.OfType<UninheritedLine>().ToList();
             for (int i = 1; i < lines.Count; ++i)
             {
-                // Uninherited lines 4 beats apart (varying up to 1 ms for rounding errors),
-                // with the same bpm and meter, have the same downbeat structure.
-                // At which point the latter could be replaced by an inherited line and
-                // function identically (other than the finish in the nightcore mod).
+                bool negligibleDownbeatOffset        = GetBeatOffset(lines[i - 1], lines[i], lines[i - 1].meter) <= 1;
+                bool negligibleNightcoreCymbalOffset = GetBeatOffset(lines[i - 1], lines[i], 4 * lines[i - 1].meter) <= 1;
+
+                // If the previous line omits the first barline in taiko and is less than a beat apart from the new one,
+                // then the new one does change things even if it's just a ms ahead (prevents the barline from being
+                // thicker than normal).
+                if (aBeatmap.generalSettings.mode == Beatmap.Mode.Taiko && lines[i - 1].omitsBarLine)
+                    negligibleDownbeatOffset = GetBeatOffset(lines[i - 1], lines[i], lines[i - 1].meter) == 0;
+
+                // Uninherited lines 4 (or whatever the meter is) beats apart (varying up to 1 ms for rounding errors),
+                // with the same bpm and meter, have the same downbeat structure. At which point the latter could be
+                // replaced by an inherited line and function identically (other than the finish in the nightcore mod).
                 if (lines[i - 1].bpm == lines[i].bpm &&
                     lines[i - 1].meter == lines[i].meter &&
-                    GetBeatOffset(lines[i - 1], lines[i], 4) <= 1)
+                    negligibleDownbeatOffset)
                 {
                     // Check the lines in effect both here and before to see if an inherited
                     // line is placed on top of the red line negating its changes.
@@ -102,9 +110,9 @@ namespace MapsetChecks.checks.timing
                         prevLine.sampleset == curLine.sampleset &&
                         prevLine.volume == curLine.volume)
                     {
-                        // In the nightcore mod, every 4th downbeat is inherently a
-                        // finish sound, so that technically changes things
-                        if (GetBeatOffset(lines[i - 1], lines[i], 4 * lines[i - 1].meter) <= 1)
+                        // In the nightcore mod, every 4th (or whatever the meter is) downbeat
+                        // has an added cymbal, so that technically changes things.
+                        if (negligibleNightcoreCymbalOffset)
                             yield return new Issue(GetTemplate("Problem Nothing"),
                             aBeatmap, Timestamp.Get(lines[i].offset));
                         else
@@ -113,7 +121,7 @@ namespace MapsetChecks.checks.timing
                     }
                     else
                     {
-                        if (GetBeatOffset(lines[i - 1], lines[i], 4 * lines[i - 1].meter) <= 1)
+                        if (negligibleNightcoreCymbalOffset)
                             yield return new Issue(GetTemplate("Problem Inherited"),
                                 aBeatmap, Timestamp.Get(lines[i].offset));
                         else
