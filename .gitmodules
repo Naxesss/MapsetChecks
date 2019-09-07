@@ -1,8 +1,0 @@
-[submodule "MapsetParser"]
-	path = MapsetParser
-	url = https://github.com/Naxesss/MapsetParser
-	branch = master
-[submodule "MapsetVerifierFramework"]
-	path = MapsetVerifierFramework
-	url = https://github.com/Naxesss/MapsetVerifierFramework
-	branch = master
