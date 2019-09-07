@@ -27,20 +27,25 @@ namespace MapsetChecks.checks.general.audio
                 {
                     "Purpose",
                     @"
-                    Prevents deprecated file formats for hit sounds, as well as discourages potentially detrimental ones.
+                    Discourages potentially detrimental file formats for hit sound files.
                     <image-right>
                         https://i.imgur.com/yAF6pEq.png
-                        One of the hit sound files being an mp3.
+                        One of the hit sound files using the MP3 extension, which usually means it's also an MP3 format.
                     </image>"
                 },
                 {
                     "Reasoning",
                     @"
-                    The ogg format is no longer supported and the mp3 format often includes inherent delays. As 
-                    such, the wav format is preferred for any hit sound file.
+                    The MP3 format often includes inherent delays. As such, the Wave or OGG format is preferred for 
+                    any hit sound file.
                     <note>
                         Passive objects such as slider tails are not clicked and as such do not need accurate 
                         feedback and may use the mp3 format because of this.
+                    </note>
+                    <note>
+                        Note that extension is not the same thing as format. If you take an MP3 file and change it's 
+                        extension to "".wav"", for example, it will still be an MP3 file. To change the format of a 
+                        file you need to re-encode it.
                     </note>"
                 }
             }
@@ -50,19 +55,12 @@ namespace MapsetChecks.checks.general.audio
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "ogg",
-                    new IssueTemplate(Issue.Level.Problem,
-                        "\"{0}\" is using the OGG format, which is deprecated and no longer allowed.",
-                        "path")
-                    .WithCause(
-                        "A hit sound file is using the .ogg format.") },
-
                 { "mp3",
                     new IssueTemplate(Issue.Level.Problem,
                         "\"{0}\" is using the MP3 format and is used for active hit sounding, see {1} in {2} for example.",
                         "path", "timestamp - ", "beatmap")
                     .WithCause(
-                        "A hit sound file is using the .mp3 format.") },
+                        "A hit sound file is using the MP3 format.") },
 
                 { "Unexpected Format",
                     new IssueTemplate(Issue.Level.Warning,
@@ -73,7 +71,7 @@ namespace MapsetChecks.checks.general.audio
 
                 { "Incorrect Extension",
                     new IssueTemplate(Issue.Level.Warning,
-                        "\"{0}\" is using the {1} format, but doesn't use the .wav extension.",
+                        "\"{0}\" is using the {1} format, but doesn't use the .wav or .ogg extension.",
                         "path", "actual format")
                     .WithCause(
                         "A hit sound file is using an incorrect extension.") },
@@ -109,12 +107,8 @@ namespace MapsetChecks.checks.general.audio
                         continue;
                     }
 
-                    if (actualFormat == ManagedBass.ChannelType.OGG)
-                        yield return new Issue(GetTemplate("ogg"), null,
-                            hitSoundFile);
-
                     // The .mp3 format includes inherent delays and are as such not fit for active hit sounding.
-                    else if (actualFormat == ManagedBass.ChannelType.MP3)
+                    if (actualFormat == ManagedBass.ChannelType.MP3)
                     {
                         bool foundPassiveMp3 = false;
                         foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
@@ -143,11 +137,13 @@ namespace MapsetChecks.checks.general.audio
                     }
                     else
                     {
-                        if ((ManagedBass.ChannelType.Wave & actualFormat) == 0)
+                        if ((ManagedBass.ChannelType.Wave & actualFormat) == 0 ||
+                            (ManagedBass.ChannelType.OGG & actualFormat) == 0)
+                        {
                             yield return new Issue(GetTemplate("Unexpected Format"), null,
                                 hitSoundFile, Audio.EnumToString(actualFormat));
-
-                        else if (!hitSoundFile.EndsWith(".wav"))
+                        }
+                        else if (!hitSoundFile.EndsWith(".wav") && !hitSoundFile.EndsWith(".ogg"))
                             yield return new Issue(GetTemplate("Incorrect Extension"), null,
                                 hitSoundFile, Audio.EnumToString(actualFormat));
 
