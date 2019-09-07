@@ -8,7 +8,8 @@ using System.Collections.Generic;
 namespace MapsetChecks.checks.examples
 {
     // This attribute tells the framework that it's a check it should register.
-    [Check]
+    // Since this is just a test class, we're not going to register this.
+    // [Check]
     public class CheckTest : BeatmapCheck
     {
         /// <summary> Determines which modes the check shows for, in which category the check appears, the message for the check, etc. </summary>
