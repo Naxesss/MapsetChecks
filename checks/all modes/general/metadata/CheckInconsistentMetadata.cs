@@ -106,7 +106,7 @@ namespace MapsetChecks.checks.general.metadata
             string field      = aMetadataField(aBeatmap);
             string otherField = aMetadataField(anOtherBeatmap);
 
-            if (field != otherField)
+            if ((field ?? "") != (otherField ?? ""))
                 yield return
                     new Issue(GetTemplate("Other Field"), null,
                         aField,
