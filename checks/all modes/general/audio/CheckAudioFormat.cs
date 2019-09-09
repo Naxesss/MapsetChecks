@@ -36,7 +36,7 @@ namespace MapsetChecks.checks.general.audio
                     more space than the MP3 format. OGG can be used for hit sounds, but is deprecated for song audio 
                     files, and is as such not allowed in this case.
                     <note>
-                        Note that extension is not the same thing as format. If you take an OGG file and change it's 
+                        Note that extension is not the same thing as format. If you take an OGG file and change its 
                         extension to "".mp3"", for example, it will still be a OGG file. To change the format of a 
                         file you need to re-encode it.
                     </note>

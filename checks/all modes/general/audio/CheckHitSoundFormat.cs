@@ -43,7 +43,7 @@ namespace MapsetChecks.checks.general.audio
                         feedback and may use the mp3 format because of this.
                     </note>
                     <note>
-                        Note that extension is not the same thing as format. If you take an MP3 file and change it's 
+                        Note that extension is not the same thing as format. If you take an MP3 file and change its 
                         extension to "".wav"", for example, it will still be an MP3 file. To change the format of a 
                         file you need to re-encode it.
                     </note>"
