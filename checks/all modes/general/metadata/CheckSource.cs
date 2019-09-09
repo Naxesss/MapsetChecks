@@ -43,7 +43,7 @@ namespace MapsetChecks.checks.general.metadata
             {
                 { "Problem",
                     new IssueTemplate(Issue.Level.Problem,
-                        "Source field is \"{1}\".",
+                        "Source field is \"{0}\".",
                         "field")
                     .WithCause(
                         "The source field is literally \"BMS\" case-insensitive.") }
