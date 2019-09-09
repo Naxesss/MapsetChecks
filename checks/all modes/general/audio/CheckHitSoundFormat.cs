@@ -137,7 +137,7 @@ namespace MapsetChecks.checks.general.audio
                     }
                     else
                     {
-                        if ((ManagedBass.ChannelType.Wave & actualFormat) == 0 ||
+                        if ((ManagedBass.ChannelType.Wave & actualFormat) == 0 &&
                             (ManagedBass.ChannelType.OGG & actualFormat) == 0)
                         {
                             yield return new Issue(GetTemplate("Unexpected Format"), null,
