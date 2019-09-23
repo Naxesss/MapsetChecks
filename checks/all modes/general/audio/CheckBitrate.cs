@@ -60,8 +60,7 @@ namespace MapsetChecks.checks.general.audio
                         "Audio bitrate for CBR encoded \"{0}\", {1} kbps, is too {2}.",
                         "path", "bitrate", "high/low")
                     .WithCause(
-                        "The bitrate of an audio file is constant and is either higher than 192 kbps or lower than 128 kbps. " +
-                        "Hit sounds using the OGG or MP3 format only trigger this if lower than 128 kbps.") },
+                        "The bitrate of an audio file is constant and is either higher than 192 kbps or lower than 128 kbps.") },
 
                 { "VBR",
                     new IssueTemplate(Issue.Level.Problem,
@@ -69,7 +68,23 @@ namespace MapsetChecks.checks.general.audio
                         "path", "average bitrate", "minimum bitrate", "maximum bitrate", "high/low")
                     .WithCause(
                         "The bitrate of the song audio file is variable and the average bitrate rounds to a value either higher " +
-                        "than 192 kbps or lower than 128 kbps. Hit sounds using the  or MP3 format only trigger this if lower than 128 kbps.") },
+                        "than 192 kbps or lower than 128 kbps.") },
+
+                { "CBR Hit Sound",
+                    new IssueTemplate(Issue.Level.Warning,
+                        "Audio bitrate for CBR encoded \"{0}\", {1} kbps, is really low.",
+                        "path", "bitrate")
+                    .WithCause(
+                        "Same as the other check, except only applies to hit sounds using the OGG or MP3 format and also only uses " +
+                        "the lower threshold.") },
+
+                { "VBR Hit Sound",
+                    new IssueTemplate(Issue.Level.Warning,
+                        "Average audio bitrate for VBR encoded \"{0}\", {1} kbps (ranging from {2} to {3} kbps), is really low.",
+                        "path", "average bitrate", "minimum bitrate", "maximum bitrate")
+                    .WithCause(
+                        "Same as the other check, except only applies to hit sounds using the OGG or MP3 format and also only uses " +
+                        "the lower threshold.") },
 
                 { "Exact VBR",
                     new IssueTemplate(Issue.Level.Minor,
@@ -103,9 +118,9 @@ namespace MapsetChecks.checks.general.audio
             }
         }
 
-        public IEnumerable<Issue> GetIssue(BeatmapSet aBeatmapSet, string audioPath, bool onlyLowerLimit = false)
+        public IEnumerable<Issue> GetIssue(BeatmapSet aBeatmapSet, string audioPath, bool isHitSound = false)
         {
-            string audioRelPath = PathStatic.RelativePath(aBeatmapSet.songPath, audioPath);
+            string audioRelPath = PathStatic.RelativePath(audioPath, aBeatmapSet.songPath);
             AudioFile file = new AudioFile(audioPath);
 
             // gets the bitrate in bps, so turn it into kbps
@@ -115,23 +130,34 @@ namespace MapsetChecks.checks.general.audio
 
             if (minBitrate == maxBitrate)
             {
-                if (minBitrate < 128 || (maxBitrate > 192 && !onlyLowerLimit))
-                    yield return new Issue(GetTemplate("CBR"), null,
-                        audioRelPath, $"{bitrate:0.##}",
-                        (bitrate < 128 ? "low" : "high"));
+                if (minBitrate < 128 || (maxBitrate > 192 && !isHitSound))
+                {
+                    if(!isHitSound)
+                        yield return new Issue(GetTemplate("CBR"), null,
+                            audioRelPath, $"{bitrate:0.##}",
+                            (bitrate < 128 ? "low" : "high"));
+                    else
+                        yield return new Issue(GetTemplate("CBR Hit Sound"), null,
+                            audioRelPath, $"{bitrate:0.##}");
+                }
             }
             else
             {
-                if (bitrate < 128 || (bitrate > 192 && !onlyLowerLimit))
+                if (bitrate < 128 || (bitrate > 192 && !isHitSound))
                 {
-                    if (Math.Round(bitrate) < 128 || (Math.Round(bitrate) > 192 && !onlyLowerLimit))
+                    if (Math.Round(bitrate) < 128 || (Math.Round(bitrate) > 192 && !isHitSound))
                     {
-                        yield return new Issue(GetTemplate("VBR"), null,
-                            audioRelPath,
-                            $"{bitrate:0.##}", $"{minBitrate:0.##}", $"{maxBitrate:0.##}",
-                            (bitrate < 128 ? "low" : "high"));
+                        if (!isHitSound)
+                            yield return new Issue(GetTemplate("VBR"), null,
+                                audioRelPath,
+                                $"{bitrate:0.##}", $"{minBitrate:0.##}", $"{maxBitrate:0.##}",
+                                (bitrate < 128 ? "low" : "high"));
+                        else
+                            yield return new Issue(GetTemplate("VBR Hit Sound"), null,
+                                audioRelPath,
+                                $"{bitrate:0.##}", $"{minBitrate:0.##}", $"{maxBitrate:0.##}");
                     }
-                    else
+                    else if (!isHitSound)
                     {
                         yield return new Issue(GetTemplate("Exact VBR"), null,
                             audioRelPath,
