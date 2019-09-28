@@ -75,7 +75,7 @@ namespace MapsetChecks.checks.standard.compose
                     double od = aBeatmap.difficultySettings.overallDifficulty;
 
                     double warningThreshold = 500 + (od < 5 ? (5 - od) * -21.8 : (od - 5) * 20);  // anything above this works fine
-                    double problemThreshold = 470 + (od < 5 ? (5 - od) * -17.5 : (od - 5) * 20);  // anything above this only works sometimes
+                    double problemThreshold = 450 + (od < 5 ? (5 - od) * -17 : (od - 5) * 17);  // anything above this only works sometimes
 
                     if (problemThreshold > spinner.endTime - spinner.time)
                         yield return new Issue(GetTemplate("Problem"),
