@@ -67,7 +67,7 @@ namespace MapsetChecks.checks.settings
                             <li>countdown presence (if there's enough time to show it, excluded for taiko/mania)</li>
                             <li>letterbox (if there are breaks)</li>
                             <li>widescreen support (if there's a storyboard)</li>
-                            <li>storyboard presence</li>
+                            <li>difficulty-specific storyboard presence</li>
                             <li>epilepsy warning (if there's a storyboard or video)</li>
                             <li>audio lead-in</li>
                             <li>skin preference</li>
@@ -146,13 +146,15 @@ namespace MapsetChecks.checks.settings
                             yield return new Issue(GetTemplate("Warning"), beatmap,
                                 "usage of skin sprites in storyboard", otherBeatmap);
                     }
-                    else if (
-                        aBeatmapSet.osb == null &&
+
+                    if (
                         (beatmap.HasDifficultySpecificStoryboard() ||
                         otherBeatmap.HasDifficultySpecificStoryboard()))
                     {
-                        yield return new Issue(GetTemplate("Warning"), beatmap,
-                            "storyboard", otherBeatmap);
+                        // Only warn on the difficulty with the storyboard.
+                        if(beatmap.HasDifficultySpecificStoryboard())
+                            yield return new Issue(GetTemplate("Warning"), beatmap,
+                                "difficulty-specifc storyboard presence", otherBeatmap);
                     }
 
                     // Epilepsy warning requires either a storyboard or video to show.
