@@ -47,19 +47,26 @@ namespace MapsetChecks.checks.general.audio
         {
             return new Dictionary<string, IssueTemplate>()
             {
+                { "Pure Delay",
+                    new IssueTemplate(Issue.Level.Problem,
+                        "\"{0}\" has a {1} ms period of complete silence at the start.",
+                        "path", "pure delay")
+                    .WithCause(
+                        "A hit sound file has a definite delay (complete silence) of at least 5 ms.") },
+
                 { "Delay",
                     new IssueTemplate(Issue.Level.Warning,
-                        "\"{0}\" has a delay of ~{1} ms.",
-                        "path", "delay")
+                        "\"{0}\" has a delay of ~{2} ms, of which {1} ms is complete silence.",
+                        "path", "pure delay", "delay")
                     .WithCause(
-                        "A hit sound file has very low volume for 4.5 ms or more.") },
+                        "A hit sound file has very low volume for ~5 ms or more.") },
 
                 { "Minor Delay",
                     new IssueTemplate(Issue.Level.Minor,
-                        "\"{0}\" has a delay of ~{1} ms.",
-                        "path", "delay")
+                        "\"{0}\" has a delay of ~{2} ms, of which {1} ms is complete silence.",
+                        "path", "pure delay", "delay")
                     .WithCause(
-                        "Same as the regular delay, except anything between 0.5 to 4.5 ms.") },
+                        "Same as the regular delay, except anything between 1 to 5 ms.") },
 
                 { "Unable to check",
                     new IssueTemplate(Issue.Level.Error,
@@ -95,24 +102,39 @@ namespace MapsetChecks.checks.general.audio
                         double maxStrength = peaks.Select(aValue => Math.Abs(aValue.Sum())).Max();
 
                         int delay = 0;
+                        int pureDelay = 0;
                         double strength = 0;
-                        for (; delay < peaks.Count; ++delay)
+                        while (delay + pureDelay < peaks.Count)
                         {
                             strength += Math.Abs(peaks[delay].Sum());
 
                             if (strength >= maxStrength / 2)
                                 break;
 
-                            strength *= 0.75;
+                            strength *= 0.95;
+
+                            // The delay added by MP3 encoding still has very slight volume where it's basically silent.
+                            if (strength < 0.001)
+                            {
+                                strength = 0;
+                                ++pureDelay;
+                                ++delay;
+                            }
+                            else
+                                ++delay;
                         }
 
-                        if (delay >= 5)
-                            yield return new Issue(GetTemplate("Delay"), null,
-                                hsFile, $"{delay:0.##}");
+                        if (pureDelay >= 5)
+                            yield return new Issue(GetTemplate("Pure Delay"), null,
+                                hsFile, $"{pureDelay:0.##}");
 
-                        else if (delay >= 1)
+                        else if (delay + pureDelay >= 5)
+                            yield return new Issue(GetTemplate("Delay"), null,
+                                hsFile, $"{pureDelay:0.##}", $"{delay:0.##}");
+
+                        else if (delay + pureDelay >= 1)
                             yield return new Issue(GetTemplate("Minor Delay"), null,
-                                hsFile, $"{delay:0.##}");
+                                hsFile, $"{pureDelay:0.##}", $"{delay:0.##}");
                     }
                 }
                 else
