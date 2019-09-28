@@ -1,4 +1,5 @@
 ﻿using MapsetParser.objects;
+using MapsetParser.statics;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
@@ -43,12 +44,34 @@ namespace MapsetChecks.checks.general.audio
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "Imbalance",
+                { "Warning Silent",
                     new IssueTemplate(Issue.Level.Warning,
-                        "\"{0}\" has a notably louder {1} channel.",
+                        "\"{0}\" is completely silent in the {1} channel.",
                         "path", "left/right")
                     .WithCause(
-                        "One of the channels of a hit sound has double the total volume of the other") },
+                        "One of the channels of a hit sound has no volume, but still 2 channels.") },
+
+                { "Warning Common",
+                    new IssueTemplate(Issue.Level.Warning,
+                        "\"{0}\" has a notably louder {1} channel. Can be found commonly in for example {2}.",
+                        "path", "left/right", "[difficulty]")
+                    .WithCause(
+                        "One of the channels of a hit sound has at least half the total volume of the other. " +
+                        "The hit sound must also be used on average once every 10 seconds in a map.") },
+
+                { "Warning Timestamp",
+                    new IssueTemplate(Issue.Level.Warning,
+                        "\"{0}\" has a notably louder {1} channel. Used pretty frequently leading up to {2}.",
+                        "path", "left/right", "timestamp in [difficulty]")
+                    .WithCause(
+                        "Same as the other check, except only happens when the hit sound is used frequently in a short timespan.") },
+
+                { "Minor",
+                    new IssueTemplate(Issue.Level.Minor,
+                        "\"{0}\" has a notably louder {1} channel, not a huge deal in this case though.",
+                        "path", "left/right")
+                    .WithCause(
+                        "One of the channels of a hit sound has half the total volume of the other.") },
 
                 { "Unable to check",
                     new IssueTemplate(Issue.Level.Error,
@@ -88,10 +111,81 @@ namespace MapsetChecks.checks.general.audio
 
                         leftSum = peaks.Sum(aPeak => aPeak?[0] ?? 0);
                         rightSum = peaks.Sum(aPeak => aPeak.Count() > 1 ? aPeak?[1] ?? 0 : 0);
-                        
-                        if (leftSum / 2 > rightSum || rightSum / 2 > leftSum)
-                            yield return new Issue(GetTemplate("Imbalance"), null,
-                                hsFile, (leftSum - rightSum > 0 ? "left" : "right"));
+
+                        // No peaks means 44 byte silent.
+                        if (peaks.Count > 0)
+                        {
+                            if (leftSum == 0 || rightSum == 0)
+                            {
+                                yield return new Issue(GetTemplate("Warning Silent"), null,
+                                    hsFile, leftSum - rightSum > 0 ? "left" : "right");
+                                break;
+                            }
+
+                            // 2 would mean one is double the sum of the other.
+                            float relativeVolume =
+                                leftSum > rightSum ?
+                                    leftSum / rightSum :
+                                    rightSum / leftSum;
+
+                            if (relativeVolume >= 2)
+                            {
+                                // Imbalance is only an issue if it is used frequently in a short timespan or it's overall common.
+                                // So here we do a scoring mechanism to do the former part.
+                                int uses = 0;
+                                double prevTime = 0;
+                                double frequencyScore = 0;
+                                double highestFrequencyScore = 0;
+                                string timestamp = "";
+                                foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
+                                {
+                                    prevTime = beatmap.hitObjects.FirstOrDefault()?.time ?? 0;
+                                    foreach (HitObject hitObject in beatmap.hitObjects)
+                                    {
+                                        if (hitObject.GetUsedHitSamples().Any(aSample => hsFile.StartsWith(aSample.GetFileName())))
+                                        {
+                                            frequencyScore *= Math.Pow(0.8, 1 / 1000 * prevTime);
+                                            prevTime = hitObject.time;
+
+                                            ++uses;
+                                            frequencyScore += beatmap.generalSettings.mode == Beatmap.Mode.Mania ? 0.5 : 1;
+
+                                            if (highestFrequencyScore < frequencyScore)
+                                                highestFrequencyScore = frequencyScore;
+
+                                            if (frequencyScore >= 10 / relativeVolume)
+                                            {
+                                                timestamp = $"{Timestamp.Get(hitObject)} in {beatmap}";
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    if (timestamp.Length > 0)
+                                        break;
+                                }
+
+                                if (timestamp.Length > 0)
+                                    yield return new Issue(GetTemplate("Warning Timestamp"), null,
+                                        hsFile, leftSum - rightSum > 0 ? "left" : "right", timestamp);
+
+                                // For the latter part we arbitrarily choose 10 seconds on average as common.
+                                // Has to be done on each map individually as hit sounding can vary between them.
+                                else
+                                {
+                                    Beatmap commonMap =
+                                        aBeatmapSet.beatmaps.FirstOrDefault(aBeatmap =>
+                                            aBeatmap.GetDrainTime() /
+                                            (aBeatmap.generalSettings.mode == Beatmap.Mode.Mania ? uses / 2 : uses) > 10000);
+                                    if (commonMap != null)
+                                        yield return new Issue(GetTemplate("Warning Common"), null,
+                                            hsFile, leftSum - rightSum > 0 ? "left" : "right", commonMap);
+                                    else
+                                        yield return new Issue(GetTemplate("Minor"), null,
+                                            hsFile, leftSum - rightSum > 0 ? "left" : "right");
+                                }
+                            }
+                        }
                     }
                 }
                 else
