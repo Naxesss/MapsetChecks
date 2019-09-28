@@ -98,7 +98,7 @@ namespace MapsetChecks.checks.hit_sounds
                     {
                         for (int i = 0; i < slider.edgeAmount; ++i)
                         {
-                            double time = Math.Floor(slider.GetCurveDuration() * i);
+                            double time = Timestamp.Round(slider.time + slider.GetCurveDuration() * i);
 
                             if (i == slider.edgeAmount - 1)
                                 time = slider.endTime;
