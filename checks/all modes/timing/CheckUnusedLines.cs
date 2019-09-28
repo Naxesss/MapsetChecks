@@ -87,7 +87,11 @@ namespace MapsetChecks.checks.timing
                 // If the previous line omits the first barline in taiko and is less than a beat apart from the new one,
                 // then the new one does change things even if it's just a ms ahead (prevents the barline from being
                 // thicker than normal).
-                if (aBeatmap.generalSettings.mode == Beatmap.Mode.Taiko && lines[i - 1].omitsBarLine)
+                bool canOmitBarLine =
+                    aBeatmap.generalSettings.mode == Beatmap.Mode.Taiko ||
+                    aBeatmap.generalSettings.mode == Beatmap.Mode.Mania;
+
+                if (canOmitBarLine && lines[i - 1].omitsBarLine)
                     negligibleDownbeatOffset = GetBeatOffset(lines[i - 1], lines[i], lines[i - 1].meter) == 0;
 
                 // Uninherited lines 4 (or whatever the meter is) beats apart (varying up to 1 ms for rounding errors),
@@ -103,7 +107,7 @@ namespace MapsetChecks.checks.timing
                     TimingLine curLine = aBeatmap.GetTimingLine<UninheritedLine>(lines[i].offset);
 
                     // If a line omits the first bar line we just treat it as used.
-                    if (curLine.omitsBarLine)
+                    if (canOmitBarLine && curLine.omitsBarLine)
                         continue;
 
                     if (prevLine.kiai == curLine.kiai &&
