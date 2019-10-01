@@ -23,17 +23,23 @@ namespace MapsetChecks.checks.general.audio
                 {
                     "Purpose",
                     @"
-                    Preventing issues with soundcards."
+                    Ensuring hit sounds play consistently across multiple sound cards."
                 },
                 {
                     "Reasoning",
                     @"
-                    Some soundcards have issues playing audio files which are less than 100 ms in length. Muted hit sounds are 
-                    fine having 0 ms duration though, since they don't play audio anyway.
+                    Hit sounds shorter than ~25 ms (depending on soundcard) can result in no sound being played in-game. 
+                    This makes it equivalent to a completely silent hit sound for some, while not for others. Muted hit 
+                    sounds are fine having 0 ms duration though, since they don't play audio anyway.
                     <image>
-                        https://i.imgur.com/0CpU3Gh.png
-                        A hit sound which is less than 100 ms long, as shown in Audacity.
+                        https://i.imgur.com/y9Zmxp3.png
+                        A 2.95 ms long hit sound from the example, as shown in Audacity.
                     </image>"
+                },
+                {
+                    "Example",
+                    @"""soft-hitnormal.wav"" is less than 25 ms long (2.95 ms) in https://osu.ppy.sh/beatmapsets/1527, 
+                    see 00:25:880 (1) - . Set music to 0% and effect to 100% for clarity."
                 }
             }
         };
@@ -44,10 +50,10 @@ namespace MapsetChecks.checks.general.audio
             {
                 { "Length",
                     new IssueTemplate(Issue.Level.Problem,
-                        "\"{0}\" is less than 100 ms long ({1} ms).",
+                        "\"{0}\" is less than 25 ms long ({1} ms).",
                         "path", "length")
                     .WithCause(
-                        "A hit sound file is less than 100 ms long, but greater than 0 ms.") },
+                        "A hit sound file is shorter than 25 ms, but greater than 0 ms.") },
 
                 { "Unable to check",
                     new IssueTemplate(Issue.Level.Error,
