@@ -147,15 +147,10 @@ namespace MapsetChecks.checks.settings
                                 "usage of skin sprites in storyboard", otherBeatmap);
                     }
 
-                    if (
-                        (beatmap.HasDifficultySpecificStoryboard() ||
-                        otherBeatmap.HasDifficultySpecificStoryboard()))
-                    {
-                        // Only warn on the difficulty with the storyboard.
-                        if(beatmap.HasDifficultySpecificStoryboard())
-                            yield return new Issue(GetTemplate("Warning"), beatmap,
-                                "difficulty-specifc storyboard presence", otherBeatmap);
-                    }
+                    // Only warn on the difficulty with the storyboard.
+                    if (beatmap.HasDifficultySpecificStoryboard() && !otherBeatmap.HasDifficultySpecificStoryboard())
+                        yield return new Issue(GetTemplate("Warning"), beatmap,
+                            "difficulty-specifc storyboard presence", otherBeatmap);
 
                     // Epilepsy warning requires either a storyboard or video to show.
                     if (beatmap.HasDifficultySpecificStoryboard() &&
