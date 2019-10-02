@@ -33,12 +33,12 @@ namespace MapsetChecks.checks.general.audio
                     sounds are fine having 0 ms duration though, since they don't play audio anyway.
                     <image>
                         https://i.imgur.com/y9Zmxp3.png
-                        A 2.95 ms long hit sound from the example, as shown in Audacity.
+                        The 2.95 ms long hit sound from the example, as shown in Audacity.
                     </image>"
                 },
                 {
                     "Example",
-                    @"""soft-hitnormal.wav"" is less than 25 ms long (2.95 ms) in https://osu.ppy.sh/beatmapsets/1527, 
+                    @"""soft-hitnormal.wav"" is shorter than 25 ms (2.95 ms) in https://osu.ppy.sh/beatmapsets/1527, 
                     see 00:25:880 (1) - . Set music to 0% and effect to 100% for clarity."
                 }
             }
@@ -50,10 +50,10 @@ namespace MapsetChecks.checks.general.audio
             {
                 { "Length",
                     new IssueTemplate(Issue.Level.Problem,
-                        "\"{0}\" is less than 25 ms long ({1} ms).",
+                        "\"{0}\" is shorter than 25 ms ({1} ms).",
                         "path", "length")
                     .WithCause(
-                        "A hit sound file is shorter than 25 ms, but greater than 0 ms.") },
+                        "A hit sound file is shorter than 25 ms and longer than 0 ms.") },
 
                 { "Unable to check",
                     new IssueTemplate(Issue.Level.Error,
