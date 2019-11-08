@@ -39,6 +39,17 @@ namespace MapsetChecks.checks.general.files
                     </note>
                     <br \>
                     Official content distributing malicious .exe files or similar would also not reflect very well upon the game."
+                },
+                {
+                    "Scorebar Ki-Danger & Marker",
+                    @"
+                    `scorebar-ki`, `scorebar-kidanger`, and `scorebar-kidanger2`, act strangely when `scorebar-marker` is missing.
+                    The latter can simply be a blank file as it does not show up in-game for osu-stable regardless.
+                    <image>
+                        https://i.imgur.com/TnXmgt9.png
+                        Spreadsheet over which scorebar elements are used. Only consistent regardless of user settings when both
+                        marker and ki elements exist.
+                    </image>"
                 }
             }
         };
