@@ -132,13 +132,14 @@ namespace MapsetChecks.checks.general.audio
                             {
                                 // Imbalance is only an issue if it is used frequently in a short timespan or it's overall common.
                                 // So here we do a scoring mechanism to do the former part.
-                                int uses = 0;
+                                Dictionary<Beatmap, int> uses = new Dictionary<Beatmap, int>();
                                 double prevTime = 0;
                                 double frequencyScore = 0;
                                 double highestFrequencyScore = 0;
                                 string timestamp = "";
                                 foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
                                 {
+                                    uses[beatmap] = 0;
                                     prevTime = beatmap.hitObjects.FirstOrDefault()?.time ?? 0;
                                     foreach (HitObject hitObject in beatmap.hitObjects)
                                     {
@@ -147,7 +148,7 @@ namespace MapsetChecks.checks.general.audio
                                             frequencyScore *= Math.Pow(0.8, 1 / 1000 * prevTime);
                                             prevTime = hitObject.time;
 
-                                            ++uses;
+                                            ++uses[beatmap];
                                             frequencyScore += beatmap.generalSettings.mode == Beatmap.Mode.Mania ? 0.5 : 1;
 
                                             if (highestFrequencyScore < frequencyScore)
@@ -175,8 +176,19 @@ namespace MapsetChecks.checks.general.audio
                                 {
                                     Beatmap commonMap =
                                         aBeatmapSet.beatmaps.FirstOrDefault(aBeatmap =>
-                                            aBeatmap.GetDrainTime() /
-                                            (aBeatmap.generalSettings.mode == Beatmap.Mode.Mania ? uses / 2 : uses) > 10000);
+                                        {
+                                            if (uses[aBeatmap] == 0)
+                                                return false;
+
+                                            // Mania can have multiple objects per moment in time, so we arbitrarily divide its usage by 2.
+                                            return
+                                                aBeatmap.GetDrainTime() /
+                                                (aBeatmap.generalSettings.mode == Beatmap.Mode.Mania ?
+                                                        uses[aBeatmap] / 2 :
+                                                        uses[aBeatmap])
+                                                    > 10000;
+                                        });
+
                                     if (commonMap != null)
                                         yield return new Issue(GetTemplate("Warning Common"), null,
                                             hsFile, leftSum - rightSum > 0 ? "left" : "right", commonMap);
