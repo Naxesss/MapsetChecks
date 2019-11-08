@@ -37,7 +37,12 @@ namespace MapsetChecks.checks.general.files
                     By being unable to update a beatmap, potentially important fixes can easily be missed out on. This mostly 
                     affects players who download the map in qualified, as it is more visible to the public while not necessarily 
                     being in its final version.
-                    <br \><br \>
+                    <br><br>
+                    The name of the file seems to determine how osu initially checks the map for updates. This is then presumably 
+                    stored in some local database because deleting and re-downloading doesn't seem to affect it. So if you 
+                    already had the map when the file name was correct, it may properly update for you while showing ""not 
+                    submitted"" for others downloading it for the first time.
+                    <br><br>
                     For some Windows 10 users, file names longer than 132 characters cannot properly be unzipped by the game and 
                     simply vanish instead.
                     <image>
