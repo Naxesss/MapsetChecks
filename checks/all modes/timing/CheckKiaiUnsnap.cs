@@ -69,6 +69,10 @@ namespace MapsetChecks.checks.timing
         {
             foreach (TimingLine line in aBeatmap.timingLines.Where(aLine => aLine.kiai))
             {
+                // If we're inside of kiai, a new line with kiai won't cause kiai to start again.
+                if (aBeatmap.GetTimingLine(line.offset - 1).kiai)
+                    continue;
+
                 double unsnap = aBeatmap.GetPracticalUnsnap(line.offset);
 
                 if (Math.Abs(unsnap) >= 10)
