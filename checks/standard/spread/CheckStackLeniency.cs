@@ -39,7 +39,7 @@ namespace MapsetChecks.checks.standard.spread
                 {
                     "Purpose",
                     @"
-                    Preventing objects from stacking when close in time for easy to insane difficulties."
+                    Preventing objects from perfectly, or almost perfectly, overlapping when close in time for easy to insane difficulties."
                 },
                 {
                     "Reasoning",
@@ -61,6 +61,13 @@ namespace MapsetChecks.checks.standard.spread
                         "timestamp - ", "stack leniency")
                     .WithCause(
                         "Two objects are overlapping perfectly and are less than 1/1, 1/1, 1/2, or 1/4 apart (assuming 160 BPM), for E/N/H/I respectively.") },
+
+                { "Problem Failed Stack",
+                    new IssueTemplate(Issue.Level.Problem,
+                        "{0} Failed stack, objects are practically perfectly stacked.",
+                        "timestamp - ")
+                    .WithCause(
+                        "Same as the other check, except applies to non-stacked objects within 4 px of one another.") },
 
                 { "Warning",
                     new IssueTemplate(Issue.Level.Warning,
@@ -85,18 +92,28 @@ namespace MapsetChecks.checks.standard.spread
                     iteratedObjects.Add(hitObject);
                     foreach (Stackable otherHitObject in aBeatmap.hitObjects.OfType<Stackable>().Except(iteratedObjects))
                     {
-                        if (hitObject.Position == otherHitObject.Position &&
-                            otherHitObject.time - hitObject.time < timeGap)
+                        if (otherHitObject.time - hitObject.time < timeGap)
                         {
-                            int requiredStackLeniency =
-                                (int)Math.Ceiling((otherHitObject.time - hitObject.time) /
-                                    (aBeatmap.difficultySettings.GetFadeInTime() * 0.1));
+                            if (hitObject.Position == otherHitObject.Position)
+                            {
+                                int requiredStackLeniency =
+                                    (int)Math.Ceiling((otherHitObject.time - hitObject.time) /
+                                        (aBeatmap.difficultySettings.GetFadeInTime() * 0.1));
 
-                            string template = diffIndex == (int)Beatmap.Difficulty.Insane ? "Warning" : "Problem";
+                                string template = diffIndex == (int)Beatmap.Difficulty.Insane ? "Warning" : "Problem";
 
-                            yield return new Issue(GetTemplate(template), aBeatmap,
-                                Timestamp.Get(hitObject, otherHitObject), requiredStackLeniency)
-                                .ForDifficulties((Beatmap.Difficulty)diffIndex);
+                                yield return new Issue(GetTemplate(template), aBeatmap,
+                                    Timestamp.Get(hitObject, otherHitObject), requiredStackLeniency)
+                                    .ForDifficulties((Beatmap.Difficulty)diffIndex);
+                            }
+
+                            // Objects not stacked within 4 px of one another are considered failed stacks.
+                            else if ((hitObject.Position - otherHitObject.Position).LengthSquared() < 16)
+                            {
+                                yield return new Issue(GetTemplate("Problem Failed Stack"), aBeatmap,
+                                    Timestamp.Get(hitObject, otherHitObject))
+                                    .ForDifficulties((Beatmap.Difficulty)diffIndex);
+                            }
                         }
                     }
                 }
