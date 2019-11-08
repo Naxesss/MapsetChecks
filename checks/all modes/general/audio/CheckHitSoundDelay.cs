@@ -1,4 +1,5 @@
 ﻿using MapsetParser.objects;
+using MapsetParser.objects.hitobjects;
 using MapsetVerifierFramework;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
@@ -26,7 +27,7 @@ namespace MapsetChecks.checks.general.audio
                 {
                     "Purpose",
                     @"
-                    Ensuring hit sounds provide proper feedback for how early or late the player clicked.
+                    Ensuring hit sounds which are used on active hit objects provide proper feedback for how early or late the player clicked.
                     <image>
                         https://i.imgur.com/LRpgqcJ.png
                         A hit sound which is delayed by ~10 ms, as shown in Audacity. Note that audacity shows its 
@@ -52,14 +53,14 @@ namespace MapsetChecks.checks.general.audio
                         "\"{0}\" has a {1} ms period of complete silence at the start.",
                         "path", "pure delay")
                     .WithCause(
-                        "A hit sound file has a definite delay (complete silence) of at least 5 ms.") },
+                        "A hit sound file used on an active hit object has a definite delay (complete silence) of at least 5 ms.") },
 
                 { "Delay",
                     new IssueTemplate(Issue.Level.Warning,
                         "\"{0}\" has a delay of ~{2} ms, of which {1} ms is complete silence.",
                         "path", "pure delay", "delay")
                     .WithCause(
-                        "A hit sound file has very low volume for ~5 ms or more.") },
+                        "A hit sound file used on an active hit object has very low volume for ~5 ms or more.") },
 
                 { "Minor Delay",
                     new IssueTemplate(Issue.Level.Minor,
@@ -81,6 +82,11 @@ namespace MapsetChecks.checks.general.audio
         {
             foreach (string hsFile in aBeatmapSet.hitSoundFiles)
             {
+                // Only hit sounds on active hit objects need to be delay-free.
+                bool isActive = IsActive(aBeatmapSet, hsFile);
+                if (!isActive)
+                    continue;
+
                 string hsPath = Path.Combine(aBeatmapSet.songPath, hsFile);
 
                 List<float[]> peaks = null;
@@ -141,6 +147,29 @@ namespace MapsetChecks.checks.general.audio
                     yield return new Issue(GetTemplate("Unable to check"), null,
                         hsFile, exception);
             }
+        }
+
+        public bool IsActive(BeatmapSet aBeatmapSet, string aHitSoundFile)
+        {
+            foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
+            {
+                foreach (HitObject hitObject in beatmap.hitObjects)
+                {
+                    if (hitObject is Spinner)
+                        continue;
+
+                    // Only the hit sound edge at which the object is clicked is considered active.
+                    if (hitObject.GetUsedHitSamples().Any(aSample =>
+                            aSample.time == hitObject.time &&
+                            aSample.hitSource == HitSample.HitSource.Edge &&
+                            aHitSoundFile.StartsWith(aSample.GetFileName() + ".")))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }
