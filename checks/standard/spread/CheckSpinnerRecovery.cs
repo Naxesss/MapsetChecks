@@ -83,63 +83,79 @@ namespace MapsetChecks.checks.standard.spread
         {
             foreach (HitObject hitObject in aBeatmap.hitObjects)
             {
-                if (hitObject is Spinner spinner)
+                if (!(hitObject is Spinner spinner))
+                    continue;
+
+                foreach (Issue issue in GetLengthIssues(aBeatmap, spinner))
+                    yield return issue;
+
+                foreach (Issue issue in GetRecoveryIssues(aBeatmap, spinner))
+                    yield return issue;
+            }
+        }
+
+        // Equal to the ms length of a beat in 180 BPM divided by the same thing in 240 BPM.
+        // So when multiplied by the expected time, we get the time that the Ranking Criteria wanted, which is based on 180 BPM.
+        private readonly double expectedMultiplier = 4 / 3d;
+
+        private IEnumerable<Issue> GetLengthIssues(Beatmap aBeatmap, Spinner aSpinner)
+        {
+            double spinnerTime = aSpinner.endTime - aSpinner.time;
+            double[] spinnerTimeExpected = new double[] { 1000, 750, 500 }; // 4, 3 and 2 beats respectively, 240 bpm
+
+            for (int diffIndex = 0; diffIndex < spinnerTimeExpected.Length; ++diffIndex)
+            {
+                double expectedLength = Math.Ceiling(spinnerTimeExpected[diffIndex] * expectedMultiplier);
+
+                double problemThreshold = spinnerTimeExpected[diffIndex];
+                double warningThreshold = spinnerTimeExpected[diffIndex] * 1.2; // same thing but 200 bpm instead
+
+                if (spinnerTime < problemThreshold)
+                    yield return new Issue(GetTemplate("Problem Length"), aBeatmap,
+                        Timestamp.Get(aSpinner), spinnerTime, expectedLength)
+                        .ForDifficulties((Beatmap.Difficulty)diffIndex);
+
+                else if (spinnerTime < warningThreshold)
+                    yield return new Issue(GetTemplate("Warning Length"), aBeatmap,
+                        Timestamp.Get(aSpinner), spinnerTime, expectedLength)
+                        .ForDifficulties((Beatmap.Difficulty)diffIndex);
+            }
+        }
+
+        private IEnumerable<Issue> GetRecoveryIssues(Beatmap aBeatmap, Spinner aSpinner)
+        {
+            HitObject nextObject = aBeatmap.GetNextHitObject(aSpinner.time);
+
+            // Do not check time between two spinners since all you'd need to do is keep spinning.
+            if (nextObject != null && !(nextObject is Spinner))
+            {
+                double recoveryTime = nextObject.time - aSpinner.endTime;
+
+                UninheritedLine line = aBeatmap.GetTimingLine<UninheritedLine>(nextObject.time);
+                double bpmScaling = GetScaledTiming(line.bpm);
+                double recoveryTimeScaled = recoveryTime / bpmScaling;
+
+                double[] recoveryTimeExpected = new double[] { 1000, 500, 250 }; // 4, 2 and 1 beats respectively, 240 bpm
+
+                // Tries both scaled and regular recoveries, and only if both are exceeded does it create an issue.
+                for (int diffIndex = 0; diffIndex < recoveryTimeExpected.Length; ++diffIndex)
                 {
-                    HitObject nextObject = aBeatmap.GetNextHitObject(hitObject.time);
+                    // Picks whichever is greatest of the scaled and regular versions.
+                    double expectedScaledMultiplier = (bpmScaling < 1 ? bpmScaling : 1);
+                    double expectedRecovery = Math.Ceiling(recoveryTimeExpected[diffIndex] * expectedScaledMultiplier * expectedMultiplier);
 
-                    // Don't check time between two spinners since all you'd need to do is keep spinning.
-                    while (nextObject != null && nextObject is Spinner)
-                        nextObject = aBeatmap.GetNextHitObject(nextObject.time);
+                    double problemThreshold = recoveryTimeExpected[diffIndex];
+                    double warningThreshold = recoveryTimeExpected[diffIndex] * 1.2;
 
-                    if (nextObject != null)
-                    {
-                        double spinnerTime = spinner.endTime - spinner.time;
-                        double recoveryTime = nextObject.time - spinner.endTime;
-                        
-                        UninheritedLine line = aBeatmap.GetTimingLine<UninheritedLine>(nextObject.time);
-                        double bpmScaling = GetScaledTiming(line.bpm);
-                        double recoveryTimeScaled = recoveryTime / bpmScaling;
+                    if (recoveryTimeScaled < problemThreshold && recoveryTime < problemThreshold)
+                        yield return new Issue(GetTemplate("Problem Recovery"), aBeatmap,
+                            Timestamp.Get(aSpinner, nextObject), recoveryTime, expectedRecovery)
+                            .ForDifficulties((Beatmap.Difficulty)diffIndex);
 
-                        // Equal to the ms length of a beat in 180 BPM divided by the same thing in 240 BPM.
-                        // So when multiplied by the expected time, we get the time that the Ranking Criteria wanted, which is based on 180 BPM.
-                        double expectedMultiplier = 4 / 3d;
-                        
-                        double[] spinnerTimeExpected = new double[] { 1000, 500, 250 }; // 4, 2 and 1 beats respectively, 240 bpm
-
-                        for (int diffIndex = 0; diffIndex < spinnerTimeExpected.Length; ++diffIndex)
-                        {
-                            if (spinnerTime < spinnerTimeExpected[diffIndex])
-                                yield return new Issue(GetTemplate("Problem Length"), aBeatmap,
-                                    Timestamp.Get(spinner), spinnerTime, Math.Ceiling(spinnerTimeExpected[diffIndex] * expectedMultiplier))
-                                    .ForDifficulties((Beatmap.Difficulty)diffIndex);
-
-                            else if (spinnerTime < spinnerTimeExpected[diffIndex] * 1.2) // same thing but 200 bpm instead
-                                yield return new Issue(GetTemplate("Warning Length"), aBeatmap,
-                                    Timestamp.Get(spinner), spinnerTime, Math.Ceiling(spinnerTimeExpected[diffIndex] * expectedMultiplier))
-                                    .ForDifficulties((Beatmap.Difficulty)diffIndex);
-                        }
-                        
-                        double[] recoveryTimeExpected = new double[] { 1000, 500, 250 }; // 4, 2 and 1 beats respectively, 240 bpm
-                        
-                        // Tries both scaled and regular recoveries, and only if both are exceeded does it create an issue.
-                        for (int diffIndex = 0; diffIndex < recoveryTimeExpected.Length; ++diffIndex)
-                        {
-                            // Picks whichever is greatest of the scaled and regular versions.
-                            double expectedScaledMultiplier = (bpmScaling < 1 ? bpmScaling : 1);
-
-                            if (recoveryTimeScaled < recoveryTimeExpected[diffIndex] && recoveryTime < recoveryTimeExpected[diffIndex])
-                                yield return new Issue(GetTemplate("Problem Recovery"), aBeatmap,
-                                    Timestamp.Get(spinner, nextObject), recoveryTime,
-                                    Math.Ceiling(recoveryTimeExpected[diffIndex] * expectedScaledMultiplier * expectedMultiplier))
-                                    .ForDifficulties((Beatmap.Difficulty)diffIndex);
-
-                            else if (recoveryTimeScaled < recoveryTimeExpected[diffIndex] * 1.2 && recoveryTime < recoveryTimeExpected[diffIndex] * 1.2)
-                                yield return new Issue(GetTemplate("Warning Recovery"), aBeatmap,
-                                    Timestamp.Get(spinner, nextObject), recoveryTime,
-                                    Math.Ceiling(recoveryTimeExpected[diffIndex] * expectedScaledMultiplier * expectedMultiplier))
-                                    .ForDifficulties((Beatmap.Difficulty)diffIndex);
-                        }
-                    }
+                    else if (recoveryTimeScaled < warningThreshold && recoveryTime < warningThreshold)
+                        yield return new Issue(GetTemplate("Warning Recovery"), aBeatmap,
+                            Timestamp.Get(aSpinner, nextObject), recoveryTime, expectedRecovery)
+                            .ForDifficulties((Beatmap.Difficulty)diffIndex);
                 }
             }
         }
