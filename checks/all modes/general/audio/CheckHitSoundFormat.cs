@@ -110,7 +110,7 @@ namespace MapsetChecks.checks.general.audio
                     // The .mp3 format includes inherent delays and are as such not fit for active hit sounding.
                     if (actualFormat == ManagedBass.ChannelType.MP3)
                     {
-                        bool foundPassiveMp3 = false;
+                        bool foundActiveMp3 = false;
                         foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
                         {
                             foreach (HitObject hitObject in beatmap.hitObjects)
@@ -127,11 +127,11 @@ namespace MapsetChecks.checks.general.audio
                                     yield return new Issue(GetTemplate("mp3"), null,
                                         hitSoundFile, Timestamp.Get(hitObject), beatmap);
 
-                                    foundPassiveMp3 = true;
+                                    foundActiveMp3 = true;
                                     break;
                                 }
                             }
-                            if (foundPassiveMp3)
+                            if (foundActiveMp3)
                                 break;
                         }
                     }
