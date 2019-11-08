@@ -96,23 +96,21 @@ namespace MapsetChecks.checks.general.metadata
                 
                 aField => new Regex("(?<! |\\(|（)feat\\.") .IsMatch(aField) ? "whitespace before \"feat.\""    : null,
                 aField => new Regex("(?<! )(\\(|（)feat\\.").IsMatch(aField) ? "whitespace before \"(feat.\""   : null,
-                aField => new Regex("(?<! )vs\\.")          .IsMatch(aField) ? "whitespace before \"vs.\""      : null,
-                aField => new Regex("(?<! )&")              .IsMatch(aField) ? "whitespace before \"&\""        : null,
+                aField => new Regex("(?<! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])vs\\.")          .IsMatch(aField) ? "whitespace before \"vs.\""      : null,
+                aField => new Regex("(?<! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])&")              .IsMatch(aField) ? "whitespace before \"&\""        : null,
 
                 aField => new Regex("CV(?!:[ 一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]|：)")  .IsMatch(aField) ? "whitespace after \"CV:\" or full-width colon \"：\"" : null,
                 aField => new Regex(",(?![ 一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])")       .IsMatch(aField) ? "whitespace after \",\" or full-width comma \"、\""   : null,
 
-                aField => new Regex("feat\\.(?! )") .IsMatch(aField) ? "whitespace after \"feat.\"" : null,
-                aField => new Regex("vs\\.(?! )")   .IsMatch(aField) ? "whitespace after \"vs.\""   : null,
-                aField => new Regex("&(?! )")       .IsMatch(aField) ? "whitespace after \"&\""     : null,
+                aField => new Regex("feat\\.(?! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])") .IsMatch(aField) ? "whitespace after \"feat.\"" : null,
+                aField => new Regex("vs\\.(?! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])")   .IsMatch(aField) ? "whitespace after \"vs.\""   : null,
+                aField => new Regex("&(?! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])")       .IsMatch(aField) ? "whitespace after \"&\""     : null,
             };
 
             MetadataSettings metadata = beatmap.metadataSettings;
             List<Tuple<string, string>> fields = new List<Tuple<string, string>>()
                 { new Tuple<string, string>(metadata.artist,         "artist"),
-                  new Tuple<string, string>(metadata.artistUnicode,  "artist unicode"),
-                  new Tuple<string, string>(metadata.title,          "title"),
-                  new Tuple<string, string>(metadata.titleUnicode,   "title unicode") };
+                  new Tuple<string, string>(metadata.artistUnicode,  "artist unicode") };
 
             List<Tuple<Tuple<string, string>, string, bool>> issueMessages = new List<Tuple<Tuple<string, string>, string, bool>>();
             foreach (Tuple<string, string> field in fields)
