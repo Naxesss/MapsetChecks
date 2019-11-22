@@ -19,7 +19,7 @@ namespace MapsetChecks.checks.timing
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
         {
             Category = "Timing",
-            Message = "Unused uninherited lines.",
+            Message = "Unused timing lines.",
             Author = "Naxess",
             
             Documentation = new Dictionary<string, string>()
@@ -27,14 +27,16 @@ namespace MapsetChecks.checks.timing
                 {
                     "Purpose",
                     @"
-                    Ensuring there are no unused uninherited lines in the beatmap."
+                    Ensuring there are no unused timing lines in the beatmap."
                 },
                 {
                     "Reasoning",
                     @"
                     When placing uninherited lines on-beat with the previous uninherited line, timing may shift 1 ms forwards 
                     due to rounding errors. This means afer 20 uninherited lines placed in this way, timing may shift up to 
-                    20 ms at the end. They may also affect the nightcore mod and main menu pulsing depending on placement."
+                    20 ms at the end. They may also affect the nightcore mod and main menu pulsing depending on placement.
+                    Unused inherited timing points aren't as problematic, but there's no reason to keep them around. The
+                    mapper may have intended to use these timing points for something, but forgot to change their settings."
                 }
             }
         };
@@ -72,7 +74,13 @@ namespace MapsetChecks.checks.timing
                         "timestamp - ")
                     .WithCause(
                         "An uninherited line is not placed on a multiple of 4 downbeats away from the previous uninherited line, " +
-                        "and only changes settings which an inherited line could do instead.") }
+                        "and only changes settings which an inherited line could do instead.") },
+
+                { "Problem Useless Inherited",
+                    new IssueTemplate(Issue.Level.Problem,
+                        "{0} Changes nothing.",
+                        "timestamp - ")
+                    .WithCause("An inherited line changes no settings.") }
             };
         }
 
@@ -132,6 +140,31 @@ namespace MapsetChecks.checks.timing
                             yield return new Issue(GetTemplate("Warning Inherited"),
                                aBeatmap, Timestamp.Get(lines[i].offset));
                     }
+                }
+            }
+
+            List<TimingLine> allLines = aBeatmap.timingLines.ToList();
+
+            for (int i = 1; i < allLines.Count; ++i)
+            {
+                if (!(allLines[i] is InheritedLine currentLine)) continue;
+
+                TimingLine previousLine = allLines[i - 1];
+
+                // Check if all of the timing point's settings are the same, excluding
+                // offset and meter (meter doesn't do anything for inherited points).
+                //
+                // The SV comparison works even when the previous line is an uninherited
+                // line, because all uninherited lines' SVs are 1.
+                if (currentLine.svMult == previousLine.svMult &&
+                    currentLine.sampleset == previousLine.sampleset &&
+                    currentLine.customIndex == previousLine.customIndex &&
+                    currentLine.volume == previousLine.volume &&
+                    currentLine.kiai == previousLine.kiai &&
+                    currentLine.omitsBarLine == previousLine.omitsBarLine)
+                {
+                    yield return new Issue(GetTemplate("Problem Useless Inherited"),
+                        aBeatmap, Timestamp.Get(currentLine.offset));
                 }
             }
         }
