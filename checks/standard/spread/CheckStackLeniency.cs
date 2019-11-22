@@ -64,10 +64,10 @@ namespace MapsetChecks.checks.standard.spread
 
                 { "Problem Failed Stack",
                     new IssueTemplate(Issue.Level.Problem,
-                        "{0} Failed stack, objects are practically perfectly stacked.",
-                        "timestamp - ")
+                        "{0} Failed stack, objects are {1} px apart, which is basically a perfect stack.",
+                        "timestamp - ", "gap")
                     .WithCause(
-                        "Same as the other check, except applies to non-stacked objects within 4 px of one another.") },
+                        "Same as the other check, except applies to non-stacked objects within 2 px of one another.") },
 
                 { "Warning",
                     new IssueTemplate(Issue.Level.Warning,
@@ -106,12 +106,15 @@ namespace MapsetChecks.checks.standard.spread
                                     Timestamp.Get(hitObject, otherHitObject), requiredStackLeniency)
                                     .ForDifficulties((Beatmap.Difficulty)diffIndex);
                             }
-
-                            // Objects not stacked within 4 px of one another are considered failed stacks.
-                            else if ((hitObject.Position - otherHitObject.Position).LengthSquared() < 16)
+                            else
                             {
+                                // Unstacked objects within 2 px of one another are considered failed stacks.
+                                double distance = (hitObject.Position - otherHitObject.Position).Length();
+                                if (distance > 2)
+                                    continue;
+
                                 yield return new Issue(GetTemplate("Problem Failed Stack"), aBeatmap,
-                                    Timestamp.Get(hitObject, otherHitObject))
+                                    Timestamp.Get(hitObject, otherHitObject), $"{distance:0.##}")
                                     .ForDifficulties((Beatmap.Difficulty)diffIndex);
                             }
                         }
