@@ -60,6 +60,14 @@ namespace MapsetChecks.checks.compose
                         "timestamp - ", "hit objects")
                     .WithCause(
                         "A hit object starts before another hit object has ended. For mania this also " +
+                        "requires that the objects are in the same column.") },
+
+                { "Almost Concurrent Objects",
+                    new IssueTemplate(Issue.Level.Problem,
+                        "{0} Within {1} ms of one another.",
+                        "timestamp - ", "gap")
+                    .WithCause(
+                        "Two hit objects are less than 10 ms apart from one another. For mania this also " +
                         "requires that the objects are in the same column.") }
             };
         }
@@ -76,13 +84,21 @@ namespace MapsetChecks.checks.compose
                         aBeatmap.generalSettings.mode != Beatmap.Mode.Mania ||
                         hitObject.Position.X == otherHitObject.Position.X;
 
+                    if (!sameTimeline)
+                        continue;
+
                     bool concurrent =
                         otherHitObject.time <= hitObject.GetEndTime() &&
                         otherHitObject.time >= hitObject.time;
 
-                    if (concurrent && sameTimeline)
+                    double timeDistance =
+                        Math.Min(
+                            Math.Abs(hitObject.GetEndTime() - otherHitObject.time),
+                            Math.Abs(otherHitObject.time - hitObject.time));
+
+                    if (timeDistance == 0)
                     {
-                        string type      = hitObject.GetObjectType();
+                        string type = hitObject.GetObjectType();
                         string otherType = otherHitObject.GetObjectType();
 
                         string argument =
@@ -93,6 +109,9 @@ namespace MapsetChecks.checks.compose
                         yield return new Issue(GetTemplate("Concurrent Objects"), aBeatmap,
                             Timestamp.Get(hitObject, otherHitObject), argument);
                     }
+                    else if (timeDistance < 10)
+                        yield return new Issue(GetTemplate("Almost Concurrent Objects"), aBeatmap,
+                            Timestamp.Get(hitObject, otherHitObject), timeDistance);
                 }
             }
         }
