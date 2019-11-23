@@ -171,9 +171,12 @@ namespace MapsetChecks.checks.timing
 
                 double timingSectionEnd = nextLine?.offset ?? aBeatmap.GetPlayTime();
 
-                bool containsObjects = aBeatmap.GetPrevHitObject(timingSectionEnd).GetEndTime() >= currentLine.offset;
+                double prevEndTime = aBeatmap.GetPrevHitObject(timingSectionEnd)?.GetEndTime() ?? 0;
+                double prevSliderStart = aBeatmap.GetPrevHitObject<Slider>(timingSectionEnd)?.time ?? 0;
+
+                bool containsObjects = prevEndTime >= currentLine.offset;
                 bool canAffectSV =
-                    aBeatmap.GetPrevHitObject<Slider>(timingSectionEnd).time >= currentLine.offset ||
+                    prevSliderStart >= currentLine.offset ||
                     aBeatmap.generalSettings.mode == Beatmap.Mode.Mania;
 
                 bool sampleSettingsDiffer =
