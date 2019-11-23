@@ -77,7 +77,7 @@ namespace MapsetChecks.checks.timing
                         "and only changes settings which an inherited line could do instead.") },
 
                 { "Problem Useless Inherited",
-                    new IssueTemplate(Issue.Level.Problem,
+                    new IssueTemplate(Issue.Level.Minor,
                         "{0} Changes nothing.",
                         "timestamp - ")
                     .WithCause("An inherited line changes no settings.") }
