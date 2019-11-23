@@ -47,7 +47,7 @@ namespace MapsetChecks.checks.timing
             {
                 { "Problem Nothing",
                     new IssueTemplate(Issue.Level.Problem,
-                        "{0} Changes nothing.",
+                        "{0} Uninherited line changes nothing.",
                         "timestamp - ")
                     .WithCause(
                         "An uninherited line is placed on a multiple of 4 downbeats away from the previous uninherited line, " +
@@ -55,21 +55,21 @@ namespace MapsetChecks.checks.timing
 
                 { "Problem Inherited",
                     new IssueTemplate(Issue.Level.Problem,
-                        "{0} Changes nothing that can't be changed with an inherited line.",
+                        "{0} Uninherited line changes nothing that can't be changed with an inherited line.",
                         "timestamp - ")
                     .WithCause(
                         "Same as the first check, but changes volume, sampleset, or another setting that an inherited line could change instead.") },
 
                 { "Warning Nothing",
                     new IssueTemplate(Issue.Level.Warning,
-                        "{0} Changes nothing, other than the finish with the nightcore mod. Ensure it makes sense to have a finish here.",
+                        "{0} Uninherited line changes nothing, other than the finish with the nightcore mod. Ensure it makes sense to have a finish here.",
                         "timestamp - ")
                     .WithCause(
                         "Same as the first check, but is not on a multiple of 4 downbeats away from the previous uninherited line.") },
 
                 { "Warning Inherited",
                     new IssueTemplate(Issue.Level.Warning,
-                        "{0} Changes nothing that can't be changed with an inherited line, other than the finish with the nightcore mod. " +
+                        "{0} Uninherited line changes nothing that can't be changed with an inherited line, other than the finish with the nightcore mod. " +
                         "Ensure it makes sense to have a finish here.",
                         "timestamp - ")
                     .WithCause(
@@ -78,7 +78,7 @@ namespace MapsetChecks.checks.timing
 
                 { "Problem Useless Inherited",
                     new IssueTemplate(Issue.Level.Minor,
-                        "{0} Changes nothing.",
+                        "{0} Inherited line changes nothing.",
                         "timestamp - ")
                     .WithCause("An inherited line changes no settings.") }
             };
