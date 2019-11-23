@@ -160,8 +160,7 @@ namespace MapsetChecks.checks.timing
                     currentLine.sampleset == previousLine.sampleset &&
                     currentLine.customIndex == previousLine.customIndex &&
                     currentLine.volume == previousLine.volume &&
-                    currentLine.kiai == previousLine.kiai &&
-                    currentLine.omitsBarLine == previousLine.omitsBarLine)
+                    currentLine.kiai == previousLine.kiai)
                 {
                     yield return new Issue(GetTemplate("Problem Useless Inherited"),
                         aBeatmap, Timestamp.Get(currentLine.offset));
