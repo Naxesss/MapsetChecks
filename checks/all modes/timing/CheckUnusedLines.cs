@@ -144,10 +144,10 @@ namespace MapsetChecks.checks.timing
             }
 
             List<TimingLine> allLines = aBeatmap.timingLines.ToList();
-
             for (int i = 1; i < allLines.Count; ++i)
             {
-                if (!(allLines[i] is InheritedLine currentLine)) continue;
+                if (!(allLines[i] is InheritedLine currentLine))
+                    continue;
 
                 TimingLine previousLine = allLines[i - 1];
 
