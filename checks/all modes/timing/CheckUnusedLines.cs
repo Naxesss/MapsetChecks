@@ -78,7 +78,7 @@ namespace MapsetChecks.checks.timing
                         "An uninherited line is not placed on a multiple of 4 downbeats away from the previous uninherited line, " +
                         "and only changes settings which an inherited line could do instead.") },
 
-                { "Problem Useless Inherited",
+                { "Minor Inherited",
                     new IssueTemplate(Issue.Level.Minor,
                         "{0} Inherited line changes nothing.",
                         "timestamp - ")
@@ -164,7 +164,7 @@ namespace MapsetChecks.checks.timing
                     currentLine.volume == previousLine.volume &&
                     currentLine.kiai == previousLine.kiai)
                 {
-                    yield return new Issue(GetTemplate("Problem Useless Inherited"),
+                    yield return new Issue(GetTemplate("Minor Inherited"),
                         aBeatmap, Timestamp.Get(currentLine.offset));
                 }
             }
