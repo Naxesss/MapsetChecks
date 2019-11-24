@@ -80,8 +80,8 @@ namespace MapsetChecks.checks.timing
 
                 { "Minor Inherited",
                     new IssueTemplate(Issue.Level.Minor,
-                        "{0} Inherited line changes nothing.",
-                        "timestamp - ")
+                        "{0} Inherited line changes {1}.",
+                        "timestamp - ", "nothing(, other than SV/sample settings, but affects nothing)")
                     .WithCause("An inherited line changes no settings.") }
             };
         }
@@ -196,8 +196,19 @@ namespace MapsetChecks.checks.timing
                 // Since "used" only includes false positives, this only includes false negatives,
                 // hence the check will never say that a used line is unused.
                 if (!used)
+                {
+                    // Avoids confusion in case the line actually does change something
+                    // from the previous, but just doesn't apply to anything.
+                    string changesDesc = "";
+                    if (!canAffectSV && currentLine.svMult != previousLine.svMult)
+                        changesDesc += "SV";
+                    if (!containsObjects && sampleSettingsDiffer)
+                        changesDesc += (changesDesc.Length > 0 ? " and " : "") + "sample settings";
+                    changesDesc += changesDesc.Length > 0 ? ", but affects nothing" : "nothing";
+
                     yield return new Issue(GetTemplate("Minor Inherited"),
-                        aBeatmap, Timestamp.Get(currentLine.offset));
+                        aBeatmap, Timestamp.Get(currentLine.offset), changesDesc);
+                }
             }
         }
 
