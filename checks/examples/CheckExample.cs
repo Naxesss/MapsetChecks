@@ -8,9 +8,9 @@ using System.Collections.Generic;
 namespace MapsetChecks.checks.examples
 {
     // This attribute tells the framework that it's a check it should register.
-    // Since this is just a test class, we're not going to register this.
+    // Since this is just an example class, we're not going to register this.
     // [Check]
-    public class CheckTest : BeatmapCheck
+    public class CheckExample : BeatmapCheck
     {
         /// <summary> Determines which modes the check shows for, in which category the check appears, the message for the check, etc. </summary>
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
@@ -26,7 +26,7 @@ namespace MapsetChecks.checks.examples
                 Beatmap.Difficulty.Normal,
                 Beatmap.Difficulty.Hard
             },
-            Category = "Test",
+            Category = "Example",
             Message = "Difficulty name is present in the beatmap.",
             Author = "Naxess",
             Documentation = new Dictionary<string, string>()
