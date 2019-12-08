@@ -69,18 +69,19 @@ namespace MapsetChecks.checks.hit_sounds
 
         public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
         {
+            int lineIndex = 0;
             foreach (HitObject hitObject in aBeatmap.hitObjects)
             {
                 if (hitObject is Circle || hitObject is Slider || hitObject is HoldNote)
                 {
-                    // Mania uses hitsounding differently so circles and hold notes are overridden by the object-specific volume option if it's > 0
-                    // and that applies to standard and any other mode as well even though it's basically just used for mania.
+                    // Object-specific volume overrides line-specific volume for circles and hold notes
+                    // (feature for Mania hit sounding) when it is > 0. However, this applies to other modes as well.
                     float volume =
                         !(hitObject is Slider) && hitObject.volume > 0 && hitObject.volume != null ?
                             hitObject.volume.GetValueOrDefault() :
-                            aBeatmap.GetTimingLine(hitObject.time, true).volume;
+                            GetTimingLine(aBeatmap, ref lineIndex, hitObject.time).volume;
 
-                    // Even if you manually put a volume less than 5%, it'll just act as if it were 5% in gameplay.
+                    // < 5% is interpreted as 5%
                     if (volume < 5)
                         volume = 5;
                     
@@ -92,18 +93,16 @@ namespace MapsetChecks.checks.hit_sounds
                         yield return new Issue(GetTemplate("Minor Volume"), aBeatmap,
                             Timestamp.Get(hitObject), volume, hitObject.GetPartName(hitObject.time).ToLower());
 
-                    // Ideally passive objects like reverses and tails should be hit
-                    // sounded wherever the song has distinct sounds to build consistency.
                     if (hitObject is Slider slider)
                     {
-                        for (int i = 0; i < slider.edgeAmount; ++i)
+                        for (int edgeIndex = 0; edgeIndex < slider.edgeAmount; ++edgeIndex)
                         {
-                            double time = Timestamp.Round(slider.time + slider.GetCurveDuration() * i);
+                            double time = Timestamp.Round(slider.time + slider.GetCurveDuration() * edgeIndex);
 
-                            if (i == slider.edgeAmount - 1)
+                            if (edgeIndex == slider.edgeAmount - 1)
                                 time = slider.endTime;
 
-                            volume = aBeatmap.GetTimingLine(time, true).volume;
+                            volume = GetTimingLine(aBeatmap, ref lineIndex, hitObject.time).volume;
                             if (volume <= 10)
                                 yield return new Issue(GetTemplate("Passive"), aBeatmap,
                                     Timestamp.Get(time), volume, hitObject.GetPartName(time).ToLower());
@@ -111,6 +110,20 @@ namespace MapsetChecks.checks.hit_sounds
                     }
                 }
             }
+        }
+
+        /// <summary> Gets the timing line in effect at the given time continuing at the index given.
+        /// This is more performant than <see cref="Beatmap.GetTimingLine(double, bool)"/> due to not
+        /// iterating from the beginning for each hit object. </summary>
+        private TimingLine GetTimingLine(Beatmap aBeatmap, ref int anIndex, double aTime)
+        {
+            int length = aBeatmap.timingLines.Count;
+            for (; anIndex < length; ++anIndex)
+                // Uses the 5 ms hit sound leniency.
+                if (anIndex > 0 && aBeatmap.timingLines[anIndex].offset >= aTime + 5)
+                    return aBeatmap.timingLines[anIndex - 1];
+
+            return aBeatmap.timingLines[length - 1];
         }
     }
 }
