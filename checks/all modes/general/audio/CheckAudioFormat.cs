@@ -94,7 +94,7 @@ namespace MapsetChecks.checks.general.audio
                 if ((ManagedBass.ChannelType.MP3 & actualFormat) == 0)
                     yield return new Issue(GetTemplate("Incorrect Format"), null,
                         audioName, Audio.EnumToString(actualFormat));
-                else if (!audioName.EndsWith(".mp3"))
+                else if (!audioName.ToLower().EndsWith(".mp3"))
                     yield return new Issue(GetTemplate("Incorrect Extension"), null,
                         audioName, Audio.EnumToString(actualFormat));
             }

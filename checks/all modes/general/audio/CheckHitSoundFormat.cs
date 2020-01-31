@@ -122,7 +122,7 @@ namespace MapsetChecks.checks.general.audio
                                 if (hitObject.GetUsedHitSamples().Any(aSample =>
                                         aSample.time == hitObject.time &&
                                         aSample.hitSource == HitSample.HitSource.Edge &&
-                                        hitSoundFile.StartsWith(aSample.GetFileName() + ".")))
+                                        hitSoundFile.ToLower().StartsWith(aSample.GetFileName() + ".")))
                                 {
                                     yield return new Issue(GetTemplate("mp3"), null,
                                         hitSoundFile, Timestamp.Get(hitObject), beatmap);
@@ -143,7 +143,7 @@ namespace MapsetChecks.checks.general.audio
                             yield return new Issue(GetTemplate("Unexpected Format"), null,
                                 hitSoundFile, Audio.EnumToString(actualFormat));
                         }
-                        else if (!hitSoundFile.EndsWith(".wav") && !hitSoundFile.EndsWith(".ogg"))
+                        else if (!hitSoundFile.ToLower().EndsWith(".wav") && !hitSoundFile.ToLower().EndsWith(".ogg"))
                             yield return new Issue(GetTemplate("Incorrect Extension"), null,
                                 hitSoundFile, Audio.EnumToString(actualFormat));
 
