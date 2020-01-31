@@ -143,7 +143,7 @@ namespace MapsetChecks.checks.general.audio
                                     prevTime = beatmap.hitObjects.FirstOrDefault()?.time ?? 0;
                                     foreach (HitObject hitObject in beatmap.hitObjects)
                                     {
-                                        if (hitObject.GetUsedHitSamples().Any(aSample => hsFile.StartsWith(aSample.GetFileName())))
+                                        if (hitObject.GetUsedHitSamples().Any(aSample => aSample.SameFileName(hsFile)))
                                         {
                                             frequencyScore *= Math.Pow(0.8, 1 / 1000 * prevTime);
                                             prevTime = hitObject.time;
