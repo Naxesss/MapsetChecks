@@ -69,18 +69,18 @@ namespace MapsetChecks.checks.events
         {
             foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
             {
-                foreach (StoryHitSound storyHitSound in beatmap.storyHitSounds)
+                foreach (Sample storyHitSound in beatmap.samples)
                     foreach (Issue issue in GetStoryHitSoundIssue(beatmap, storyHitSound, ".osu"))
                         yield return issue;
 
                 if (aBeatmapSet.osb != null)
-                    foreach (StoryHitSound storyHitSound in aBeatmapSet.osb.storyHitSounds)
+                    foreach (Sample storyHitSound in aBeatmapSet.osb.samples)
                         foreach (Issue issue in GetStoryHitSoundIssue(beatmap, storyHitSound, ".osb"))
                             yield return issue;
             }
         }
 
-        private IEnumerable<Issue> GetStoryHitSoundIssue(Beatmap aBeatmap, StoryHitSound aStoryHitSound, string anOrigin)
+        private IEnumerable<Issue> GetStoryHitSoundIssue(Beatmap aBeatmap, Sample aStoryHitSound, string anOrigin)
         {
             yield return new Issue(GetTemplate("Storyboarded Hit Sound"), aBeatmap,
                 Timestamp.Get(aStoryHitSound.time),

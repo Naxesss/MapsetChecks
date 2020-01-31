@@ -247,7 +247,7 @@ namespace MapsetChecks.checks.hit_sounds
             {
                 while (true)
                 {
-                    StoryHitSound storyHitSound = aBeatmap.storyHitSounds.FirstOrDefault(
+                    Sample storyHitSound = aBeatmap.samples.FirstOrDefault(
                         aHitsound => aHitsound.time > aStartTime && aHitsound.time < anEndTime);
 
                     if (storyHitSound == null)
