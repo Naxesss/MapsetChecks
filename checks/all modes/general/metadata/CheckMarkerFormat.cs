@@ -61,7 +61,7 @@ namespace MapsetChecks.checks.general.metadata
             Beatmap refBeatmap = aBeatmapSet.beatmaps[0];
 
             // Matches strings which contain some version of "vs.", "CV:" or "feat." markers but not exactly.
-            Regex regexVs   = new Regex("(?i)( vs.)");
+            Regex regexVs   = new Regex("(?i)( vs\\.)");
             Regex regexCV   = new Regex("(?i)((\\(| |（)cv(:|：)?.)");
             Regex regexFeat = new Regex("(?i)((\\(| |（)(ft|feat)(\\.)?.)");
 
