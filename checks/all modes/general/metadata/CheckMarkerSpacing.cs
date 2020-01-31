@@ -71,17 +71,17 @@ namespace MapsetChecks.checks.general.metadata
             
             List<Func<string, string>> problemTests = new List<Func<string, string>>()
             {
-                aField => FormalSpaceRegex(aField, "CV:"),
-                aField => FormalSpaceRegex(aField, "vs\\."),
-                aField => FormalSpaceRegex(aField, "feat\\."),
+                aField => FormalSpaceRegex(aField, @"CV:"),
+                aField => FormalSpaceRegex(aField, @"vs\."),
+                aField => FormalSpaceRegex(aField, @"feat\."),
 
-                aField => new Regex("[a-zA-Z0-9]\\(CV:").IsMatch(aField) ? "whitespace before \"(CV:\" or full-width bracket \"（\"" : null,
+                aField => new Regex(@"[a-zA-Z0-9]\(CV:").IsMatch(aField) ? "whitespace before \"(CV:\" or full-width bracket \"（\"" : null,
                     // also check before any parenthesis CV: might have before it
                 
-                aField => new Regex("(?<!(\\(|（))CV:").IsMatch(aField) ? "\"(\" before \"CV:\"" : null,
+                aField => new Regex(@"(?<!(\(|（))CV:").IsMatch(aField) ? "\"(\" before \"CV:\"" : null,
                     // implied from the "Character (CV: Voice Actor)" format requirement
                 
-                aField => new Regex(",[a-zA-Z0-9]").IsMatch(aField) ? "whitespace after \",\"" : null,
+                aField => new Regex(@",[a-zA-Z0-9]").IsMatch(aField) ? "whitespace after \",\"" : null,
                     // comma only checks trailing whitespaces
             };
             List<Func<string, string>> warningTests = new List<Func<string, string>>()
@@ -96,17 +96,17 @@ namespace MapsetChecks.checks.general.metadata
 
                 // The regex "[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]" matches all japanese characters.
                 
-                aField => new Regex("(?<! |\\(|（)feat\\.") .IsMatch(aField) ? "whitespace before \"feat.\""    : null,
-                aField => new Regex("(?<! )(\\(|（)feat\\.").IsMatch(aField) ? "whitespace before \"(feat.\""   : null,
-                aField => new Regex("(?<! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])vs\\.")          .IsMatch(aField) ? "whitespace before \"vs.\""      : null,
-                aField => new Regex("(?<! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])&")              .IsMatch(aField) ? "whitespace before \"&\""        : null,
+                aField => new Regex(@"(?<! |\(|（)feat\.") .IsMatch(aField) ? "whitespace before \"feat.\""    : null,
+                aField => new Regex(@"(?<! )(\(|（)feat\.").IsMatch(aField) ? "whitespace before \"(feat.\""   : null,
+                aField => new Regex(@"(?<! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])vs\.")          .IsMatch(aField) ? "whitespace before \"vs.\""      : null,
+                aField => new Regex(@"(?<! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])&")              .IsMatch(aField) ? "whitespace before \"&\""        : null,
 
-                aField => new Regex("CV(?!:[ 一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]|：)")  .IsMatch(aField) ? "whitespace after \"CV:\" or full-width colon \"：\"" : null,
-                aField => new Regex(",(?![ 一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])")       .IsMatch(aField) ? "whitespace after \",\" or full-width comma \"、\""   : null,
+                aField => new Regex(@"CV(?!:[ 一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]|：)")  .IsMatch(aField) ? "whitespace after \"CV:\" or full-width colon \"：\"" : null,
+                aField => new Regex(@",(?![ 一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])")       .IsMatch(aField) ? "whitespace after \",\" or full-width comma \"、\""   : null,
 
-                aField => new Regex("feat\\.(?! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])") .IsMatch(aField) ? "whitespace after \"feat.\"" : null,
-                aField => new Regex("vs\\.(?! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])")   .IsMatch(aField) ? "whitespace after \"vs.\""   : null,
-                aField => new Regex("&(?! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])")       .IsMatch(aField) ? "whitespace after \"&\""     : null,
+                aField => new Regex(@"feat\.(?! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])") .IsMatch(aField) ? "whitespace after \"feat.\"" : null,
+                aField => new Regex(@"vs\.(?! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])")   .IsMatch(aField) ? "whitespace after \"vs.\""   : null,
+                aField => new Regex(@"&(?! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])")       .IsMatch(aField) ? "whitespace after \"&\""     : null,
             };
 
             MetadataSettings metadata = beatmap.metadataSettings;

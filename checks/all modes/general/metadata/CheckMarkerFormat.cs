@@ -61,13 +61,13 @@ namespace MapsetChecks.checks.general.metadata
             Beatmap refBeatmap = aBeatmapSet.beatmaps[0];
 
             // Matches strings which contain some version of "vs.", "CV:" or "feat." markers but not exactly.
-            Regex regexVs   = new Regex("(?i)( vs\\.)");
-            Regex regexCV   = new Regex("(?i)((\\(| |（)cv(:|：)?.)");
-            Regex regexFeat = new Regex("(?i)((\\(| |（)(ft|feat)(\\.)?.)");
+            Regex regexVs   = new Regex(@"(?i)( vs\.)");
+            Regex regexCV   = new Regex(@"(?i)((\(| |（)cv(:|：)?.)");
+            Regex regexFeat = new Regex(@"(?i)((\(| |（)(ft|feat)(\.)?.)");
 
-            Regex regexVsExact   = new Regex("vs\\.");
-            Regex regexCVExact   = new Regex("CV(:|：)");
-            Regex regexFeatExact = new Regex("feat\\.");
+            Regex regexVsExact   = new Regex(@"vs\.");
+            Regex regexCVExact   = new Regex(@"CV(:|：)");
+            Regex regexFeatExact = new Regex(@"feat\.");
 
             foreach (Issue issue in GetFormattingIssues(refBeatmap.metadataSettings, aField =>
                     regexVs.IsMatch(aField) && !regexVsExact.IsMatch(aField) ||
