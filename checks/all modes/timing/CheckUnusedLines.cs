@@ -177,7 +177,9 @@ namespace MapsetChecks.checks.timing
                 bool containsObjects = prevEndTime >= currentLine.offset;
                 bool canAffectSV =
                     prevSliderStart >= currentLine.offset ||
-                    aBeatmap.generalSettings.mode == Beatmap.Mode.Mania;
+                    // Taiko and mania affect approach rate through SV.
+                    aBeatmap.generalSettings.mode == Beatmap.Mode.Mania ||
+                    aBeatmap.generalSettings.mode == Beatmap.Mode.Taiko;
 
                 bool sampleSettingsDiffer =
                     currentLine.sampleset != previousLine.sampleset ||
