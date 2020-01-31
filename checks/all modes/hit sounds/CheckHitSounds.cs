@@ -23,8 +23,7 @@ namespace MapsetChecks.checks.hit_sounds
             {
                 // This check would take on another meaning if applied to taiko, since there you basically map with hit sounds.
                 Beatmap.Mode.Standard,
-                Beatmap.Mode.Catch,
-                Beatmap.Mode.Mania
+                Beatmap.Mode.Catch
             },
             Category = "Hit Sounds",
             Message = "Long periods without hit sounding.",
