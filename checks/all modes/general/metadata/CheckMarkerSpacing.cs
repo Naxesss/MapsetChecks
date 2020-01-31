@@ -74,7 +74,6 @@ namespace MapsetChecks.checks.general.metadata
                 aField => FormalSpaceRegex(aField, "CV:"),
                 aField => FormalSpaceRegex(aField, "vs\\."),
                 aField => FormalSpaceRegex(aField, "feat\\."),
-                aField => FormalSpaceRegex(aField, "&"),
 
                 aField => new Regex("[a-zA-Z0-9]\\(CV:").IsMatch(aField) ? "whitespace before \"(CV:\" or full-width bracket \"（\"" : null,
                     // also check before any parenthesis CV: might have before it
@@ -87,6 +86,9 @@ namespace MapsetChecks.checks.general.metadata
             };
             List<Func<string, string>> warningTests = new List<Func<string, string>>()
             {
+                // Some artists include ampersand as part of their name.
+                aField => FormalSpaceRegex(aField, "&"),
+
                 // Markers only need spaces around them if both of the following are true
                 // - They are not full width (i.e. "、" for comma and "：" for colon)
                 // - The character after/before is not full width (i.e. most chinese/japanese characters)
