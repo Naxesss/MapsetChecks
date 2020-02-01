@@ -215,15 +215,15 @@ namespace MapsetChecks.checks.timing
         }
 
         /// <summary> Returns the ms difference between two timing lines, where the timing lines reset offset every given number of beats. </summary>
-        private double GetBeatOffset(UninheritedLine aLine, UninheritedLine aNextLine, double aBeatOffset)
+        private double GetBeatOffset(UninheritedLine aLine, UninheritedLine aNextLine, double aBeatModulo)
         {
             double beatsIn = (aNextLine.offset - aLine.offset) / aLine.msPerBeat;
-            double offset = beatsIn % aBeatOffset;
+            double offset = beatsIn % aBeatModulo;
 
             return
                 Math.Min(
                     Math.Abs(offset),
-                    Math.Abs(offset - aBeatOffset)) *
+                    Math.Abs(offset - aBeatModulo)) *
                 aLine.msPerBeat;
         }
     }
