@@ -134,45 +134,16 @@ namespace MapsetChecks.checks.general.audio
                     continue;
 
                 // Imbalance is only an issue if it is used frequently in a short timespan or it's overall common.
-                // So here we do a scoring mechanism to do the former part.
-                Dictionary<Beatmap, int> uses = new Dictionary<Beatmap, int>();
-                double prevTime = 0;
-                double frequencyScore = 0;
-                string timestamp = "";
-                foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
-                {
-                    uses[beatmap] = 0;
-                    prevTime = beatmap.hitObjects.FirstOrDefault()?.time ?? 0;
-                    foreach (HitObject hitObject in beatmap.hitObjects)
-                    {
-                        if (!hitObject.GetUsedHitSamples().Any(aSample => aSample.SameFileName(hsFile)))
-                            continue;
+                Common.CollectHitSoundFrequency(aBeatmapSet, hsFile, 10 / relativeVolume,
+                    out string mostFrequentTimestamp, out Dictionary<Beatmap, int> uses);
 
-                        frequencyScore *= Math.Pow(0.8, 1 / 1000 * prevTime);
-                        prevTime = hitObject.time;
-
-                        ++uses[beatmap];
-                        frequencyScore += beatmap.generalSettings.mode == Beatmap.Mode.Mania ? 0.5 : 1;
-
-                        if (frequencyScore < 10 / relativeVolume)
-                            continue;
-
-                        timestamp = $"{Timestamp.Get(hitObject)} in {beatmap}";
-                        break;
-                    }
-
-                    if (timestamp.Length > 0)
-                        break;
-                }
-
-                if (timestamp.Length > 0)
+                if (mostFrequentTimestamp != null)
                     yield return new Issue(GetTemplate("Warning Timestamp"), null,
-                        hsFile, leftSum - rightSum > 0 ? "left" : "right", timestamp);
+                        hsFile, leftSum - rightSum > 0 ? "left" : "right", mostFrequentTimestamp);
                 else
                 {
                     Beatmap mapCommonlyUsedIn =
-                        aBeatmapSet.beatmaps.FirstOrDefault(aBeatmap =>
-                            IsCommonlyUsed(aBeatmap, uses[aBeatmap]));
+                        Common.GetBeatmapCommonlyUsedIn(aBeatmapSet, uses, aCommonUsageThreshold: 10000);
 
                     if (mapCommonlyUsedIn != null)
                         yield return new Issue(GetTemplate("Warning Common"), null,
@@ -182,22 +153,6 @@ namespace MapsetChecks.checks.general.audio
                             hsFile, leftSum - rightSum > 0 ? "left" : "right");
                 }
             }
-        }
-
-        private static readonly int commonUsageThreshold = 10000;
-        /// <summary> Returns whether the drain time to use ratio exceeds the common usage threshold.
-        /// That is, whether the ms gap between uses on average is less than the threshold. </summary>
-        private bool IsCommonlyUsed(Beatmap aBeatmap, double aUses)
-        {
-            if (aUses == 0)
-                return false;
-
-            // Mania can have multiple objects per moment in time, so we arbitrarily divide its usage by 2.
-            if (aBeatmap.generalSettings.mode == Beatmap.Mode.Mania)
-                aUses /= 2f;
-
-            double mean = aBeatmap.GetDrainTime() / aUses;
-            return mean > commonUsageThreshold;
         }
     }
 }
