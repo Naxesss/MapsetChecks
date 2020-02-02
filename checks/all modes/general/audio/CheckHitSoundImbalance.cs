@@ -174,22 +174,10 @@ namespace MapsetChecks.checks.general.audio
                         hsFile, leftSum - rightSum > 0 ? "left" : "right", timestamp);
                 else
                 {
-                    // For the latter part we arbitrarily choose 10 seconds on average as common.
                     // Has to be done on each map individually as hit sounding can vary between them.
                     Beatmap commonMap =
                         aBeatmapSet.beatmaps.FirstOrDefault(aBeatmap =>
-                        {
-                            if (uses[aBeatmap] == 0)
-                                return false;
-
-                            // Mania can have multiple objects per moment in time, so we arbitrarily divide its usage by 2.
-                            return
-                                aBeatmap.GetDrainTime() /
-                                (aBeatmap.generalSettings.mode == Beatmap.Mode.Mania ?
-                                        uses[aBeatmap] / 2 :
-                                        uses[aBeatmap])
-                                    > 10000;
-                        });
+                            IsCommonlyUsed(aBeatmap, uses[aBeatmap]));
 
                     if (commonMap != null)
                         yield return new Issue(GetTemplate("Warning Common"), null,
@@ -199,6 +187,22 @@ namespace MapsetChecks.checks.general.audio
                             hsFile, leftSum - rightSum > 0 ? "left" : "right");
                 }
             }
+        }
+
+        private static readonly int commonUsageThreshold = 10000;
+        /// <summary> Returns whether the drain time to use ratio exceeds the common usage threshold.
+        /// That is, whether the ms gap between uses on average is less than the threshold. </summary>
+        private bool IsCommonlyUsed(Beatmap aBeatmap, double aUses)
+        {
+            if (aUses == 0)
+                return false;
+
+            // Mania can have multiple objects per moment in time, so we arbitrarily divide its usage by 2.
+            if (aBeatmap.generalSettings.mode == Beatmap.Mode.Mania)
+                aUses /= 2f;
+
+            double mean = aBeatmap.GetDrainTime() / aUses;
+            return mean > commonUsageThreshold;
         }
     }
 }
