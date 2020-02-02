@@ -115,12 +115,8 @@ namespace MapsetChecks.checks.general.audio
                 if (peaks.Count == 0)
                     continue;
 
-                float leftSum = 0;
-                float rightSum = 0;
-
-                leftSum = peaks.Sum(aPeak => aPeak?[0] ?? 0);
-                rightSum = peaks.Sum(aPeak => aPeak.Count() > 1 ? aPeak?[1] ?? 0 : 0);
-
+                float leftSum = peaks.Sum(aPeak => aPeak?[0] ?? 0);
+                float rightSum = peaks.Sum(aPeak => aPeak.Count() > 1 ? aPeak?[1] ?? 0 : 0);
                 if (leftSum == 0 || rightSum == 0)
                 {
                     yield return new Issue(GetTemplate("Warning Silent"), null,
