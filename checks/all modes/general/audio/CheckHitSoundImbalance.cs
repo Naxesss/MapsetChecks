@@ -172,11 +172,10 @@ namespace MapsetChecks.checks.general.audio
                 if (timestamp.Length > 0)
                     yield return new Issue(GetTemplate("Warning Timestamp"), null,
                         hsFile, leftSum - rightSum > 0 ? "left" : "right", timestamp);
-
-                // For the latter part we arbitrarily choose 10 seconds on average as common.
-                // Has to be done on each map individually as hit sounding can vary between them.
                 else
                 {
+                    // For the latter part we arbitrarily choose 10 seconds on average as common.
+                    // Has to be done on each map individually as hit sounding can vary between them.
                     Beatmap commonMap =
                         aBeatmapSet.beatmaps.FirstOrDefault(aBeatmap =>
                         {
