@@ -174,13 +174,13 @@ namespace MapsetChecks.checks.general.audio
                         hsFile, leftSum - rightSum > 0 ? "left" : "right", timestamp);
                 else
                 {
-                    Beatmap commonMap =
+                    Beatmap mapCommonlyUsedIn =
                         aBeatmapSet.beatmaps.FirstOrDefault(aBeatmap =>
                             IsCommonlyUsed(aBeatmap, uses[aBeatmap]));
 
-                    if (commonMap != null)
+                    if (mapCommonlyUsedIn != null)
                         yield return new Issue(GetTemplate("Warning Common"), null,
-                            hsFile, leftSum - rightSum > 0 ? "left" : "right", commonMap);
+                            hsFile, leftSum - rightSum > 0 ? "left" : "right", mapCommonlyUsedIn);
                     else
                         yield return new Issue(GetTemplate("Minor"), null,
                             hsFile, leftSum - rightSum > 0 ? "left" : "right");
