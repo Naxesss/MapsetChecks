@@ -193,18 +193,19 @@ namespace MapsetChecks
                     if (!hitObject.GetUsedHitSamples().Any(aSample => aSample.SameFileName(aHsFileName)))
                         continue;
 
-                    frequencyScore *= Math.Pow(0.8, 1 / 1000 * prevTime);
-                    prevTime = hitObject.time;
-
                     ++aUseData[beatmap];
                     frequencyScore += beatmap.generalSettings.mode == Beatmap.Mode.Mania ? 0.5 : 1;
 
-                    if (frequencyScore < aScoreThreshold)
-                        continue;
+                    double deltaTime = hitObject.time - prevTime;
+                    double mult = Math.Pow(0.8, 1 / 1000d * deltaTime);
+                    frequencyScore *= mult;
+                    prevTime = hitObject.time;
 
                     if (highestFrequencyScore < frequencyScore)
                     {
-                        aMostFrequentTimestamp = $"{Timestamp.Get(hitObject)} in {beatmap}";
+                        if (frequencyScore >= aScoreThreshold)
+                            aMostFrequentTimestamp = $"{Timestamp.Get(hitObject)} in {beatmap}";
+
                         highestFrequencyScore = frequencyScore;
                     }
                 }
