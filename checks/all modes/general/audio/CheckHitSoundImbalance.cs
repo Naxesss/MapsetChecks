@@ -97,112 +97,108 @@ namespace MapsetChecks.checks.general.audio
                     peaks    = Audio.GetPeaks(hsPath);
                 }
                 catch (Exception ex)
+                { exception = ex; }
+
+                // Cannot yield in catch statements, hence externally handled.
+                if (exception != null)
                 {
-                    exception = ex;
+                    yield return new Issue(GetTemplate("Unable to check"), null,
+                        hsFile, String.Join(" ", exception));
+                    continue;
                 }
 
-                if (exception == null)
+                // Mono can't be imbalanced since it's the same audio on both sides.
+                if (channels < 2)
+                    continue;
+
+                // No peaks means 44 byte silent.
+                if (peaks.Count == 0)
+                    continue;
+
+                float leftSum = 0;
+                float rightSum = 0;
+
+                leftSum = peaks.Sum(aPeak => aPeak?[0] ?? 0);
+                rightSum = peaks.Sum(aPeak => aPeak.Count() > 1 ? aPeak?[1] ?? 0 : 0);
+
+                if (leftSum == 0 || rightSum == 0)
                 {
-                    // Mono can't be imbalanced since it's the same audio on both sides.
-                    if (channels >= 2)
+                    yield return new Issue(GetTemplate("Warning Silent"), null,
+                        hsFile, leftSum - rightSum > 0 ? "left" : "right");
+                    continue;
+                }
+
+                // 2 would mean one is double the sum of the other.
+                float relativeVolume =
+                    leftSum > rightSum ?
+                        leftSum / rightSum :
+                        rightSum / leftSum;
+
+                if (relativeVolume < 2)
+                    continue;
+
+                // Imbalance is only an issue if it is used frequently in a short timespan or it's overall common.
+                // So here we do a scoring mechanism to do the former part.
+                Dictionary<Beatmap, int> uses = new Dictionary<Beatmap, int>();
+                double prevTime = 0;
+                double frequencyScore = 0;
+                string timestamp = "";
+                foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
+                {
+                    uses[beatmap] = 0;
+                    prevTime = beatmap.hitObjects.FirstOrDefault()?.time ?? 0;
+                    foreach (HitObject hitObject in beatmap.hitObjects)
                     {
-                        float leftSum = 0;
-                        float rightSum = 0;
-
-                        leftSum = peaks.Sum(aPeak => aPeak?[0] ?? 0);
-                        rightSum = peaks.Sum(aPeak => aPeak.Count() > 1 ? aPeak?[1] ?? 0 : 0);
-
-                        // No peaks means 44 byte silent.
-                        if (peaks.Count > 0)
+                        if (hitObject.GetUsedHitSamples().Any(aSample => aSample.SameFileName(hsFile)))
                         {
-                            if (leftSum == 0 || rightSum == 0)
+                            frequencyScore *= Math.Pow(0.8, 1 / 1000 * prevTime);
+                            prevTime = hitObject.time;
+
+                            ++uses[beatmap];
+                            frequencyScore += beatmap.generalSettings.mode == Beatmap.Mode.Mania ? 0.5 : 1;
+
+                            if (frequencyScore >= 10 / relativeVolume)
                             {
-                                yield return new Issue(GetTemplate("Warning Silent"), null,
-                                    hsFile, leftSum - rightSum > 0 ? "left" : "right");
+                                timestamp = $"{Timestamp.Get(hitObject)} in {beatmap}";
                                 break;
-                            }
-
-                            // 2 would mean one is double the sum of the other.
-                            float relativeVolume =
-                                leftSum > rightSum ?
-                                    leftSum / rightSum :
-                                    rightSum / leftSum;
-
-                            if (relativeVolume >= 2)
-                            {
-                                // Imbalance is only an issue if it is used frequently in a short timespan or it's overall common.
-                                // So here we do a scoring mechanism to do the former part.
-                                Dictionary<Beatmap, int> uses = new Dictionary<Beatmap, int>();
-                                double prevTime = 0;
-                                double frequencyScore = 0;
-                                double highestFrequencyScore = 0;
-                                string timestamp = "";
-                                foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
-                                {
-                                    uses[beatmap] = 0;
-                                    prevTime = beatmap.hitObjects.FirstOrDefault()?.time ?? 0;
-                                    foreach (HitObject hitObject in beatmap.hitObjects)
-                                    {
-                                        if (hitObject.GetUsedHitSamples().Any(aSample => aSample.SameFileName(hsFile)))
-                                        {
-                                            frequencyScore *= Math.Pow(0.8, 1 / 1000 * prevTime);
-                                            prevTime = hitObject.time;
-
-                                            ++uses[beatmap];
-                                            frequencyScore += beatmap.generalSettings.mode == Beatmap.Mode.Mania ? 0.5 : 1;
-
-                                            if (highestFrequencyScore < frequencyScore)
-                                                highestFrequencyScore = frequencyScore;
-
-                                            if (frequencyScore >= 10 / relativeVolume)
-                                            {
-                                                timestamp = $"{Timestamp.Get(hitObject)} in {beatmap}";
-                                                break;
-                                            }
-                                        }
-                                    }
-
-                                    if (timestamp.Length > 0)
-                                        break;
-                                }
-
-                                if (timestamp.Length > 0)
-                                    yield return new Issue(GetTemplate("Warning Timestamp"), null,
-                                        hsFile, leftSum - rightSum > 0 ? "left" : "right", timestamp);
-
-                                // For the latter part we arbitrarily choose 10 seconds on average as common.
-                                // Has to be done on each map individually as hit sounding can vary between them.
-                                else
-                                {
-                                    Beatmap commonMap =
-                                        aBeatmapSet.beatmaps.FirstOrDefault(aBeatmap =>
-                                        {
-                                            if (uses[aBeatmap] == 0)
-                                                return false;
-
-                                            // Mania can have multiple objects per moment in time, so we arbitrarily divide its usage by 2.
-                                            return
-                                                aBeatmap.GetDrainTime() /
-                                                (aBeatmap.generalSettings.mode == Beatmap.Mode.Mania ?
-                                                        uses[aBeatmap] / 2 :
-                                                        uses[aBeatmap])
-                                                    > 10000;
-                                        });
-
-                                    if (commonMap != null)
-                                        yield return new Issue(GetTemplate("Warning Common"), null,
-                                            hsFile, leftSum - rightSum > 0 ? "left" : "right", commonMap);
-                                    else
-                                        yield return new Issue(GetTemplate("Minor"), null,
-                                            hsFile, leftSum - rightSum > 0 ? "left" : "right");
-                                }
                             }
                         }
                     }
+
+                    if (timestamp.Length > 0)
+                        break;
                 }
+
+                if (timestamp.Length > 0)
+                    yield return new Issue(GetTemplate("Warning Timestamp"), null,
+                        hsFile, leftSum - rightSum > 0 ? "left" : "right", timestamp);
+
+                // For the latter part we arbitrarily choose 10 seconds on average as common.
+                // Has to be done on each map individually as hit sounding can vary between them.
                 else
-                    yield return new Issue(GetTemplate("Unable to check"), null,
-                        hsFile, String.Join(" ", exception));
+                {
+                    Beatmap commonMap =
+                        aBeatmapSet.beatmaps.FirstOrDefault(aBeatmap =>
+                        {
+                            if (uses[aBeatmap] == 0)
+                                return false;
+
+                            // Mania can have multiple objects per moment in time, so we arbitrarily divide its usage by 2.
+                            return
+                                aBeatmap.GetDrainTime() /
+                                (aBeatmap.generalSettings.mode == Beatmap.Mode.Mania ?
+                                        uses[aBeatmap] / 2 :
+                                        uses[aBeatmap])
+                                    > 10000;
+                        });
+
+                    if (commonMap != null)
+                        yield return new Issue(GetTemplate("Warning Common"), null,
+                            hsFile, leftSum - rightSum > 0 ? "left" : "right", commonMap);
+                    else
+                        yield return new Issue(GetTemplate("Minor"), null,
+                            hsFile, leftSum - rightSum > 0 ? "left" : "right");
+                }
             }
         }
     }
