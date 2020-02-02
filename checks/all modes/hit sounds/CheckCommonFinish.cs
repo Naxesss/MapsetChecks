@@ -74,7 +74,7 @@ namespace MapsetChecks.checks.all_modes.hit_sounds
                     sample.hitSource != HitSample.HitSource.Edge)
                     continue;
 
-                Common.CollectHitSoundFrequency(aBeatmapSet, hsFile, aScoreThreshold: 5,
+                Common.CollectHitSoundFrequency(aBeatmapSet, hsFile, aScoreThreshold: 6,
                     out string mostFrequentTimestamp, out Dictionary<Beatmap, int> uses);
 
                 if (mostFrequentTimestamp != null)
