@@ -186,6 +186,7 @@ namespace MapsetChecks
             foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
             {
                 aUseData[beatmap] = 0;
+                frequencyScore = 0;
                 prevTime = beatmap.hitObjects.FirstOrDefault()?.time ?? 0;
                 foreach (HitObject hitObject in beatmap.hitObjects)
                 {
