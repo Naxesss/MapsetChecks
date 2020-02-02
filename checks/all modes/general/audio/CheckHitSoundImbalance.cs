@@ -149,20 +149,20 @@ namespace MapsetChecks.checks.general.audio
                     prevTime = beatmap.hitObjects.FirstOrDefault()?.time ?? 0;
                     foreach (HitObject hitObject in beatmap.hitObjects)
                     {
-                        if (hitObject.GetUsedHitSamples().Any(aSample => aSample.SameFileName(hsFile)))
-                        {
-                            frequencyScore *= Math.Pow(0.8, 1 / 1000 * prevTime);
-                            prevTime = hitObject.time;
+                        if (!hitObject.GetUsedHitSamples().Any(aSample => aSample.SameFileName(hsFile)))
+                            continue;
 
-                            ++uses[beatmap];
-                            frequencyScore += beatmap.generalSettings.mode == Beatmap.Mode.Mania ? 0.5 : 1;
+                        frequencyScore *= Math.Pow(0.8, 1 / 1000 * prevTime);
+                        prevTime = hitObject.time;
 
-                            if (frequencyScore >= 10 / relativeVolume)
-                            {
-                                timestamp = $"{Timestamp.Get(hitObject)} in {beatmap}";
-                                break;
-                            }
-                        }
+                        ++uses[beatmap];
+                        frequencyScore += beatmap.generalSettings.mode == Beatmap.Mode.Mania ? 0.5 : 1;
+
+                        if (frequencyScore < 10 / relativeVolume)
+                            continue;
+
+                        timestamp = $"{Timestamp.Get(hitObject)} in {beatmap}";
+                        break;
                     }
 
                     if (timestamp.Length > 0)
