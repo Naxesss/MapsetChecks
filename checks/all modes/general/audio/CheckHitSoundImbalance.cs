@@ -53,7 +53,7 @@ namespace MapsetChecks.checks.general.audio
 
                 { "Warning Common",
                     new IssueTemplate(Issue.Level.Warning,
-                        "\"{0}\" has a notably louder {1} channel. Can be found commonly in for example {2}.",
+                        "\"{0}\" has a notably louder {1} channel. Used most commonly in {2}.",
                         "path", "left/right", "[difficulty]")
                     .WithCause(
                         "One of the channels of a hit sound has at least half the total volume of the other. " +
@@ -61,7 +61,7 @@ namespace MapsetChecks.checks.general.audio
 
                 { "Warning Timestamp",
                     new IssueTemplate(Issue.Level.Warning,
-                        "\"{0}\" has a notably louder {1} channel. Used pretty frequently leading up to {2}.",
+                        "\"{0}\" has a notably louder {1} channel. Used most frequently leading up to {2}.",
                         "path", "left/right", "timestamp in [difficulty]")
                     .WithCause(
                         "Same as the other check, except only happens when the hit sound is used frequently in a short timespan.") },
