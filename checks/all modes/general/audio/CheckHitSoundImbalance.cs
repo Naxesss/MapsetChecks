@@ -134,7 +134,7 @@ namespace MapsetChecks.checks.general.audio
                     continue;
 
                 // Imbalance is only an issue if it is used frequently in a short timespan or it's overall common.
-                Common.CollectHitSoundFrequency(aBeatmapSet, hsFile, aScoreThreshold: 10 / relativeVolume,
+                Common.CollectHitSoundFrequency(aBeatmapSet, hsFile, aScoreThreshold: 14 / relativeVolume,
                     out string mostFrequentTimestamp, out Dictionary<Beatmap, int> uses);
 
                 if (mostFrequentTimestamp != null)
