@@ -107,11 +107,11 @@ namespace MapsetChecks.checks.general.audio
                     continue;
                 }
 
-                // Mono can't be imbalanced since it's the same audio on both sides.
+                // Mono cannot be imbalanced; same audio on both sides.
                 if (channels < 2)
                     continue;
 
-                // No peaks means 44 byte silent.
+                // Silent audio cannot be imbalanced.
                 if (peaks.Count == 0)
                     continue;
 
