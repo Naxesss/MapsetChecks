@@ -174,7 +174,6 @@ namespace MapsetChecks.checks.general.audio
                         hsFile, leftSum - rightSum > 0 ? "left" : "right", timestamp);
                 else
                 {
-                    // Has to be done on each map individually as hit sounding can vary between them.
                     Beatmap commonMap =
                         aBeatmapSet.beatmaps.FirstOrDefault(aBeatmap =>
                             IsCommonlyUsed(aBeatmap, uses[aBeatmap]));
