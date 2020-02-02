@@ -51,7 +51,7 @@ namespace MapsetChecks.checks.hit_sounds
                     Taiko is an exception due to relying on hit sounds for gameplay mechanics. Circles are by default don, and can be 
                     turned into kat by using a clap or whistle hit sound, for example. As such applying this check to taiko would
                     make it take on a different meaning.
-
+                    <br><br>
                     Mania sets consisting only of insane and above difficulties can omit hit sounds due to very few in the community at 
                     that level enjoying them in general. See <a href=""https://osu.ppy.sh/community/forums/topics/996091"">
                     [Proposal - mania] Guidelines allowing higher difficulties to omit hitsound additions.</a> Since we're missing mania 
