@@ -242,7 +242,7 @@ namespace MapsetChecks
                 aUses /= 2f;
 
             double mean = aBeatmap.GetDrainTime() / aUses;
-            return mean > aCommonUsageThreshold;
+            return mean <= aCommonUsageThreshold;
         }
     }
 }
