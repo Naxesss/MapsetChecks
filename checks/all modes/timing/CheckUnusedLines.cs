@@ -103,7 +103,8 @@ namespace MapsetChecks.checks.timing
                 if (!(lines[i] is UninheritedLine currentLine))
                     continue;
 
-                TimingLine previousLine = lines[i - 1];
+                // Can't do lines[i - 1] since that could give a green line on the same offset, which we don't want.
+                TimingLine previousLine = aBeatmap.GetTimingLine(currentLine.offset - 1);
                 UninheritedLine previousUninheritedLine = aBeatmap.GetTimingLine<UninheritedLine>(currentLine.offset - 1);
 
                 if (!SameDownbeatStructure(aBeatmap, currentLine, previousUninheritedLine))
