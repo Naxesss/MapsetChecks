@@ -113,7 +113,7 @@ namespace MapsetChecks.checks.timing
                 if (CanOmitBarLine(aBeatmap) && currentLine.omitsBarLine)
                     continue;
 
-                if (IsLineUsed(aBeatmap, currentLine, previousLine))
+                if (!IsLineUsed(aBeatmap, currentLine, previousLine))
                 {
                     // In the nightcore mod, every 4th (or whatever the meter is) downbeat
                     // has an added cymbal, so that can technically change things.
