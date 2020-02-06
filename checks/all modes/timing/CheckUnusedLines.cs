@@ -97,9 +97,6 @@ namespace MapsetChecks.checks.timing
 
         private IEnumerable<Issue> GetUninheritedLineIssues(Beatmap aBeatmap)
         {
-            // If the previous line omits the first barline in taiko and is less than a beat apart from the new one,
-            // then the new one does change things even if it's just a ms ahead (prevents the barline from being
-            // thicker than normal).
             bool canOmitBarLine =
                 aBeatmap.generalSettings.mode == Beatmap.Mode.Taiko ||
                 aBeatmap.generalSettings.mode == Beatmap.Mode.Mania;
@@ -110,6 +107,9 @@ namespace MapsetChecks.checks.timing
                 bool negligibleDownbeatOffset = GetBeatOffset(lines[i - 1], lines[i], lines[i - 1].meter) <= 1;
                 bool negligibleNightcoreCymbalOffset = GetBeatOffset(lines[i - 1], lines[i], 4 * lines[i - 1].meter) <= 1;
 
+                // If the previous line omits the first barline in taiko and is less than a beat apart from the new one,
+                // then the new one does change things even if it's just a ms ahead (prevents the barline from being
+                // thicker than normal).
                 if (canOmitBarLine && lines[i - 1].omitsBarLine)
                     negligibleDownbeatOffset = GetBeatOffset(lines[i - 1], lines[i], lines[i - 1].meter) == 0;
 
