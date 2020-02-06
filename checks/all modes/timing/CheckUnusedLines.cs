@@ -178,8 +178,8 @@ namespace MapsetChecks.checks.timing
                 bool canAffectSV =
                     prevSliderStart >= currentLine.offset ||
                     // Taiko and mania affect approach rate through SV.
-                    aBeatmap.generalSettings.mode == Beatmap.Mode.Mania ||
-                    aBeatmap.generalSettings.mode == Beatmap.Mode.Taiko;
+                    aBeatmap.generalSettings.mode == Beatmap.Mode.Taiko ||
+                    aBeatmap.generalSettings.mode == Beatmap.Mode.Mania;
 
                 bool sampleSettingsDiffer =
                     currentLine.sampleset != previousLine.sampleset ||
