@@ -83,7 +83,7 @@ namespace MapsetChecks.checks.all_modes.hit_sounds
                 else
                 {
                     Beatmap mapCommonlyUsedIn =
-                        Common.GetBeatmapCommonlyUsedIn(aBeatmapSet, uses, aCommonUsageThreshold: 4000);
+                        Common.GetBeatmapCommonlyUsedIn(aBeatmapSet, uses, aCommonUsageThreshold: 2000);
 
                     if (mapCommonlyUsedIn != null)
                         yield return new Issue(GetTemplate("Warning Common"), null,
