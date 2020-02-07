@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace MapsetChecks.checks.all_modes.hit_sounds
+namespace MapsetChecks.checks.general.audio
 {
     [Check]
     public class CheckCommonFinish : GeneralCheck
@@ -53,7 +53,7 @@ namespace MapsetChecks.checks.all_modes.hit_sounds
                         "\"{0}\" may be obnoxious without custom samples. Used most commonly in {1}.",
                         "path", "[difficulty]")
                     .WithCause(
-                        "The usage of non-drum finish hit sounds to drain time ratio in a map is 4 seconds or more.") },
+                        "The usage of non-drum finish hit sounds to drain time ratio in a map is 2 seconds or more.") },
 
                 { "Warning Timestamp",
                     new IssueTemplate(Issue.Level.Warning,
