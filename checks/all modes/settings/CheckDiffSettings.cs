@@ -33,8 +33,8 @@ namespace MapsetChecks.checks.settings
                     "Reasoning",
                     @"
                     All difficulty settings cap at 0 and 10, including circle size, making it the only setting that can go beyond its 
-                    largest and smallest circle size acceptable.
                     minimum and maximum values, 2 and 7 respectively (1 and 9 for mania). These limits are intentional and represent the 
+                    largest and smallest circle size acceptable, anything smaller or larger is considered ridiculous.
                     <image>
                         https://i.imgur.com/JT9JNMb.jpg
                         Circle size 0 compared to circle size 10.
