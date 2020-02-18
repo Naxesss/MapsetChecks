@@ -74,46 +74,45 @@ namespace MapsetChecks.checks.compose
 
         public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
         {
-            List<HitObject> iteratedObjects = new List<HitObject>();
-            foreach (HitObject hitObject in aBeatmap.hitObjects)
+            int hitObjectCount = aBeatmap.hitObjects.Count();
+            for (int i = 0; i < hitObjectCount - 1; ++i)
             {
-                iteratedObjects.Add(hitObject);
-                foreach (HitObject otherHitObject in aBeatmap.hitObjects.Except(iteratedObjects))
+                for (int j = i + 1; j < hitObjectCount; ++j)
                 {
-                    bool sameTimeline =
-                        aBeatmap.generalSettings.mode != Beatmap.Mode.Mania ||
-                        hitObject.Position.X == otherHitObject.Position.X;
+                    HitObject hitObject = aBeatmap.hitObjects[i];
+                    HitObject otherHitObject = aBeatmap.hitObjects[j];
 
-                    if (!sameTimeline)
+                    if (aBeatmap.generalSettings.mode == Beatmap.Mode.Mania &&
+                        hitObject.Position.X != otherHitObject.Position.X)
                         continue;
 
-                    bool concurrent =
-                        otherHitObject.time <= hitObject.GetEndTime() &&
-                        otherHitObject.time >= hitObject.time;
+                    // Only need to check forwards, as any previous object will already have looked behind this one.
+                    double msApart = otherHitObject.time - hitObject.GetEndTime();
 
-                    double timeDistance =
-                        Math.Min(
-                            Math.Abs(hitObject.GetEndTime() - otherHitObject.time),
-                            Math.Abs(otherHitObject.time - hitObject.time));
-
-                    if (timeDistance == 0)
-                    {
-                        string type = hitObject.GetObjectType();
-                        string otherType = otherHitObject.GetObjectType();
-
-                        string argument =
-                            type == otherType ?
-                                type + "s" :
-                                type + " and " + otherType;
-
+                    if (msApart <= 0)
                         yield return new Issue(GetTemplate("Concurrent Objects"), aBeatmap,
-                            Timestamp.Get(hitObject, otherHitObject), argument);
-                    }
-                    else if (timeDistance < 10)
+                            Timestamp.Get(hitObject, otherHitObject), ObjectsAsString(hitObject, otherHitObject));
+
+                    else if (msApart <= 10)
                         yield return new Issue(GetTemplate("Almost Concurrent Objects"), aBeatmap,
-                            Timestamp.Get(hitObject, otherHitObject), timeDistance);
+                            Timestamp.Get(hitObject, otherHitObject), msApart);
+
+                    else
+                        // Hit objects are sorted by time, meaning if the next one is > 10 ms away, any remaining will be too.
+                        break;
                 }
             }
+        }
+
+        public string ObjectsAsString(HitObject aHitObject, HitObject anOtherHitObject)
+        {
+            string type = aHitObject.GetObjectType();
+            string otherType = anOtherHitObject.GetObjectType();
+
+            return
+                type == otherType ?
+                    type + "s" :
+                    type + " and " + otherType;
         }
     }
 }
