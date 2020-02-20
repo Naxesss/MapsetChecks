@@ -65,6 +65,32 @@ namespace MapsetChecks.checks.general.metadata
             };
         }
 
+        private class Field
+        {
+            public string name;
+            public string content;
+
+            public Field(string name, string content)
+            {
+                this.name = name;
+                this.content = content;
+            }
+        }
+
+        private class FieldIssue
+        {
+            public Field field;
+            public string message;
+            public bool isProblem;
+
+            public FieldIssue(Field field, string message, bool isProblem)
+            {
+                this.field = field;
+                this.message = message;
+                this.isProblem = isProblem;
+            }
+        }
+
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
             Beatmap beatmap = beatmapSet.beatmaps[0];
@@ -110,36 +136,35 @@ namespace MapsetChecks.checks.general.metadata
             };
 
             MetadataSettings metadata = beatmap.metadataSettings;
-            List<Tuple<string, string>> fields = new List<Tuple<string, string>>()
-                { new Tuple<string, string>(metadata.artist,         "artist"),
-                  new Tuple<string, string>(metadata.artistUnicode,  "artist unicode") };
+            List<Field> fields = new List<Field>()
+                { new Field("artist",         metadata.artist),
+                  new Field("artist unicode", metadata.artistUnicode) };
 
-            List<Tuple<Tuple<string, string>, string, bool>> issueMessages = new List<Tuple<Tuple<string, string>, string, bool>>();
-            foreach (Tuple<string, string> field in fields)
+            List<FieldIssue> fieldIssues = new List<FieldIssue>();
+            foreach (Field field in fields)
             {
                 // old osu versions didn't have unicode fields
-                if (field.Item1 != null)
+                if (field.content != null)
                 {
                     foreach (Func<string, string> problemTest in problemTests)
                     {
-                        string message = problemTest(field.Item1);
-                        if (message != null && !issueMessages.Any(tuple => tuple.Item2 == message && tuple.Item1 == field))
-                            issueMessages.Add(new Tuple<Tuple<string, string>, string, bool>(field, message, true));
+                        string message = problemTest(field.content);
+                        if (message != null && !fieldIssues.Any(fieldIssue => fieldIssue.message == message && fieldIssue.field == field))
+                            fieldIssues.Add(new FieldIssue(field, message, isProblem: true));
                     }
 
                     foreach (Func<string, string> warningTest in warningTests)
                     {
-                        string message = warningTest(field.Item1);
-                        if (message != null && !issueMessages.Any(tuple => tuple.Item2 == message && tuple.Item1 == field))
-                            issueMessages.Add(new Tuple<Tuple<string, string>, string, bool>(field, message, false));
+                        string message = warningTest(field.content);
+                        if (message != null && !fieldIssues.Any(fieldIssue => fieldIssue.message == message && fieldIssue.field == field))
+                            fieldIssues.Add(new FieldIssue(field, message, isProblem: false));
                     }
                 }
             }
 
-            foreach (Tuple<Tuple<string, string>, string, bool> messageTuple in issueMessages)
-                yield return new Issue(GetTemplate(messageTuple.Item3 ? "Problem" : "Warning"), null,
-                    messageTuple.Item2, messageTuple.Item1.Item2,
-                    messageTuple.Item1.Item1);
+            foreach (FieldIssue fieldIssue in fieldIssues)
+                yield return new Issue(GetTemplate(fieldIssue.isProblem ? "Problem" : "Warning"), null,
+                    fieldIssue.message, fieldIssue.field.name, fieldIssue.field.content);
         }
 
         /// <summary> Returns a message describing where a space is missing given a field and what is tested against. </summary>
