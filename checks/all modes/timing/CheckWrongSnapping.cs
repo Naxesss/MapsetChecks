@@ -255,16 +255,16 @@ namespace MapsetChecks.checks.timing
         /// time values in either beatmap that has no corresponding value in the other. </summary>
         private void PopulateInconsistentPlaces(Beatmap beatmap, Beatmap otherBeatmap)
         {
-            List<double> timeDifferences = GetTimeDifferences(beatmap, otherBeatmap).ToList();
-            List<double> otherTimeDifferences = GetTimeDifferences(otherBeatmap, beatmap).ToList();
+            List<double> differenceTimes = GetDifferenceTimes(beatmap, otherBeatmap).ToList();
+            List<double> otherDifferenceTimes = GetDifferenceTimes(otherBeatmap, beatmap).ToList();
 
-            foreach (double time in timeDifferences)
-                TryAddInconsistentPlace(otherTimeDifferences, otherBeatmap, time);
+            foreach (double time in differenceTimes)
+                TryAddInconsistentPlace(otherDifferenceTimes, otherBeatmap, time);
         }
 
         /// <summary> Returns any time value from the first beatmap that has no corresponding
         /// object within 3 ms in the other beatmap. </summary>
-        private IEnumerable<double> GetTimeDifferences(Beatmap beatmap, Beatmap otherBeatmap)
+        private IEnumerable<double> GetDifferenceTimes(Beatmap beatmap, Beatmap otherBeatmap)
         {
             foreach (HitObject hitObject in beatmap.hitObjects)
             {
@@ -287,9 +287,9 @@ namespace MapsetChecks.checks.timing
         /// is within the consistency range, depending on which divisor this point in time is in.<para/>
         /// This usually means the mapper has interpreted the same sound(s) differently from the other beatmap,
         /// so we add it as a potential inconsistency.</summary>
-        private void TryAddInconsistentPlace(List<double> deltaTimes, Beatmap otherBeatmap, double otherTime)
+        private void TryAddInconsistentPlace(List<double> differenceTimes, Beatmap otherBeatmap, double otherTime)
         {
-            List<double> inconsistencies = deltaTimes.Where(time =>
+            List<double> inconsistencies = differenceTimes.Where(time =>
             {
                 if (Math.Abs(time - otherTime) >= 3)
                 {
