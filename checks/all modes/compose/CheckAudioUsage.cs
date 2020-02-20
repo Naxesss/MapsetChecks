@@ -73,14 +73,14 @@ namespace MapsetChecks.checks.compose
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
+            foreach (Beatmap beatmap in beatmapSet.beatmaps)
             {
                 bool hasVideo      = beatmap.videos.Count > 0;
                 bool hasStoryboard =
                     beatmap.HasDifficultySpecificStoryboard() ||
-                    (aBeatmapSet.osb?.IsUsed() ?? false);
+                    (beatmapSet.osb?.IsUsed() ?? false);
 
                 string audioPath = beatmap.GetAudioFilePath();
                 if (audioPath != null)

@@ -62,14 +62,14 @@ namespace MapsetChecks.checks.standard.spread
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
             // Shortest length before warning is 1/2 at 240 BPM, 125 ms.
             double timeThreshold = 125;
 
-            foreach (Slider slider in aBeatmap.hitObjects.OfType<Slider>())
+            foreach (Slider slider in beatmap.hitObjects.OfType<Slider>())
                 if (slider.endTime - slider.time < timeThreshold)
-                    yield return new Issue(GetTemplate("Too Short"), aBeatmap,
+                    yield return new Issue(GetTemplate("Too Short"), beatmap,
                         Timestamp.Get(slider),
                         $"{slider.endTime - slider.time:0.##}",
                         timeThreshold);

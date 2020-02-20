@@ -72,9 +72,9 @@ namespace MapsetChecks.checks.timing
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (HitObject hitObject in aBeatmap.hitObjects)
+            foreach (HitObject hitObject in beatmap.hitObjects)
             {
                 string type =
                     hitObject is Circle   ? "Circle" :
@@ -84,46 +84,46 @@ namespace MapsetChecks.checks.timing
 
                 // SV in taiko and mania speed up all objects, whereas in catch and standard it only affects sliders
                 if (hitObject is Slider ||
-                    aBeatmap.generalSettings.mode == Beatmap.Mode.Taiko ||
-                    aBeatmap.generalSettings.mode == Beatmap.Mode.Mania)
+                    beatmap.generalSettings.mode == Beatmap.Mode.Taiko ||
+                    beatmap.generalSettings.mode == Beatmap.Mode.Mania)
                 {
-                    foreach (Issue issue in GetIssue(type, hitObject.time, aBeatmap))
+                    foreach (Issue issue in GetIssue(type, hitObject.time, beatmap))
                         yield return issue;
                 }
             }
         }
 
         /// <summary> Returns an issue if this time is very close behind to a timing line which would modify objects. </summary>
-        private IEnumerable<Issue> GetIssue(string aType, double aTime, Beatmap aBeatmap)
+        private IEnumerable<Issue> GetIssue(string type, double time, Beatmap beatmap)
         {
-            double unsnap = aBeatmap.GetPracticalUnsnap(aTime);
+            double unsnap = beatmap.GetPracticalUnsnap(time);
 
-            TimingLine curLine = aBeatmap.GetTimingLine(aTime);
-            TimingLine nextLine = aBeatmap.GetNextTimingLine(aTime);
+            TimingLine curLine = beatmap.GetTimingLine(time);
+            TimingLine nextLine = beatmap.GetNextTimingLine(time);
 
             if (nextLine != null)
             {
-                double curEffectiveBPM = curLine.svMult * aBeatmap.GetTimingLine<UninheritedLine>(aTime).bpm;
-                double nextEffectiveBPM = nextLine.svMult * aBeatmap.GetTimingLine<UninheritedLine>(nextLine.offset).bpm;
+                double curEffectiveBPM = curLine.svMult * beatmap.GetTimingLine<UninheritedLine>(time).bpm;
+                double nextEffectiveBPM = nextLine.svMult * beatmap.GetTimingLine<UninheritedLine>(nextLine.offset).bpm;
 
                 double deltaEffectiveBPM = curEffectiveBPM - nextEffectiveBPM;
 
-                double timeDiff = nextLine.offset - aTime;
+                double timeDiff = nextLine.offset - time;
                 if (timeDiff > 0 && timeDiff <= 5 &&
                     Math.Abs(unsnap) <= 1 &&
                     Math.Abs(deltaEffectiveBPM) > 1)
                 {
-                    yield return new Issue(GetTemplate("Behind"), aBeatmap,
-                        Timestamp.Get(aTime), aType, $"{timeDiff:0.##}");
+                    yield return new Issue(GetTemplate("Behind"), beatmap,
+                        Timestamp.Get(time), type, $"{timeDiff:0.##}");
                 }
                 
-                if (aBeatmap.generalSettings.mode == Beatmap.Mode.Taiko &&
+                if (beatmap.generalSettings.mode == Beatmap.Mode.Taiko &&
                     timeDiff < 0 && timeDiff >= -5 &&
                     Math.Abs(unsnap) <= 1 &&
                     Math.Abs(deltaEffectiveBPM) > 1)
                 {
-                    yield return new Issue(GetTemplate("After"), aBeatmap,
-                        Timestamp.Get(aTime), aType, $"{timeDiff:0.##}");
+                    yield return new Issue(GetTemplate("After"), beatmap,
+                        Timestamp.Get(time), type, $"{timeDiff:0.##}");
                 }
             }
         }

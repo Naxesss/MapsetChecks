@@ -87,9 +87,9 @@ namespace MapsetChecks.checks.hit_sounds
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            double prevTime = aBeatmap.hitObjects.Count > 0 ? aBeatmap.hitObjects.First().time : 0;
+            double prevTime = beatmap.hitObjects.Count > 0 ? beatmap.hitObjects.First().time : 0;
             int objectsPassed = 0;
             int totalHitSounds = 0;
 
@@ -97,19 +97,19 @@ namespace MapsetChecks.checks.hit_sounds
 
             List<Issue> issues = new List<Issue>();
             
-            void ApplyFeedbackUpdate(HitObject.HitSound aHitSound, Beatmap.Sampleset aSampleSet, HitObject hitObject, double aTime)
+            void ApplyFeedbackUpdate(HitObject.HitSound hitSound, Beatmap.Sampleset sampleset, HitObject hitObject, double time)
             {
                 if (prevSample == null)
-                    prevSample = aSampleSet;
+                    prevSample = sampleset;
 
-                if (aHitSound > 0 ||
-                    aSampleSet != prevSample ||
-                    aBeatmap.generalSettings.mode == Beatmap.Mode.Mania && (hitObject.filename ?? "") != "")
+                if (hitSound > 0 ||
+                    sampleset != prevSample ||
+                    beatmap.generalSettings.mode == Beatmap.Mode.Mania && (hitObject.filename ?? "") != "")
                 {
-                    prevSample = aSampleSet;
+                    prevSample = sampleset;
 
                     ++totalHitSounds;
-                    Issue issue = GetIssueFromUpdate(aTime, ref objectsPassed, ref prevTime, aBeatmap);
+                    Issue issue = GetIssueFromUpdate(time, ref objectsPassed, ref prevTime, beatmap);
                     if (issue != null)
                         issues.Add(issue);
                 }
@@ -117,20 +117,20 @@ namespace MapsetChecks.checks.hit_sounds
                     ++objectsPassed;
             }
 
-            foreach (HitObject hitObject in aBeatmap.hitObjects)
+            foreach (HitObject hitObject in beatmap.hitObjects)
             {
                 while (true)
                 {
                     // Breaks and spinners don't really need to be hit sounded so we take that into account
                     // by looking for any between the current object and excluding their drain time if present.
                     Break @break =
-                        aBeatmap.breaks.FirstOrDefault(aBreak =>
-                            aBreak.endTime > prevTime &&
-                            aBreak.endTime < hitObject.time);
+                        beatmap.breaks.FirstOrDefault(otherBreak =>
+                            otherBreak.endTime > prevTime &&
+                            otherBreak.endTime < hitObject.time);
                     Spinner spinner =
-                        aBeatmap.hitObjects.OfType<Spinner>().FirstOrDefault(aSpinner =>
-                            aSpinner.endTime > prevTime &&
-                            aSpinner.endTime < hitObject.time);
+                        beatmap.hitObjects.OfType<Spinner>().FirstOrDefault(otherSpinner =>
+                            otherSpinner.endTime > prevTime &&
+                            otherSpinner.endTime < hitObject.time);
                     
                     double excludeStart =
                         @break == null ?
@@ -154,8 +154,8 @@ namespace MapsetChecks.checks.hit_sounds
                     else if (@break == null && spinner == null)
                         break;
 
-                    HitObject objectBeforeExcl = aBeatmap.GetHitObject(excludeStart - 1);
-                    HitObject objectAfterExcl = aBeatmap.GetNextHitObject(excludeEnd);
+                    HitObject objectBeforeExcl = beatmap.GetHitObject(excludeStart - 1);
+                    HitObject objectAfterExcl = beatmap.GetNextHitObject(excludeEnd);
 
                     double endTimeBeforeExcl =
                         objectBeforeExcl is Spinner ? ((Spinner)objectBeforeExcl).endTime
@@ -165,18 +165,18 @@ namespace MapsetChecks.checks.hit_sounds
                     // Between the previous object's time and the end time before the exclusion,
                     // storyboarded hit sounds should be accounted for in mania, since they need to
                     // use them as substitutes to actual hit sounding.
-                    foreach (Issue storyIssue in GetStoryHsIssuesFromUpdates(aBeatmap, prevTime, endTimeBeforeExcl, ref objectsPassed, ref prevTime))
+                    foreach (Issue storyIssue in GetStoryHsIssuesFromUpdates(beatmap, prevTime, endTimeBeforeExcl, ref objectsPassed, ref prevTime))
                         issues.Add(storyIssue);
                     
                     // Exclusion happens through updating prevTime manually rather than through the update function.
-                    Issue issue = GetIssueFromUpdate(endTimeBeforeExcl, ref objectsPassed, ref prevTime, aBeatmap);
+                    Issue issue = GetIssueFromUpdate(endTimeBeforeExcl, ref objectsPassed, ref prevTime, beatmap);
                     if (issue != null)
                         issues.Add(issue);
                     prevTime = objectAfterExcl.time;
                 }
                 
                 // Regardless of there being a spinner or break, storyboarded hit sounds should still be taken into account.
-                foreach (Issue storyIssue in GetStoryHsIssuesFromUpdates(aBeatmap, prevTime, hitObject.time, ref objectsPassed, ref prevTime))
+                foreach (Issue storyIssue in GetStoryHsIssuesFromUpdates(beatmap, prevTime, hitObject.time, ref objectsPassed, ref prevTime))
                     issues.Add(storyIssue);
 
                 if (hitObject is Circle)
@@ -199,22 +199,22 @@ namespace MapsetChecks.checks.hit_sounds
             }
             
             if (totalHitSounds == 0)
-                yield return new Issue(GetTemplate("No Hit Sounds"), aBeatmap);
+                yield return new Issue(GetTemplate("No Hit Sounds"), beatmap);
             else
                 foreach (Issue issue in issues)
                     yield return issue;
         }
 
         /// <summary> Returns an issue when too much time and/or too many objects were passed before this method was called again. </summary>
-        private Issue GetIssueFromUpdate(double aCurrentTime, ref int anObjectsPassed, ref double aPreviousTime, Beatmap aBeatmap)
+        private Issue GetIssueFromUpdate(double currentTime, ref int objectsPassed, ref double previousTime, Beatmap beatmap)
         {
-            double prevTime = aPreviousTime;
+            double prevTime = previousTime;
 
-            double timeDifference = aCurrentTime - prevTime;
-            double objectDifference = anObjectsPassed;
+            double timeDifference = currentTime - prevTime;
+            double objectDifference = objectsPassed;
             
-            anObjectsPassed = 0;
-            aPreviousTime = aCurrentTime;
+            objectsPassed = 0;
+            previousTime = currentTime;
 
             double timeRatio = timeDifference;
             double objectRatio = objectDifference * 200;
@@ -232,8 +232,8 @@ namespace MapsetChecks.checks.hit_sounds
                 timeRatio > problemTime &&                   // at least this much of the individual
                 objectRatio > problemObject)
             {
-                return new Issue(GetTemplate("Problem"), aBeatmap,
-                    Timestamp.Get(aCurrentTime - timeDifference), Timestamp.Get(aCurrentTime),
+                return new Issue(GetTemplate("Problem"), beatmap,
+                    Timestamp.Get(currentTime - timeDifference), Timestamp.Get(currentTime),
                     $"{timeDifference / 1000:0.##}");
             }
 
@@ -242,8 +242,8 @@ namespace MapsetChecks.checks.hit_sounds
                 timeRatio > warningTime &&
                 objectRatio > warningObject)
             {
-                return new Issue(GetTemplate("Warning"), aBeatmap,
-                    Timestamp.Get(aCurrentTime - timeDifference), Timestamp.Get(aCurrentTime),
+                return new Issue(GetTemplate("Warning"), beatmap,
+                    Timestamp.Get(currentTime - timeDifference), Timestamp.Get(currentTime),
                     $"{timeDifference / 1000:0.##}");
             }
             
@@ -251,24 +251,24 @@ namespace MapsetChecks.checks.hit_sounds
         }
 
         /// <summary> Returns issues for every storyboarded hit sound where too much time and/or too many objects were passed since last update. </summary>
-        private List<Issue> GetStoryHsIssuesFromUpdates(Beatmap aBeatmap, double aStartTime, double anEndTime, ref int anObjectsPassed, ref double aPrevTime)
+        private List<Issue> GetStoryHsIssuesFromUpdates(Beatmap beatmap, double startTime, double endTime, ref int objectsPassed, ref double prevTime)
         {
             List<Issue> issues = new List<Issue>();
-            if (aBeatmap.generalSettings.mode == Beatmap.Mode.Mania)
+            if (beatmap.generalSettings.mode == Beatmap.Mode.Mania)
             {
                 while (true)
                 {
-                    Sample storyHitSound = aBeatmap.samples.FirstOrDefault(
-                        aHitsound => aHitsound.time > aStartTime && aHitsound.time < anEndTime);
+                    Sample storyHitSound = beatmap.samples.FirstOrDefault(
+                        aHitsound => aHitsound.time > startTime && aHitsound.time < endTime);
 
                     if (storyHitSound == null)
                         break;
 
-                    Issue maniaIssue = GetIssueFromUpdate(storyHitSound.time, ref anObjectsPassed, ref aPrevTime, aBeatmap);
+                    Issue maniaIssue = GetIssueFromUpdate(storyHitSound.time, ref objectsPassed, ref prevTime, beatmap);
                     if (maniaIssue != null)
                         issues.Add(maniaIssue);
 
-                    aStartTime = aPrevTime;
+                    startTime = prevTime;
                 }
             }
             return issues;

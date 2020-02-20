@@ -50,9 +50,9 @@ namespace MapsetChecks.checks.general.metadata
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            Beatmap refBeatmap = aBeatmapSet.beatmaps.FirstOrDefault();
+            Beatmap refBeatmap = beatmapSet.beatmaps.FirstOrDefault();
             if (refBeatmap != null && refBeatmap.metadataSettings.source.ToLower() == "bms")
                 yield return new Issue(GetTemplate("Problem"), null,
                     refBeatmap.metadataSettings.source);

@@ -87,11 +87,11 @@ namespace MapsetChecks.checks.settings
             };
         }
         
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
+            foreach (Beatmap beatmap in beatmapSet.beatmaps)
             {
-                foreach (Beatmap otherBeatmap in aBeatmapSet.beatmaps)
+                foreach (Beatmap otherBeatmap in beatmapSet.beatmaps)
                 {
                     if (beatmap.metadataSettings.beatmapSetId != otherBeatmap.metadataSettings.beatmapSetId)
                         yield return new Issue(GetTemplate("Problem"), beatmap,
@@ -132,7 +132,7 @@ namespace MapsetChecks.checks.settings
                     // Widescreen support does nothing without a storyboard.
                     if (beatmap.HasDifficultySpecificStoryboard() &&
                         otherBeatmap.HasDifficultySpecificStoryboard() ||
-                        aBeatmapSet.osb != null)
+                        beatmapSet.osb != null)
                     {
                         if (beatmap.generalSettings.widescreenSupport != otherBeatmap.generalSettings.widescreenSupport)
                             yield return new Issue(GetTemplate("Warning"), beatmap,
@@ -155,7 +155,7 @@ namespace MapsetChecks.checks.settings
                     // Epilepsy warning requires either a storyboard or video to show.
                     if (beatmap.HasDifficultySpecificStoryboard() &&
                         otherBeatmap.HasDifficultySpecificStoryboard() ||
-                        aBeatmapSet.osb != null ||
+                        beatmapSet.osb != null ||
                         beatmap.videos.Count > 0 && otherBeatmap.videos.Count > 0)
                     {
                         if (beatmap.generalSettings.epilepsyWarning != otherBeatmap.generalSettings.epilepsyWarning)

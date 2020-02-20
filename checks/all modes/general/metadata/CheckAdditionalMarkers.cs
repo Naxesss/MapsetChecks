@@ -63,9 +63,9 @@ namespace MapsetChecks.checks.general.metadata
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            Beatmap beatmap = aBeatmapSet.beatmaps[0];
+            Beatmap beatmap = beatmapSet.beatmaps[0];
             
             Regex regex      = new Regex(@"(?i)([^A-Za-z0-9]+)?(ver(\.|sion)?|size)([^A-Za-z0-9]+)?$");
             Regex shortRegex = new Regex(@"(\(|（)Short Ver\.(\)|）)$");
@@ -74,11 +74,11 @@ namespace MapsetChecks.checks.general.metadata
 
             // Matches additional markers, like "(Speed up ver.)" and "- Full Version -".
             // Excludes any field with correct markers.
-            bool IsMatch(string aField) =>
-                regex      .IsMatch(aField) &&
-                !shortRegex.IsMatch(aField) &&
-                !gameRegex .IsMatch(aField) &&
-                !tvRegex   .IsMatch(aField);
+            bool IsMatch(string field) =>
+                regex      .IsMatch(field) &&
+                !shortRegex.IsMatch(field) &&
+                !gameRegex .IsMatch(field) &&
+                !tvRegex   .IsMatch(field);
 
             if (IsMatch(beatmap.metadataSettings.title))
                 yield return new Issue(GetTemplate("Romanized"), null,

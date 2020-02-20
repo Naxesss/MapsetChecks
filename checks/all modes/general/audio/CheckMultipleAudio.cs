@@ -58,18 +58,18 @@ namespace MapsetChecks.checks.general.audio
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            if (aBeatmapSet.beatmaps.All(aBeatmap => aBeatmap.GetAudioFilePath() == null))
-                foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
+            if (beatmapSet.beatmaps.All(beatmap => beatmap.GetAudioFilePath() == null))
+                foreach (Beatmap beatmap in beatmapSet.beatmaps)
                     yield return new Issue(GetTemplate("Missing"), beatmap);
             else
             {
                 foreach (Issue issue in Common.GetInconsistencies(
-                        aBeatmapSet,
-                        aBeatmap =>
-                            aBeatmap.GetAudioFilePath() != null ?
-                                PathStatic.RelativePath(aBeatmap.GetAudioFilePath(), aBeatmap.songPath) :
+                        beatmapSet,
+                        beatmap =>
+                            beatmap.GetAudioFilePath() != null ?
+                                PathStatic.RelativePath(beatmap.GetAudioFilePath(), beatmap.songPath) :
                                 "None",
                         GetTemplate("Multiple")))
                     yield return issue;

@@ -96,43 +96,43 @@ namespace MapsetChecks.checks.general.resources
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
             foreach (Issue issue in Common.GetTagOsuIssues(
-                aBeatmapSet,
-                aBeatmap => aBeatmap.backgrounds.Count > 0 ? aBeatmap.backgrounds.Select(aBg => aBg.path) : null,
-                aTemplateArg => GetTemplate(aTemplateArg),
-                aTagFile =>
+                beatmapSet,
+                beatmap => beatmap.backgrounds.Count > 0 ? beatmap.backgrounds.Select(bg => bg.path) : null,
+                templateArg => GetTemplate(templateArg),
+                tagFile =>
                 {
                     // Executes for each non-faulty background file used in one of the beatmaps in the set.
                     List<Issue> issues = new List<Issue>();
-                    if (aTagFile.file.Properties.PhotoWidth > 2560 ||
-                        aTagFile.file.Properties.PhotoHeight > 1440)
+                    if (tagFile.file.Properties.PhotoWidth > 2560 ||
+                        tagFile.file.Properties.PhotoHeight > 1440)
                     {
                         issues.Add(new Issue(GetTemplate("Too high"), null,
-                            aTagFile.templateArgs[0],
-                            aTagFile.file.Properties.PhotoWidth,
-                            aTagFile.file.Properties.PhotoHeight));
+                            tagFile.templateArgs[0],
+                            tagFile.file.Properties.PhotoWidth,
+                            tagFile.file.Properties.PhotoHeight));
                     }
 
                     else if (
-                        aTagFile.file.Properties.PhotoWidth < 1024 ||
-                        aTagFile.file.Properties.PhotoHeight < 640)
+                        tagFile.file.Properties.PhotoWidth < 1024 ||
+                        tagFile.file.Properties.PhotoHeight < 640)
                     {
                         issues.Add(new Issue(GetTemplate("Very low"), null,
-                            aTagFile.templateArgs[0],
-                            aTagFile.file.Properties.PhotoWidth,
-                            aTagFile.file.Properties.PhotoHeight));
+                            tagFile.templateArgs[0],
+                            tagFile.file.Properties.PhotoWidth,
+                            tagFile.file.Properties.PhotoHeight));
                     }
 
                     // Most operating systems define 1 KB as 1024 B and 1 MB as 1024 KB,
                     // not 10^(3x) which the prefixes usually mean, but 2^(10x), since binary is more efficient for circuits,
                     // so since this is what your computer uses we'll use this too.
-                    double megaBytes = new FileInfo(aTagFile.file.Name).Length / Math.Pow(1024, 2);
+                    double megaBytes = new FileInfo(tagFile.file.Name).Length / Math.Pow(1024, 2);
                     if (megaBytes > 2.5)
                     {
                         issues.Add(new Issue(GetTemplate("File size"), null,
-                            aTagFile.templateArgs[0],
+                            tagFile.templateArgs[0],
                             FormattableString.Invariant($"{megaBytes:0.##}")));
                     }
 

@@ -66,27 +66,27 @@ namespace MapsetChecks.checks.timing
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
             // Since the list of timing lines is sorted by time we can just check the previous line.
-            for (int i = 1; i < aBeatmap.timingLines.Count; ++i)
+            for (int i = 1; i < beatmap.timingLines.Count; ++i)
             {
-                if (aBeatmap.timingLines[i - 1].offset == aBeatmap.timingLines[i].offset)
+                if (beatmap.timingLines[i - 1].offset == beatmap.timingLines[i].offset)
                 {
-                    if (aBeatmap.timingLines[i - 1].uninherited == aBeatmap.timingLines[i].uninherited)
+                    if (beatmap.timingLines[i - 1].uninherited == beatmap.timingLines[i].uninherited)
                     {
                         string inheritance =
-                            aBeatmap.timingLines[i].uninherited ?
+                            beatmap.timingLines[i].uninherited ?
                                 "uninherited" : "inherited";
 
-                        yield return new Issue(GetTemplate("Concurrent"), aBeatmap,
-                            Timestamp.Get(aBeatmap.timingLines[i].offset), inheritance);
+                        yield return new Issue(GetTemplate("Concurrent"), beatmap,
+                            Timestamp.Get(beatmap.timingLines[i].offset), inheritance);
                     }
                     else if (
-                        aBeatmap.timingLines[i - 1].kiai != aBeatmap.timingLines[i].kiai ||
-                        aBeatmap.timingLines[i - 1].volume != aBeatmap.timingLines[i].volume ||
-                        aBeatmap.timingLines[i - 1].sampleset != aBeatmap.timingLines[i].sampleset ||
-                        aBeatmap.timingLines[i - 1].customIndex != aBeatmap.timingLines[i].customIndex)
+                        beatmap.timingLines[i - 1].kiai != beatmap.timingLines[i].kiai ||
+                        beatmap.timingLines[i - 1].volume != beatmap.timingLines[i].volume ||
+                        beatmap.timingLines[i - 1].sampleset != beatmap.timingLines[i].sampleset ||
+                        beatmap.timingLines[i - 1].customIndex != beatmap.timingLines[i].customIndex)
                     {
                         string conflictingGreenSettings = "";
                         string conflictingRedSettings = "";
@@ -97,16 +97,16 @@ namespace MapsetChecks.checks.timing
                         // We've guaranteed that one line is inherited and the other is
                         // uninherited, so we can figure out both by checking one.
                         string precedence = "";
-                        if (aBeatmap.timingLines[i - 1] is InheritedLine)
+                        if (beatmap.timingLines[i - 1] is InheritedLine)
                         {
-                            greenLine = aBeatmap.timingLines[i - 1] as InheritedLine;
-                            redLine = aBeatmap.timingLines[i] as UninheritedLine;
+                            greenLine = beatmap.timingLines[i - 1] as InheritedLine;
+                            redLine = beatmap.timingLines[i] as UninheritedLine;
                             precedence = "Red overrides green";
                         }
                         else
                         {
-                            greenLine = aBeatmap.timingLines[i] as InheritedLine;
-                            redLine = aBeatmap.timingLines[i - 1] as UninheritedLine;
+                            greenLine = beatmap.timingLines[i] as InheritedLine;
+                            redLine = beatmap.timingLines[i - 1] as UninheritedLine;
                             precedence = "Green overrides red";
                         }
 
@@ -131,8 +131,8 @@ namespace MapsetChecks.checks.timing
                             conflictingRedSettings   += (conflictingRedSettings.Length > 0   ? ", " : "") + $"custom {redLine.customIndex}";
                         }
 
-                        yield return new Issue(GetTemplate("Conflicting"), aBeatmap,
-                            Timestamp.Get(aBeatmap.timingLines[i].offset),
+                        yield return new Issue(GetTemplate("Conflicting"), beatmap,
+                            Timestamp.Get(beatmap.timingLines[i].offset),
                             conflictingGreenSettings, conflictingRedSettings,
                             precedence);
                     }

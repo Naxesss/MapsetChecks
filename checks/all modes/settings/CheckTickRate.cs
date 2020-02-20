@@ -56,25 +56,25 @@ namespace MapsetChecks.checks.settings
             };
         }
         
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
             // can't be decimal unless it's 0.5, 1.333 or 1.5 since they have practical use
-            Issue issue = GetTickRateIssue(aBeatmap.difficultySettings.sliderTickRate, "slider tick rate", aBeatmap);
+            Issue issue = GetTickRateIssue(beatmap.difficultySettings.sliderTickRate, "slider tick rate", beatmap);
             if (issue != null)
                 yield return issue;
         }
 
         /// <summary> Returns an issue when the given tick rate does not align with any integer value, 1/2, 3/2 or 4/3.
         /// Rounds the value to the closest 1/100th to avoid precision errors. </summary>
-        private Issue GetTickRateIssue(float aTickRate, string aType, Beatmap aBeatmap)
+        private Issue GetTickRateIssue(float tickRate, string type, Beatmap beatmap)
         {
-            double approxTickRate = Math.Round(aTickRate * 1000) / 1000;
-            if (aTickRate - Math.Floor(aTickRate) != 0
+            double approxTickRate = Math.Round(tickRate * 1000) / 1000;
+            if (tickRate - Math.Floor(tickRate) != 0
                 && approxTickRate != 0.5
                 && approxTickRate != 1.333
                 && approxTickRate != 1.5)
-                return new Issue(GetTemplate("Tick Rate"), aBeatmap,
-                    approxTickRate, aType);
+                return new Issue(GetTemplate("Tick Rate"), beatmap,
+                    approxTickRate, type);
             return null;
         }
     }

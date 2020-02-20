@@ -107,33 +107,33 @@ namespace MapsetChecks.checks.standard.settings
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
             // Luminosity thresholds, ~15 more lenient than the original 53 / 233
             float luminosityMinRankable = 30;
             float luminosityMinWarning = 43;
             float luminosityMax = 250;
             
-            if (aBeatmap.colourSettings.sliderBorder != null)
+            if (beatmap.colourSettings.sliderBorder != null)
             {
-                Vector3 colour = aBeatmap.colourSettings.sliderBorder.GetValueOrDefault();
+                Vector3 colour = beatmap.colourSettings.sliderBorder.GetValueOrDefault();
                 float luminosity = GetLuminosity(colour);
 
                 if (luminosity < luminosityMinRankable)
-                    yield return new Issue(GetTemplate("Problem Border"), aBeatmap);
+                    yield return new Issue(GetTemplate("Problem Border"), beatmap);
                 else if (luminosity < luminosityMinWarning)
-                    yield return new Issue(GetTemplate("Warning Border"), aBeatmap);
+                    yield return new Issue(GetTemplate("Warning Border"), beatmap);
             }
             
             List<int> comboColoursInKiai = new List<int>();
             List<double> comboColourTime = new List<double>();
-            foreach (HitObject hitObject in aBeatmap.hitObjects)
+            foreach (HitObject hitObject in beatmap.hitObjects)
             {
-                int combo = aBeatmap.GetComboColourIndex(hitObject.time);
+                int combo = beatmap.GetComboColourIndex(hitObject.time);
                 
                 // Spinners don't have a colour.
                 if (!(hitObject is Spinner) &&
-                    aBeatmap.GetTimingLine(hitObject.time).kiai &&
+                    beatmap.GetTimingLine(hitObject.time).kiai &&
                     !comboColoursInKiai.Contains(combo))
                 {
                     comboColoursInKiai.Add(combo);
@@ -141,36 +141,36 @@ namespace MapsetChecks.checks.standard.settings
                 }
             }
 
-            for (int i = 0; i < aBeatmap.colourSettings.combos.Count; ++i)
+            for (int i = 0; i < beatmap.colourSettings.combos.Count; ++i)
             {
-                Vector3 colour = aBeatmap.colourSettings.combos.ElementAt(i);
+                Vector3 colour = beatmap.colourSettings.combos.ElementAt(i);
                 float luminosity = GetLuminosity(colour);
 
-                int displayedColourIndex = aBeatmap.GetDisplayedComboColourIndex(i);
+                int displayedColourIndex = beatmap.GetDisplayedComboColourIndex(i);
                 
                 if (luminosity < luminosityMinRankable)
-                    yield return new Issue(GetTemplate("Problem Combo"), aBeatmap,
+                    yield return new Issue(GetTemplate("Problem Combo"), beatmap,
                         displayedColourIndex);
 
                 else if (luminosity < luminosityMinWarning)
-                    yield return new Issue(GetTemplate("Warning Combo"), aBeatmap,
+                    yield return new Issue(GetTemplate("Warning Combo"), beatmap,
                         displayedColourIndex);
                 
                 for (int j = 0; j < comboColoursInKiai.Count; ++j)
                     if (luminosity > luminosityMax && comboColoursInKiai[j] == i)
-                        yield return new Issue(GetTemplate("Bright"), aBeatmap,
+                        yield return new Issue(GetTemplate("Bright"), beatmap,
                             displayedColourIndex, Timestamp.Get(comboColourTime[j]));
             }
         }
 
-        public float GetLuminosity(Vector3 aColour)
+        public float GetLuminosity(Vector3 colour)
         {
             // HSP colour model http://alienryderflex.com/hsp.html
             return
                 (float)Math.Sqrt(
-                    aColour.X * aColour.X * 0.299f +
-                    aColour.Y * aColour.Y * 0.587f +
-                    aColour.Z * aColour.Z * 0.114f);
+                    colour.X * colour.X * 0.299f +
+                    colour.Y * colour.Y * 0.587f +
+                    colour.Z * colour.Z * 0.114f);
         }
     }
 }

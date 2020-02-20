@@ -69,9 +69,9 @@ namespace MapsetChecks.checks.general.metadata
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            Beatmap beatmap = aBeatmapSet.beatmaps[0];
+            Beatmap beatmap = beatmapSet.beatmaps[0];
             
             // Matches any string containing some form of TV Size but not exactly "(TV Size)".
             Regex tvSizeRegex = new Regex(@"(?i)(tv.(size|ver))");
@@ -94,22 +94,22 @@ namespace MapsetChecks.checks.general.metadata
         }
 
         /// <summary> Returns issues wherever the romanized or unicode title contains the regular regex but not the exact regex. </summary>
-        private IEnumerable<Issue> GetIssuesFromRegex(Beatmap aBeatmap, Regex aRegex, Regex anExactRegex, string aTemplateName)
+        private IEnumerable<Issue> GetIssuesFromRegex(Beatmap beatmap, Regex regex, Regex exactRegex, string templateName)
         {
-            if (aRegex.IsMatch(aBeatmap.metadataSettings.title) &&
-                !anExactRegex.IsMatch(aBeatmap.metadataSettings.title))
+            if (regex.IsMatch(beatmap.metadataSettings.title) &&
+                !exactRegex.IsMatch(beatmap.metadataSettings.title))
             {
-                yield return new Issue(GetTemplate(aTemplateName), null,
-                    "Romanized", aBeatmap.metadataSettings.title);
+                yield return new Issue(GetTemplate(templateName), null,
+                    "Romanized", beatmap.metadataSettings.title);
             }
 
             // Unicode fields do not exist in file version 9.
-            if (aBeatmap.metadataSettings.titleUnicode != null
-                && aRegex.IsMatch(aBeatmap.metadataSettings.titleUnicode) &&
-                !anExactRegex.IsMatch(aBeatmap.metadataSettings.titleUnicode))
+            if (beatmap.metadataSettings.titleUnicode != null
+                && regex.IsMatch(beatmap.metadataSettings.titleUnicode) &&
+                !exactRegex.IsMatch(beatmap.metadataSettings.titleUnicode))
             {
-                yield return new Issue(GetTemplate(aTemplateName), null,
-                    "Unicode", aBeatmap.metadataSettings.titleUnicode);
+                yield return new Issue(GetTemplate(templateName), null,
+                    "Unicode", beatmap.metadataSettings.titleUnicode);
             }
         }
     }

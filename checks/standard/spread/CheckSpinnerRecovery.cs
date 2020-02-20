@@ -79,17 +79,17 @@ namespace MapsetChecks.checks.standard.spread
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (HitObject hitObject in aBeatmap.hitObjects)
+            foreach (HitObject hitObject in beatmap.hitObjects)
             {
                 if (!(hitObject is Spinner spinner))
                     continue;
 
-                foreach (Issue issue in GetLengthIssues(aBeatmap, spinner))
+                foreach (Issue issue in GetLengthIssues(beatmap, spinner))
                     yield return issue;
 
-                foreach (Issue issue in GetRecoveryIssues(aBeatmap, spinner))
+                foreach (Issue issue in GetRecoveryIssues(beatmap, spinner))
                     yield return issue;
             }
         }
@@ -98,9 +98,9 @@ namespace MapsetChecks.checks.standard.spread
         // So when multiplied by the expected time, we get the time that the Ranking Criteria wanted, which is based on 180 BPM.
         private readonly double expectedMultiplier = 4 / 3d;
 
-        private IEnumerable<Issue> GetLengthIssues(Beatmap aBeatmap, Spinner aSpinner)
+        private IEnumerable<Issue> GetLengthIssues(Beatmap beatmap, Spinner spinner)
         {
-            double spinnerTime = aSpinner.endTime - aSpinner.time;
+            double spinnerTime = spinner.endTime - spinner.time;
             double[] spinnerTimeExpected = new double[] { 1000, 750, 500 }; // 4, 3 and 2 beats respectively, 240 bpm
 
             for (int diffIndex = 0; diffIndex < spinnerTimeExpected.Length; ++diffIndex)
@@ -111,27 +111,27 @@ namespace MapsetChecks.checks.standard.spread
                 double warningThreshold = spinnerTimeExpected[diffIndex] * 1.2; // same thing but 200 bpm instead
 
                 if (spinnerTime < problemThreshold)
-                    yield return new Issue(GetTemplate("Problem Length"), aBeatmap,
-                        Timestamp.Get(aSpinner), spinnerTime, expectedLength)
+                    yield return new Issue(GetTemplate("Problem Length"), beatmap,
+                        Timestamp.Get(spinner), spinnerTime, expectedLength)
                         .ForDifficulties((Beatmap.Difficulty)diffIndex);
 
                 else if (spinnerTime < warningThreshold)
-                    yield return new Issue(GetTemplate("Warning Length"), aBeatmap,
-                        Timestamp.Get(aSpinner), spinnerTime, expectedLength)
+                    yield return new Issue(GetTemplate("Warning Length"), beatmap,
+                        Timestamp.Get(spinner), spinnerTime, expectedLength)
                         .ForDifficulties((Beatmap.Difficulty)diffIndex);
             }
         }
 
-        private IEnumerable<Issue> GetRecoveryIssues(Beatmap aBeatmap, Spinner aSpinner)
+        private IEnumerable<Issue> GetRecoveryIssues(Beatmap beatmap, Spinner spinner)
         {
-            HitObject nextObject = aBeatmap.GetNextHitObject(aSpinner.time);
+            HitObject nextObject = beatmap.GetNextHitObject(spinner.time);
 
             // Do not check time between two spinners since all you'd need to do is keep spinning.
             if (nextObject != null && !(nextObject is Spinner))
             {
-                double recoveryTime = nextObject.time - aSpinner.endTime;
+                double recoveryTime = nextObject.time - spinner.endTime;
 
-                UninheritedLine line = aBeatmap.GetTimingLine<UninheritedLine>(nextObject.time);
+                UninheritedLine line = beatmap.GetTimingLine<UninheritedLine>(nextObject.time);
                 double bpmScaling = GetScaledTiming(line.bpm);
                 double recoveryTimeScaled = recoveryTime / bpmScaling;
 
@@ -148,13 +148,13 @@ namespace MapsetChecks.checks.standard.spread
                     double warningThreshold = recoveryTimeExpected[diffIndex] * 1.2;
 
                     if (recoveryTimeScaled < problemThreshold && recoveryTime < problemThreshold)
-                        yield return new Issue(GetTemplate("Problem Recovery"), aBeatmap,
-                            Timestamp.Get(aSpinner, nextObject), recoveryTime, expectedRecovery)
+                        yield return new Issue(GetTemplate("Problem Recovery"), beatmap,
+                            Timestamp.Get(spinner, nextObject), recoveryTime, expectedRecovery)
                             .ForDifficulties((Beatmap.Difficulty)diffIndex);
 
                     else if (recoveryTimeScaled < warningThreshold && recoveryTime < warningThreshold)
-                        yield return new Issue(GetTemplate("Warning Recovery"), aBeatmap,
-                            Timestamp.Get(aSpinner, nextObject), recoveryTime, expectedRecovery)
+                        yield return new Issue(GetTemplate("Warning Recovery"), beatmap,
+                            Timestamp.Get(spinner, nextObject), recoveryTime, expectedRecovery)
                             .ForDifficulties((Beatmap.Difficulty)diffIndex);
                 }
             }
@@ -162,6 +162,6 @@ namespace MapsetChecks.checks.standard.spread
 
         /// <summary> Scales the bpm in accordance to https://osu.ppy.sh/help/wiki/Ranking_Criteria/osu!/Scaling_BPM,
         /// where 180 bpm is 1, 120 bpm is 0.5, and 240 bpm is 2. </summary>
-        private double GetScaledTiming(double aBPM) => Math.Pow(aBPM, 2) / 14400 - aBPM / 80 + 1;
+        private double GetScaledTiming(double bpm) => Math.Pow(bpm, 2) / 14400 - bpm / 80 + 1;
     }
 }

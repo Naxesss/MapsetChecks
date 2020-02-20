@@ -84,9 +84,9 @@ namespace MapsetChecks.checks.standard.compose
             };
         }
         
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (HitObject hitObject in aBeatmap.hitObjects)
+            foreach (HitObject hitObject in beatmap.hitObjects)
             {
                 if (hitObject is Slider slider && slider.curveType == Slider.CurveType.Bezier)
                 {
@@ -141,11 +141,11 @@ namespace MapsetChecks.checks.standard.compose
                     {
                         // Note that this may false positive in places with slight but readable overlapping curves.
                         if (totalBuraiScore > 5)
-                            yield return new Issue(GetTemplate("Definitely"), aBeatmap,
+                            yield return new Issue(GetTemplate("Definitely"), beatmap,
                                 Timestamp.Get(hitObject));
 
                         else if (totalBuraiScore > 2)
-                            yield return new Issue(GetTemplate("Potentially"), aBeatmap,
+                            yield return new Issue(GetTemplate("Potentially"), beatmap,
                                 Timestamp.Get(hitObject));
                     }
                 }
@@ -153,40 +153,40 @@ namespace MapsetChecks.checks.standard.compose
         }
 
         /// <summary> Returns the smallest angle in radians. </summary>
-        private double WrapAngle(double aRadians, double aScale = 1)
+        private double WrapAngle(double radians, double scale = 1)
         {
-            return aRadians > Math.PI * aScale ? Math.PI * 2 * aScale - aRadians : aRadians;
+            return radians > Math.PI * scale ? Math.PI * 2 * scale - radians : radians;
         }
 
         /// <summary> Returns the angle between two 2D vectors, a value between 0 and 2 PI. </summary>
-        private double GetAngle(Vector2 aVector, Vector2 anOtherVector, double aWrapScale = 1)
+        private double GetAngle(Vector2 vector, Vector2 otherVector, double wrapScale = 1)
         {
             double radians =
                 WrapAngle(
                     Math.Atan2(
-                        aVector.Y - anOtherVector.Y,
-                        aVector.X - anOtherVector.X),
-                    aWrapScale);
+                        vector.Y - otherVector.Y,
+                        vector.X - otherVector.X),
+                    wrapScale);
             
             return (radians >= 0 ? radians : Math.PI * 2 + radians) % Math.PI;
         }
 
         /// <summary> Returns the euclidean distance between two 2D vectors. </summary>
-        private double GetDistance(Vector2 aVector, Vector2 anOtherVector)
+        private double GetDistance(Vector2 vector, Vector2 otherVector)
         {
             return
                 Math.Sqrt(
-                    Math.Pow(aVector.X - anOtherVector.X, 2) +
-                    Math.Pow(aVector.Y - anOtherVector.Y, 2));
+                    Math.Pow(vector.X - otherVector.X, 2) +
+                    Math.Pow(vector.Y - otherVector.Y, 2));
         }
 
         /// <summary> Returns the weighted score of burai scores, decaying by 90% for each lower number. </summary>
-        private double GetWeighedScore(List<double> aBuraiScores)
+        private double GetWeighedScore(List<double> buraiScores)
         {
             double score = 0;
 
             // Sort by highest impact and then each following is worth less.
-            List<double> sortedScores = aBuraiScores.OrderByDescending(aNumber => aNumber).ToList();
+            List<double> sortedScores = buraiScores.OrderByDescending(num => num).ToList();
             for (int i = 0; i < sortedScores.Count; ++i)
                 score += sortedScores[i] * Math.Pow(0.9, i);
 

@@ -71,21 +71,21 @@ namespace MapsetChecks.checks.general.audio
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
             foreach (Issue issue in Common.GetTagOsuIssues(
-                aBeatmapSet,
-                aBeatmap => aBeatmap.videos.Count > 0 ? aBeatmap.videos.Select(aVideo => aVideo.path) : null,
-                aTemplateArg => GetTemplate(aTemplateArg),
-                aTagFile =>
+                beatmapSet,
+                beatmap => beatmap.videos.Count > 0 ? beatmap.videos.Select(video => video.path) : null,
+                templateArg => GetTemplate(templateArg),
+                tagFile =>
                 {
                     // Executes for each non-faulty video file used in one of the beatmaps in the set.
                     List<Issue> issues = new List<Issue>();
                     if (
-                            aTagFile.file.Properties.MediaTypes.HasFlag(TagLib.MediaTypes.Video) &&
-                            aTagFile.file.Properties.AudioChannels > 0)
+                            tagFile.file.Properties.MediaTypes.HasFlag(TagLib.MediaTypes.Video) &&
+                            tagFile.file.Properties.AudioChannels > 0)
                         issues.Add(new Issue(GetTemplate("Audio"), null,
-                            aTagFile.templateArgs[0]));
+                            tagFile.templateArgs[0]));
 
                     return issues;
                 }))

@@ -67,10 +67,10 @@ namespace MapsetChecks.checks.hit_sounds
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
             int lineIndex = 0;
-            foreach (HitObject hitObject in aBeatmap.hitObjects)
+            foreach (HitObject hitObject in beatmap.hitObjects)
             {
                 if (hitObject is Circle || hitObject is Slider || hitObject is HoldNote)
                 {
@@ -79,18 +79,18 @@ namespace MapsetChecks.checks.hit_sounds
                     float volume =
                         !(hitObject is Slider) && hitObject.volume > 0 && hitObject.volume != null ?
                             hitObject.volume.GetValueOrDefault() :
-                            GetTimingLine(aBeatmap, ref lineIndex, hitObject.time).volume;
+                            GetTimingLine(beatmap, ref lineIndex, hitObject.time).volume;
 
                     // < 5% is interpreted as 5%
                     if (volume < 5)
                         volume = 5;
                     
                     if (volume <= 10)
-                        yield return new Issue(GetTemplate("Warning Volume"), aBeatmap,
+                        yield return new Issue(GetTemplate("Warning Volume"), beatmap,
                             Timestamp.Get(hitObject), volume, hitObject.GetPartName(hitObject.time).ToLower());
 
                     else if (volume <= 20)
-                        yield return new Issue(GetTemplate("Minor Volume"), aBeatmap,
+                        yield return new Issue(GetTemplate("Minor Volume"), beatmap,
                             Timestamp.Get(hitObject), volume, hitObject.GetPartName(hitObject.time).ToLower());
 
                     if (hitObject is Slider slider)
@@ -102,9 +102,9 @@ namespace MapsetChecks.checks.hit_sounds
                             if (edgeIndex == slider.edgeAmount - 1)
                                 time = slider.endTime;
 
-                            volume = GetTimingLine(aBeatmap, ref lineIndex, hitObject.time).volume;
+                            volume = GetTimingLine(beatmap, ref lineIndex, hitObject.time).volume;
                             if (volume <= 10)
-                                yield return new Issue(GetTemplate("Passive"), aBeatmap,
+                                yield return new Issue(GetTemplate("Passive"), beatmap,
                                     Timestamp.Get(time), volume, hitObject.GetPartName(time).ToLower());
                         }
                     }
@@ -115,15 +115,15 @@ namespace MapsetChecks.checks.hit_sounds
         /// <summary> Gets the timing line in effect at the given time continuing at the index given.
         /// This is more performant than <see cref="Beatmap.GetTimingLine(double, bool)"/> due to not
         /// iterating from the beginning for each hit object. </summary>
-        private TimingLine GetTimingLine(Beatmap aBeatmap, ref int anIndex, double aTime)
+        private TimingLine GetTimingLine(Beatmap beatmap, ref int index, double time)
         {
-            int length = aBeatmap.timingLines.Count;
-            for (; anIndex < length; ++anIndex)
+            int length = beatmap.timingLines.Count;
+            for (; index < length; ++index)
                 // Uses the 5 ms hit sound leniency.
-                if (anIndex > 0 && aBeatmap.timingLines[anIndex].offset >= aTime + 5)
-                    return aBeatmap.timingLines[anIndex - 1];
+                if (index > 0 && beatmap.timingLines[index].offset >= time + 5)
+                    return beatmap.timingLines[index - 1];
 
-            return aBeatmap.timingLines[length - 1];
+            return beatmap.timingLines[length - 1];
         }
     }
 }

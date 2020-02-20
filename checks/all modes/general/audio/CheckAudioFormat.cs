@@ -74,10 +74,10 @@ namespace MapsetChecks.checks.general.audio
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            string audioPath = aBeatmapSet.GetAudioFilePath();
-            string audioName = aBeatmapSet.GetAudioFileName();
+            string audioPath = beatmapSet.GetAudioFilePath();
+            string audioName = beatmapSet.GetAudioFileName();
             if (audioPath != null)
             {
                 ManagedBass.ChannelType actualFormat = 0;

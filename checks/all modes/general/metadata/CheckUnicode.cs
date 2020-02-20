@@ -69,9 +69,9 @@ namespace MapsetChecks.checks.general.metadata
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
+            foreach (Beatmap beatmap in beatmapSet.beatmaps)
             {
                 foreach (Issue issue in GetUnicodeIssues("Difficulty name", beatmap.metadataSettings.version, "Warning"))
                     yield return issue;
@@ -87,15 +87,15 @@ namespace MapsetChecks.checks.general.metadata
             }
         }
 
-        private IEnumerable<Issue> GetUnicodeIssues(string aFieldName, string aField, string aTemplate = "Problem")
+        private IEnumerable<Issue> GetUnicodeIssues(string fieldName, string field, string template = "Problem")
         {
-            if (ContainsUnicode(aField))
-                yield return new Issue(GetTemplate(aTemplate), null,
-                    aFieldName, aField, GetUnicodeCharacters(aField));
+            if (ContainsUnicode(field))
+                yield return new Issue(GetTemplate(template), null,
+                    fieldName, field, GetUnicodeCharacters(field));
         }
 
-        private bool   IsUnicode(char aChar)                => aChar > 127;
-        private bool   ContainsUnicode(string aString)      => aString.Any(IsUnicode);
-        private string GetUnicodeCharacters(string aString) => String.Join("", aString.Where(IsUnicode));
+        private bool   IsUnicode(char ch)               => ch > 127;
+        private bool   ContainsUnicode(string str)      => str.Any(IsUnicode);
+        private string GetUnicodeCharacters(string str) => String.Join("", str.Where(IsUnicode));
     }
 }

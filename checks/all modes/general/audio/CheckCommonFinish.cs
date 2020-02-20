@@ -64,9 +64,9 @@ namespace MapsetChecks.checks.general.audio
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            foreach (string hsFile in aBeatmapSet.hitSoundFiles)
+            foreach (string hsFile in beatmapSet.hitSoundFiles)
             {
                 HitSample sample = new HitSample(hsFile);
                 if (sample.sampleset == Beatmap.Sampleset.Drum ||
@@ -74,7 +74,7 @@ namespace MapsetChecks.checks.general.audio
                     sample.hitSource != HitSample.HitSource.Edge)
                     continue;
 
-                Common.CollectHitSoundFrequency(aBeatmapSet, hsFile, aScoreThreshold: 6,
+                Common.CollectHitSoundFrequency(beatmapSet, hsFile, scoreThreshold: 6,
                     out string mostFrequentTimestamp, out Dictionary<Beatmap, int> uses);
 
                 if (mostFrequentTimestamp != null)
@@ -83,7 +83,7 @@ namespace MapsetChecks.checks.general.audio
                 else
                 {
                     Beatmap mapCommonlyUsedIn =
-                        Common.GetBeatmapCommonlyUsedIn(aBeatmapSet, uses, aCommonUsageThreshold: 2000);
+                        Common.GetBeatmapCommonlyUsedIn(beatmapSet, uses, commonUsageThreshold: 2000);
 
                     if (mapCommonlyUsedIn != null)
                         yield return new Issue(GetTemplate("Warning Common"), null,

@@ -65,29 +65,29 @@ namespace MapsetChecks.checks.general.metadata
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            Beatmap beatmap = aBeatmapSet.beatmaps[0];
+            Beatmap beatmap = beatmapSet.beatmaps[0];
             
             List<Func<string, string>> problemTests = new List<Func<string, string>>()
             {
-                aField => FormalSpaceRegex(aField, @"CV:"),
-                aField => FormalSpaceRegex(aField, @"vs\."),
-                aField => FormalSpaceRegex(aField, @"feat\."),
+                field => FormalSpaceRegex(field, @"CV:"),
+                field => FormalSpaceRegex(field, @"vs\."),
+                field => FormalSpaceRegex(field, @"feat\."),
 
-                aField => new Regex(@"[a-zA-Z0-9]\(CV:").IsMatch(aField) ? "whitespace before \"(CV:\" or full-width bracket \"（\"" : null,
+                field => new Regex(@"[a-zA-Z0-9]\(CV:").IsMatch(field) ? "whitespace before \"(CV:\" or full-width bracket \"（\"" : null,
                     // also check before any parenthesis CV: might have before it
                 
-                aField => new Regex(@"(?<!(\(|（))CV:").IsMatch(aField) ? "\"(\" before \"CV:\"" : null,
+                field => new Regex(@"(?<!(\(|（))CV:").IsMatch(field) ? "\"(\" before \"CV:\"" : null,
                     // implied from the "Character (CV: Voice Actor)" format requirement
                 
-                aField => new Regex(@",[a-zA-Z0-9]").IsMatch(aField) ? "whitespace after \",\"" : null,
+                field => new Regex(@",[a-zA-Z0-9]").IsMatch(field) ? "whitespace after \",\"" : null,
                     // comma only checks trailing whitespaces
             };
             List<Func<string, string>> warningTests = new List<Func<string, string>>()
             {
                 // Some artists include ampersand as part of their name.
-                aField => FormalSpaceRegex(aField, "&"),
+                field => FormalSpaceRegex(field, "&"),
 
                 // Markers only need spaces around them if both of the following are true
                 // - They are not full width (i.e. "、" for comma and "：" for colon)
@@ -96,17 +96,17 @@ namespace MapsetChecks.checks.general.metadata
 
                 // The regex "[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]" matches all japanese characters.
                 
-                aField => new Regex(@"(?<! |\(|（)feat\.") .IsMatch(aField) ? "whitespace before \"feat.\""    : null,
-                aField => new Regex(@"(?<! )(\(|（)feat\.").IsMatch(aField) ? "whitespace before \"(feat.\""   : null,
-                aField => new Regex(@"(?<! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])vs\.")          .IsMatch(aField) ? "whitespace before \"vs.\""      : null,
-                aField => new Regex(@"(?<! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])&")              .IsMatch(aField) ? "whitespace before \"&\""        : null,
+                field => new Regex(@"(?<! |\(|（)feat\.")                     .IsMatch(field) ? "whitespace before \"feat.\""    : null,
+                field => new Regex(@"(?<! )(\(|（)feat\.")                    .IsMatch(field) ? "whitespace before \"(feat.\""   : null,
+                field => new Regex(@"(?<! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])vs\.")  .IsMatch(field) ? "whitespace before \"vs.\""      : null,
+                field => new Regex(@"(?<! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])&")     .IsMatch(field) ? "whitespace before \"&\""        : null,
 
-                aField => new Regex(@"CV(?!:[ 一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]|：)")  .IsMatch(aField) ? "whitespace after \"CV:\" or full-width colon \"：\"" : null,
-                aField => new Regex(@",(?![ 一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])")       .IsMatch(aField) ? "whitespace after \",\" or full-width comma \"、\""   : null,
+                field => new Regex(@"CV(?!:[ 一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]|：)")  .IsMatch(field) ? "whitespace after \"CV:\" or full-width colon \"：\"" : null,
+                field => new Regex(@",(?![ 一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])")       .IsMatch(field) ? "whitespace after \",\" or full-width comma \"、\""   : null,
 
-                aField => new Regex(@"feat\.(?! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])") .IsMatch(aField) ? "whitespace after \"feat.\"" : null,
-                aField => new Regex(@"vs\.(?! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])")   .IsMatch(aField) ? "whitespace after \"vs.\""   : null,
-                aField => new Regex(@"&(?! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])")       .IsMatch(aField) ? "whitespace after \"&\""     : null,
+                field => new Regex(@"feat\.(?! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])") .IsMatch(field) ? "whitespace after \"feat.\"" : null,
+                field => new Regex(@"vs\.(?! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])")   .IsMatch(field) ? "whitespace after \"vs.\""   : null,
+                field => new Regex(@"&(?! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])")      .IsMatch(field) ? "whitespace after \"&\""     : null,
             };
 
             MetadataSettings metadata = beatmap.metadataSettings;
@@ -123,14 +123,14 @@ namespace MapsetChecks.checks.general.metadata
                     foreach (Func<string, string> problemTest in problemTests)
                     {
                         string message = problemTest(field.Item1);
-                        if (message != null && !issueMessages.Any(aTuple => aTuple.Item2 == message && aTuple.Item1 == field))
+                        if (message != null && !issueMessages.Any(tuple => tuple.Item2 == message && tuple.Item1 == field))
                             issueMessages.Add(new Tuple<Tuple<string, string>, string, bool>(field, message, true));
                     }
 
                     foreach (Func<string, string> warningTest in warningTests)
                     {
                         string message = warningTest(field.Item1);
-                        if (message != null && !issueMessages.Any(aTuple => aTuple.Item2 == message && aTuple.Item1 == field))
+                        if (message != null && !issueMessages.Any(tuple => tuple.Item2 == message && tuple.Item1 == field))
                             issueMessages.Add(new Tuple<Tuple<string, string>, string, bool>(field, message, false));
                     }
                 }
@@ -143,36 +143,36 @@ namespace MapsetChecks.checks.general.metadata
         }
 
         /// <summary> Returns a message describing where a space is missing given a field and what is tested against. </summary>
-        private string FormalSpaceRegex(string aField, string aTest)
+        private string FormalSpaceRegex(string field, string test)
         {
-            if (new Regex(aTest + "[a-zA-Z0-9]").IsMatch(aField))
-                return "whitespace after \"" + aTest.Replace("\\", "") + "\"";
+            if (new Regex(test + "[a-zA-Z0-9]").IsMatch(field))
+                return "whitespace after \"" + test.Replace("\\", "") + "\"";
 
-            if (new Regex("[a-zA-Z0-9]" + aTest).IsMatch(aField))
-                return "whitespace before \"" + aTest.Replace("\\", "") + "\"";
+            if (new Regex("[a-zA-Z0-9]" + test).IsMatch(field))
+                return "whitespace before \"" + test.Replace("\\", "") + "\"";
 
             return null;
         }
 
         /// <summary> Applies a predicate to all artist and title metadata fields. Yields an issue wherever the predicate is true. </summary>
-        private IEnumerable<Issue> GetFormattingIssues(MetadataSettings aSettings, Func<string, bool> aFunc)
+        private IEnumerable<Issue> GetFormattingIssues(MetadataSettings settings, Func<string, bool> Func)
         {
-            if (aFunc(aSettings.artist))
+            if (Func(settings.artist))
                 yield return new Issue(GetTemplate("Wrong Format"), null,
-                    "Romanized", "artist", aSettings.artist);
+                    "Romanized", "artist", settings.artist);
 
             // Unicode fields do not exist in file version 9.
-            if (aSettings.artistUnicode != null && aFunc(aSettings.artistUnicode))
+            if (settings.artistUnicode != null && Func(settings.artistUnicode))
                 yield return new Issue(GetTemplate("Wrong Format"), null,
-                    "Unicode", "artist", aSettings.artistUnicode);
+                    "Unicode", "artist", settings.artistUnicode);
 
-            if (aFunc(aSettings.title))
+            if (Func(settings.title))
                 yield return new Issue(GetTemplate("Wrong Format"), null,
-                    "Romanized", "title", aSettings.title);
+                    "Romanized", "title", settings.title);
 
-            if (aSettings.titleUnicode != null && aFunc(aSettings.titleUnicode))
+            if (settings.titleUnicode != null && Func(settings.titleUnicode))
                 yield return new Issue(GetTemplate("Wrong Format"), null,
-                    "Unicode", "title", aSettings.titleUnicode);
+                    "Unicode", "title", settings.titleUnicode);
         }
     }
 }

@@ -93,25 +93,25 @@ namespace MapsetChecks.checks.standard.compose
         private const int LEFT_LIMIT  = -67;
         private const int RIGHT_LIMIT = 579;
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (HitObject hitObject in aBeatmap.hitObjects)
+            foreach (HitObject hitObject in beatmap.hitObjects)
             {
                 string type = hitObject is Circle ? "Circle" : "Slider head";
                 if (hitObject is Circle || hitObject is Slider)
                 {
-                    float circleRadius = aBeatmap.difficultySettings.GetCircleRadius();
+                    float circleRadius = beatmap.difficultySettings.GetCircleRadius();
                     Vector2 stackedOffset = new Vector2(0, 0);
                     if (hitObject is Stackable stackable)
                         stackedOffset = stackable.Position - stackable.UnstackedPosition;
 
                     if (hitObject.Position.Y + circleRadius > LOWER_LIMIT)
-                        yield return new Issue(GetTemplate("Offscreen"), aBeatmap,
+                        yield return new Issue(GetTemplate("Offscreen"), beatmap,
                             Timestamp.Get(hitObject), type);
 
                     // The game prevents the head of objects from going offscreen inside a 512 by 512 px square,
                     // meaning heads can still go offscreen at the bottom due to how aspect ratios work.
-                    else if (GetOffscreenBy(hitObject.Position, aBeatmap) > 0)
+                    else if (GetOffscreenBy(hitObject.Position, beatmap) > 0)
                     {
                         // It does not prevent stacked objects from going offscreen, though.
 
@@ -131,26 +131,26 @@ namespace MapsetChecks.checks.standard.compose
                             stackableObject.stackIndex < 0;
 
                         if (goesOffscreenTopOrLeft || goesOffscreenRight)
-                            yield return new Issue(GetTemplate("Offscreen"), aBeatmap,
+                            yield return new Issue(GetTemplate("Offscreen"), beatmap,
                                 Timestamp.Get(hitObject), type);
                         else
-                            yield return new Issue(GetTemplate("Prevented"), aBeatmap,
+                            yield return new Issue(GetTemplate("Prevented"), beatmap,
                                 Timestamp.Get(hitObject), type);
                     }
                     
                     if (hitObject is Slider slider)
                     {
-                        if (GetOffscreenBy(slider.EndPosition, aBeatmap) > 0)
-                            yield return new Issue(GetTemplate("Offscreen"), aBeatmap,
+                        if (GetOffscreenBy(slider.EndPosition, beatmap) > 0)
+                            yield return new Issue(GetTemplate("Offscreen"), beatmap,
                                 Timestamp.Get(hitObject.GetEndTime()), "Slider tail");
                         else
                         {
                             bool offscreenBodyFound = false;
                             foreach(Vector2 pathPosition in slider.pathPxPositions)
                             {
-                                if (GetOffscreenBy(pathPosition + stackedOffset, aBeatmap) > 0)
+                                if (GetOffscreenBy(pathPosition + stackedOffset, beatmap) > 0)
                                 {
-                                    yield return new Issue(GetTemplate("Offscreen"), aBeatmap,
+                                    yield return new Issue(GetTemplate("Offscreen"), beatmap,
                                         Timestamp.Get(hitObject), "Slider body");
 
                                     offscreenBodyFound = true;
@@ -166,23 +166,23 @@ namespace MapsetChecks.checks.standard.compose
                                 foreach (Vector2 pathPosition in slider.pathPxPositions)
                                 {
                                     Vector2 exactPathPosition = pathPosition + stackedOffset;
-                                    if (GetOffscreenBy(exactPathPosition, aBeatmap, 2) > 0 && slider.curveType != Slider.CurveType.Linear)
+                                    if (GetOffscreenBy(exactPathPosition, beatmap, 2) > 0 && slider.curveType != Slider.CurveType.Linear)
                                     {
                                         bool isOffscreen = false;
                                         for (int j = 0; j < slider.GetCurveDuration() * 50; ++j)
                                         {
                                             exactPathPosition = slider.GetPathPosition(slider.time + j / 50d);
 
-                                            double offscreenBy = GetOffscreenBy(exactPathPosition, aBeatmap);
+                                            double offscreenBy = GetOffscreenBy(exactPathPosition, beatmap);
                                             if (offscreenBy > 0)
                                                 isOffscreen = true;
                                         }
 
                                         if (isOffscreen)
-                                            yield return new Issue(GetTemplate("Offscreen"), aBeatmap,
+                                            yield return new Issue(GetTemplate("Offscreen"), beatmap,
                                                 Timestamp.Get(hitObject), "Slider body");
                                         else
-                                            yield return new Issue(GetTemplate("Bezier Margin"), aBeatmap,
+                                            yield return new Issue(GetTemplate("Bezier Margin"), beatmap,
                                                 Timestamp.Get(hitObject));
 
                                         break;
@@ -196,16 +196,16 @@ namespace MapsetChecks.checks.standard.compose
         }
 
         /// <summary> Returns how far offscreen an object is in pixels (in-game pixels, not resolution). </summary>
-        private float GetOffscreenBy(Vector2 aPoint, Beatmap aBeatmap, float aLeniency = 0)
+        private float GetOffscreenBy(Vector2 point, Beatmap beatmap, float leniency = 0)
         {
-            float circleRadius = aBeatmap.difficultySettings.GetCircleRadius();
+            float circleRadius = beatmap.difficultySettings.GetCircleRadius();
 
             float offscreenBy = 0;
 
-            float offscreenRight = aPoint.X + circleRadius - RIGHT_LIMIT + aLeniency;
-            float offscreenLeft  = circleRadius - aPoint.X + LEFT_LIMIT  + aLeniency;
-            float offscreenLower = aPoint.Y + circleRadius - LOWER_LIMIT + aLeniency;
-            float offscreenUpper = circleRadius - aPoint.Y + UPPER_LIMIT + aLeniency;
+            float offscreenRight = point.X + circleRadius - RIGHT_LIMIT + leniency;
+            float offscreenLeft  = circleRadius - point.X + LEFT_LIMIT  + leniency;
+            float offscreenLower = point.Y + circleRadius - LOWER_LIMIT + leniency;
+            float offscreenUpper = circleRadius - point.Y + UPPER_LIMIT + leniency;
 
             if (offscreenRight > offscreenBy) offscreenBy = offscreenRight;
             if (offscreenLeft  > offscreenBy) offscreenBy = offscreenLeft;

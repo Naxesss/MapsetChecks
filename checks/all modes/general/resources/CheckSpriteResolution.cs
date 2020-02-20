@@ -80,20 +80,20 @@ namespace MapsetChecks.checks.general.resources
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
             // .osu
             foreach (Issue issue in Common.GetTagOsuIssues(
-                aBeatmapSet,
-                aBeatmap => aBeatmap.sprites.Count > 0 ? aBeatmap.sprites.Select(aSprite => aSprite.path) : null,
-                aTemplateArg => GetTemplate(aTemplateArg),
-                aTagFile =>
+                beatmapSet,
+                beatmap => beatmap.sprites.Count > 0 ? beatmap.sprites.Select(aSprite => aSprite.path) : null,
+                templateArg => GetTemplate(templateArg),
+                tagFile =>
                 {
                     // Executes for each non-faulty sprite file used in one of the beatmaps in the set.
                     List<Issue> issues = new List<Issue>();
-                    if (aTagFile.file.Properties.PhotoWidth * aTagFile.file.Properties.PhotoHeight > 17000000)
+                    if (tagFile.file.Properties.PhotoWidth * tagFile.file.Properties.PhotoHeight > 17000000)
                         issues.Add(new Issue(GetTemplate("Resolution"), null,
-                            aTagFile.templateArgs[0]));
+                            tagFile.templateArgs[0]));
 
                     return issues;
                 }))
@@ -103,15 +103,15 @@ namespace MapsetChecks.checks.general.resources
             }
 
             foreach (Issue issue in Common.GetTagOsuIssues(
-                aBeatmapSet,
-                aBeatmap => aBeatmap.animations.Count > 0 ? aBeatmap.animations.SelectMany(aAnimation => aAnimation.framePaths) : null,
-                aTemplateArg => GetTemplate(aTemplateArg),
-                aTagFile =>
+                beatmapSet,
+                beatmap => beatmap.animations.Count > 0 ? beatmap.animations.SelectMany(aAnimation => aAnimation.framePaths) : null,
+                templateArg => GetTemplate(templateArg),
+                tagFile =>
                 {
                     List<Issue> issues = new List<Issue>();
-                    if (aTagFile.file.Properties.PhotoWidth * aTagFile.file.Properties.PhotoHeight > 17000000)
+                    if (tagFile.file.Properties.PhotoWidth * tagFile.file.Properties.PhotoHeight > 17000000)
                         issues.Add(new Issue(GetTemplate("Resolution Animation Frame"), null,
-                            aTagFile.templateArgs[0]));
+                            tagFile.templateArgs[0]));
 
                     return issues;
                 }))
@@ -121,15 +121,15 @@ namespace MapsetChecks.checks.general.resources
 
             // .osb
             foreach (Issue issue in Common.GetTagOsbIssues(
-                aBeatmapSet,
-                anOsb => anOsb.sprites.Count > 0 ? anOsb.sprites.Select(aSprite => aSprite.path) : null,
-                aTemplateArg => GetTemplate(aTemplateArg),
-                aTagFile =>
+                beatmapSet,
+                osb => osb.sprites.Count > 0 ? osb.sprites.Select(aSprite => aSprite.path) : null,
+                templateArg => GetTemplate(templateArg),
+                tagFile =>
                 {
                     List<Issue> issues = new List<Issue>();
-                    if (aTagFile.file.Properties.PhotoWidth * aTagFile.file.Properties.PhotoHeight > 17000000)
+                    if (tagFile.file.Properties.PhotoWidth * tagFile.file.Properties.PhotoHeight > 17000000)
                         issues.Add(new Issue(GetTemplate("Resolution"), null,
-                            aTagFile.templateArgs[0]));
+                            tagFile.templateArgs[0]));
 
                     return issues;
                 }))
@@ -138,15 +138,15 @@ namespace MapsetChecks.checks.general.resources
             }
 
             foreach (Issue issue in Common.GetTagOsbIssues(
-                aBeatmapSet,
-                anOsb => anOsb.animations.Count > 0 ? anOsb.animations.SelectMany(aAnimation => aAnimation.framePaths) : null,
-                aTemplateArg => GetTemplate(aTemplateArg),
-                aTagFile =>
+                beatmapSet,
+                osb => osb.animations.Count > 0 ? osb.animations.SelectMany(aAnimation => aAnimation.framePaths) : null,
+                templateArg => GetTemplate(templateArg),
+                tagFile =>
                 {
                     List<Issue> issues = new List<Issue>();
-                    if (aTagFile.file.Properties.PhotoWidth * aTagFile.file.Properties.PhotoHeight > 17000000)
+                    if (tagFile.file.Properties.PhotoWidth * tagFile.file.Properties.PhotoHeight > 17000000)
                         issues.Add(new Issue(GetTemplate("Resolution Animation Frame"), null,
-                            aTagFile.templateArgs[0]));
+                            tagFile.templateArgs[0]));
 
                     return issues;
                 }))

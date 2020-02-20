@@ -78,16 +78,16 @@ namespace MapsetChecks.checks.general.audio
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            foreach (string hsFile in aBeatmapSet.hitSoundFiles)
+            foreach (string hsFile in beatmapSet.hitSoundFiles)
             {
                 // Only hit sounds on active hit objects need to be delay-free.
-                bool isActive = IsActive(aBeatmapSet, hsFile);
+                bool isActive = IsActive(beatmapSet, hsFile);
                 if (!isActive)
                     continue;
 
-                string hsPath = Path.Combine(aBeatmapSet.songPath, hsFile);
+                string hsPath = Path.Combine(beatmapSet.songPath, hsFile);
 
                 List<float[]> peaks = null;
                 Exception exception = null;
@@ -103,9 +103,9 @@ namespace MapsetChecks.checks.general.audio
                 if (exception == null)
                 {
                     // Ignore muted files since they don't have anything to be delayed.
-                    if (peaks?.Count > 0 && peaks.Sum(aPeak => aPeak.Sum()) > 0)
+                    if (peaks?.Count > 0 && peaks.Sum(peak => peak.Sum()) > 0)
                     {
-                        double maxStrength = peaks.Select(aValue => Math.Abs(aValue.Sum())).Max();
+                        double maxStrength = peaks.Select(value => Math.Abs(value.Sum())).Max();
 
                         int delay = 0;
                         int pureDelay = 0;
@@ -149,9 +149,9 @@ namespace MapsetChecks.checks.general.audio
             }
         }
 
-        public bool IsActive(BeatmapSet aBeatmapSet, string aHitSoundFile)
+        public bool IsActive(BeatmapSet beatmapSet, string hitSoundFile)
         {
-            foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
+            foreach (Beatmap beatmap in beatmapSet.beatmaps)
             {
                 foreach (HitObject hitObject in beatmap.hitObjects)
                 {
@@ -159,10 +159,10 @@ namespace MapsetChecks.checks.general.audio
                         continue;
 
                     // Only the hit sound edge at which the object is clicked is considered active.
-                    if (hitObject.GetUsedHitSamples().Any(aSample =>
-                            aSample.time == hitObject.time &&
-                            aSample.hitSource == HitSample.HitSource.Edge &&
-                            aHitSoundFile.StartsWith(aSample.GetFileName() + ".")))
+                    if (hitObject.GetUsedHitSamples().Any(sample =>
+                            sample.time == hitObject.time &&
+                            sample.hitSource == HitSample.HitSource.Edge &&
+                            hitSoundFile.StartsWith(sample.GetFileName() + ".")))
                     {
                         return true;
                     }

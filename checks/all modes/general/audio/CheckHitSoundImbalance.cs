@@ -82,11 +82,11 @@ namespace MapsetChecks.checks.general.audio
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            foreach (string hsFile in aBeatmapSet.hitSoundFiles)
+            foreach (string hsFile in beatmapSet.hitSoundFiles)
             {
-                string hsPath = Path.Combine(aBeatmapSet.songPath, hsFile);
+                string hsPath = Path.Combine(beatmapSet.songPath, hsFile);
 
                 int channels = 0;
                 List<float[]> peaks = null;
@@ -115,8 +115,8 @@ namespace MapsetChecks.checks.general.audio
                 if (peaks.Count == 0)
                     continue;
 
-                float leftSum = peaks.Sum(aPeak => aPeak?[0] ?? 0);
-                float rightSum = peaks.Sum(aPeak => aPeak.Count() > 1 ? aPeak?[1] ?? 0 : 0);
+                float leftSum = peaks.Sum(peak => peak?[0] ?? 0);
+                float rightSum = peaks.Sum(peak => peak.Count() > 1 ? peak?[1] ?? 0 : 0);
                 if (leftSum == 0 || rightSum == 0)
                 {
                     yield return new Issue(GetTemplate("Warning Silent"), null,
@@ -134,7 +134,7 @@ namespace MapsetChecks.checks.general.audio
                     continue;
 
                 // Imbalance is only an issue if it is used frequently in a short timespan or it's overall common.
-                Common.CollectHitSoundFrequency(aBeatmapSet, hsFile, aScoreThreshold: 14 / relativeVolume,
+                Common.CollectHitSoundFrequency(beatmapSet, hsFile, scoreThreshold: 14 / relativeVolume,
                     out string mostFrequentTimestamp, out Dictionary<Beatmap, int> uses);
 
                 if (mostFrequentTimestamp != null)
@@ -143,7 +143,7 @@ namespace MapsetChecks.checks.general.audio
                 else
                 {
                     Beatmap mapCommonlyUsedIn =
-                        Common.GetBeatmapCommonlyUsedIn(aBeatmapSet, uses, aCommonUsageThreshold: 10000);
+                        Common.GetBeatmapCommonlyUsedIn(beatmapSet, uses, commonUsageThreshold: 10000);
 
                     if (mapCommonlyUsedIn != null)
                         yield return new Issue(GetTemplate("Warning Common"), null,

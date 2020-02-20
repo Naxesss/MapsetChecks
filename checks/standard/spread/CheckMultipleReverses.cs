@@ -72,12 +72,12 @@ namespace MapsetChecks.checks.standard.spread
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
             double problemThreshold = 60000 / 240d;
             double warningThreshold  = 60000 / 180d;
 
-            foreach (Slider slider in aBeatmap.hitObjects.OfType<Slider>())
+            foreach (Slider slider in beatmap.hitObjects.OfType<Slider>())
             {
                 if (slider.edgeAmount > 2)
                 {
@@ -88,7 +88,7 @@ namespace MapsetChecks.checks.standard.spread
                         null;
 
                     if (easyTemplate != null)
-                        yield return new Issue(GetTemplate(easyTemplate), aBeatmap, Timestamp.Get(slider))
+                        yield return new Issue(GetTemplate(easyTemplate), beatmap, Timestamp.Get(slider))
                             .ForDifficulties(Beatmap.Difficulty.Easy);
 
                     // 1/2 for Normal
@@ -98,7 +98,7 @@ namespace MapsetChecks.checks.standard.spread
                         null;
 
                     if (normalTemplate != null)
-                        yield return new Issue(GetTemplate(normalTemplate), aBeatmap, Timestamp.Get(slider))
+                        yield return new Issue(GetTemplate(normalTemplate), beatmap, Timestamp.Get(slider))
                             .ForDifficulties(Beatmap.Difficulty.Normal);
                 }
             }

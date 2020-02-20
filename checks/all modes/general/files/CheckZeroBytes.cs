@@ -63,9 +63,9 @@ namespace MapsetChecks.checks.general.files
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            foreach (string filePath in aBeatmapSet.songFilePaths)
+            foreach (string filePath in beatmapSet.songFilePaths)
             {
                 Issue errorIssue = null;
                 FileInfo file = null;
@@ -76,7 +76,7 @@ namespace MapsetChecks.checks.general.files
                 catch (Exception exception)
                 {
                     errorIssue = new Issue(GetTemplate("Exception"), null,
-                        PathStatic.RelativePath(filePath, aBeatmapSet.songPath),
+                        PathStatic.RelativePath(filePath, beatmapSet.songPath),
                         exception);
                 }
 
@@ -88,7 +88,7 @@ namespace MapsetChecks.checks.general.files
 
                 if (file.Length == 0)
                     yield return new Issue(GetTemplate("0-byte"), null,
-                        PathStatic.RelativePath(filePath, aBeatmapSet.songPath));
+                        PathStatic.RelativePath(filePath, beatmapSet.songPath));
             }
         }
     }

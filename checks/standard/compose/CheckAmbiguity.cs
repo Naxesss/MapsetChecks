@@ -81,9 +81,9 @@ namespace MapsetChecks.checks.standard.compose
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (HitObject hitObject in aBeatmap.hitObjects)
+            foreach (HitObject hitObject in beatmap.hitObjects)
             {
                 if (hitObject is Slider slider)
                 {
@@ -91,7 +91,7 @@ namespace MapsetChecks.checks.standard.compose
                     float headTailDistance = Vector2.Distance(slider.Position, tailPosition);
 
                     if (headTailDistance <= 5)
-                        yield return new Issue(GetTemplate("Warning"), aBeatmap,
+                        yield return new Issue(GetTemplate("Warning"), beatmap,
                             Timestamp.Get(hitObject));
 
                     List<Vector2> anchorPositions = slider.redAnchorPositions;
@@ -127,14 +127,14 @@ namespace MapsetChecks.checks.standard.compose
 
                             if (headAnchorDistance != null && headAnchorDistance <= 5)
                             {
-                                yield return new Issue(GetTemplate("Anchor"), aBeatmap,
+                                yield return new Issue(GetTemplate("Anchor"), beatmap,
                                     Timestamp.Get(hitObject), "Head");
                                 break;
                             }
 
                             if (tailAnchorDistance != null && tailAnchorDistance <= 5)
                             {
-                                yield return new Issue(GetTemplate("Anchor"), aBeatmap,
+                                yield return new Issue(GetTemplate("Anchor"), beatmap,
                                     Timestamp.Get(hitObject), "Tail");
                                 break;
                             }

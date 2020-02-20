@@ -67,27 +67,27 @@ namespace MapsetChecks.checks.timing
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (HitObject hitObject in aBeatmap.hitObjects)
+            foreach (HitObject hitObject in beatmap.hitObjects)
                 foreach (double edgeTime in hitObject.GetEdgeTimes())
-                    foreach (Issue issue in GetUnsnapIssue(hitObject.GetPartName(edgeTime), edgeTime, aBeatmap))
+                    foreach (Issue issue in GetUnsnapIssue(hitObject.GetPartName(edgeTime), edgeTime, beatmap))
                         yield return issue;
         }
 
         /// <summary> Returns issues wherever the given time value is unsnapped. </summary>
-        private IEnumerable<Issue> GetUnsnapIssue(string aType, double aTime, Beatmap aBeatmap)
+        private IEnumerable<Issue> GetUnsnapIssue(string type, double time, Beatmap beatmap)
         {
-            double? unsnapIssue = aBeatmap.GetUnsnapIssue(aTime);
-            double unsnap = aBeatmap.GetPracticalUnsnap(aTime);
+            double? unsnapIssue = beatmap.GetUnsnapIssue(time);
+            double unsnap = beatmap.GetPracticalUnsnap(time);
 
             if (unsnapIssue != null)
-                yield return new Issue(GetTemplate("Problem"), aBeatmap,
-                    Timestamp.Get(aTime), aType, $"{unsnap:0.###}");
+                yield return new Issue(GetTemplate("Problem"), beatmap,
+                    Timestamp.Get(time), type, $"{unsnap:0.###}");
 
             else if (Math.Abs(unsnap) >= 1)
-                yield return new Issue(GetTemplate("Minor"), aBeatmap,
-                    Timestamp.Get(aTime), aType, $"{unsnap:0.###}");
+                yield return new Issue(GetTemplate("Minor"), beatmap,
+                    Timestamp.Get(time), type, $"{unsnap:0.###}");
         }
     }
 }

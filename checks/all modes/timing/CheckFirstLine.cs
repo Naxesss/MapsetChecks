@@ -75,19 +75,19 @@ namespace MapsetChecks.checks.timing
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            if (aBeatmap.timingLines.Count > 0)
+            if (beatmap.timingLines.Count > 0)
             {
-                TimingLine line = aBeatmap.timingLines[0];
+                TimingLine line = beatmap.timingLines[0];
 
                 if (!line.uninherited)
-                    yield return new Issue(GetTemplate("Inherited"), aBeatmap, Timestamp.Get(line.offset));
+                    yield return new Issue(GetTemplate("Inherited"), beatmap, Timestamp.Get(line.offset));
                 else if (line.kiai)
-                    yield return new Issue(GetTemplate("Toggles Kiai"), aBeatmap, Timestamp.Get(line.offset));
+                    yield return new Issue(GetTemplate("Toggles Kiai"), beatmap, Timestamp.Get(line.offset));
             }
             else
-                yield return new Issue(GetTemplate("No Lines"), aBeatmap);
+                yield return new Issue(GetTemplate("No Lines"), beatmap);
         }
     }
 }

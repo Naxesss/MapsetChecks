@@ -81,15 +81,15 @@ namespace MapsetChecks.checks.standard.spread
             public double distance;
             public HitObject hitObject;
 
-            public ObservedDistance(double aTime, double aDistance, HitObject aHitObject)
+            public ObservedDistance(double deltaTime, double distance, HitObject hitObject)
             {
-                deltaTime = aTime;
-                distance = aDistance;
-                hitObject = aHitObject;
+                this.deltaTime = deltaTime;
+                this.distance = distance;
+                this.hitObject = hitObject;
             }
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
             HitObject nextObject;
             
@@ -109,9 +109,9 @@ namespace MapsetChecks.checks.standard.spread
             double ratioLeniencyPercent = 0.2;
             double ratioLeniencyAbsolute = 0.1;
 
-            foreach (HitObject hitObject in aBeatmap.hitObjects)
+            foreach (HitObject hitObject in beatmap.hitObjects)
             {
-                nextObject = aBeatmap.GetNextHitObject(hitObject.time);
+                nextObject = beatmap.GetNextHitObject(hitObject.time);
 
                 // Ignore spinners, since they have no clear start or end.
                 if (hitObject is Spinner || nextObject is Spinner || nextObject == null)
@@ -130,12 +130,12 @@ namespace MapsetChecks.checks.standard.spread
                     continue;
 
                 double closeDistanceSum =
-                    observedDistances.Sum(anObservation =>
-                        anObservation.hitObject.time > hitObject.time - 4000 ?
-                            anObservation.distance / anObservation.deltaTime : 0);
+                    observedDistances.Sum(observedDistance =>
+                        observedDistance.hitObject.time > hitObject.time - 4000 ?
+                            observedDistance.distance / observedDistance.deltaTime : 0);
                 int closeDistanceCount =
-                    observedDistances.Count(anObservation =>
-                        anObservation.hitObject.time > hitObject.time - 4000);
+                    observedDistances.Count(observedDistance =>
+                        observedDistance.hitObject.time > hitObject.time - 4000);
                 
                 double avrRatio = closeDistanceCount > 0 ? closeDistanceSum / closeDistanceCount : -1;
 
@@ -143,10 +143,10 @@ namespace MapsetChecks.checks.standard.spread
                 // reference for determining if the current is too different.
                 int index =
                     observedDistances
-                        .FindLastIndex(anObservation =>
-                            deltaTime <= anObservation.deltaTime * (1 + snapLeniencyPercent) &&
-                            deltaTime >= anObservation.deltaTime * (1 - snapLeniencyPercent) &&
-                            anObservation.hitObject.time > hitObject.time - 4000);
+                        .FindLastIndex(observedDistance =>
+                            deltaTime <= observedDistance.deltaTime * (1 + snapLeniencyPercent) &&
+                            deltaTime >= observedDistance.deltaTime * (1 - snapLeniencyPercent) &&
+                            observedDistance.hitObject.time > hitObject.time - 4000);
 
                 if (index != -1)
                 {
@@ -168,9 +168,9 @@ namespace MapsetChecks.checks.standard.spread
                         else
                         {
                             HitObject prevObject = observedDistances[index].hitObject;
-                            HitObject prevNextObject = aBeatmap.GetNextHitObject(prevObject.time);
+                            HitObject prevNextObject = beatmap.GetNextHitObject(prevObject.time);
 
-                            yield return new Issue(GetTemplate("Distance"), aBeatmap,
+                            yield return new Issue(GetTemplate("Distance"), beatmap,
                                 Timestamp.Get(hitObject, nextObject),
                                 (int)Math.Round(distance), (int)Math.Round(distanceExpected),
                                 Timestamp.Get(prevObject, prevNextObject));
@@ -193,7 +193,7 @@ namespace MapsetChecks.checks.standard.spread
                         string ratio         = $"{distance / deltaTime:0.##}";
                         string ratioExpected = $"{avrRatio:0.##}";
 
-                        yield return new Issue(GetTemplate("Ratio"), aBeatmap,
+                        yield return new Issue(GetTemplate("Ratio"), beatmap,
                             Timestamp.Get(hitObject, nextObject),
                             ratio, ratioExpected);
                     }

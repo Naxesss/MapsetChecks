@@ -65,10 +65,10 @@ namespace MapsetChecks.checks.standard.settings
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            if (aBeatmap.generalSettings.skinPreference != "Default" && !aBeatmap.colourSettings.combos.Any())
-                yield return new Issue(GetTemplate("Default"), aBeatmap);
+            if (beatmap.generalSettings.skinPreference != "Default" && !beatmap.colourSettings.combos.Any())
+                yield return new Issue(GetTemplate("Default"), beatmap);
         }
     }
 }

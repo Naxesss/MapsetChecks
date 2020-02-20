@@ -68,14 +68,14 @@ namespace MapsetChecks.checks.general.files
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            for (int i = 0; i < aBeatmapSet.songFilePaths.Count; ++i)
+            for (int i = 0; i < beatmapSet.songFilePaths.Count; ++i)
             {
-                string filePath = aBeatmapSet.songFilePaths[i].Substring(aBeatmapSet.songPath.Length + 1);
+                string filePath = beatmapSet.songFilePaths[i].Substring(beatmapSet.songPath.Length + 1);
                 string fileName = filePath.Split(new char[] { '/', '\\' }).Last().ToLower();
 
-                if (!aBeatmapSet.IsFileUsed(filePath) && fileName != "thumbs.db")
+                if (!beatmapSet.IsFileUsed(filePath) && fileName != "thumbs.db")
                     yield return new Issue(GetTemplate("Unused"), null,
                         filePath);
             }

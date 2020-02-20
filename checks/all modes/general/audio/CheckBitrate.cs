@@ -97,30 +97,30 @@ namespace MapsetChecks.checks.general.audio
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            if (aBeatmapSet.GetAudioFilePath() != null)
-                foreach (Issue issue in GetIssue(aBeatmapSet, aBeatmapSet.GetAudioFilePath()))
+            if (beatmapSet.GetAudioFilePath() != null)
+                foreach (Issue issue in GetIssue(beatmapSet, beatmapSet.GetAudioFilePath()))
                     yield return issue;
 
-            foreach (string hitSoundFile in aBeatmapSet.hitSoundFiles)
+            foreach (string hitSoundFile in beatmapSet.hitSoundFiles)
             {
-                string hitSoundPath = Path.Combine(aBeatmapSet.songPath, hitSoundFile);
+                string hitSoundPath = Path.Combine(beatmapSet.songPath, hitSoundFile);
                 ManagedBass.ChannelType hitSoundFormat = Audio.GetFormat(hitSoundPath);
                 if ((hitSoundFormat & ManagedBass.ChannelType.OGG) == 0 ||
                     (hitSoundFormat & ManagedBass.ChannelType.MP3) == 0)
                 {
                     // Hit sounds only need to follow the lower limit for quality requirements, as
                     // Wave (which is the most used hit sound format currently) is otherwise uncompressed anyway.
-                    foreach (Issue issue in GetIssue(aBeatmapSet, hitSoundPath, true))
+                    foreach (Issue issue in GetIssue(beatmapSet, hitSoundPath, true))
                         yield return issue;
                 }
             }
         }
 
-        public IEnumerable<Issue> GetIssue(BeatmapSet aBeatmapSet, string audioPath, bool isHitSound = false)
+        public IEnumerable<Issue> GetIssue(BeatmapSet beatmapSet, string audioPath, bool isHitSound = false)
         {
-            string audioRelPath = PathStatic.RelativePath(audioPath, aBeatmapSet.songPath);
+            string audioRelPath = PathStatic.RelativePath(audioPath, beatmapSet.songPath);
             AudioFile file = new AudioFile(audioPath);
 
             // gets the bitrate in bps, so turn it into kbps

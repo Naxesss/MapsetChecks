@@ -65,27 +65,27 @@ namespace MapsetChecks.checks.events
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
+            foreach (Beatmap beatmap in beatmapSet.beatmaps)
             {
                 foreach (Sample storyHitSound in beatmap.samples)
                     foreach (Issue issue in GetStoryHitSoundIssue(beatmap, storyHitSound, ".osu"))
                         yield return issue;
 
-                if (aBeatmapSet.osb != null)
-                    foreach (Sample storyHitSound in aBeatmapSet.osb.samples)
+                if (beatmapSet.osb != null)
+                    foreach (Sample storyHitSound in beatmapSet.osb.samples)
                         foreach (Issue issue in GetStoryHitSoundIssue(beatmap, storyHitSound, ".osb"))
                             yield return issue;
             }
         }
 
-        private IEnumerable<Issue> GetStoryHitSoundIssue(Beatmap aBeatmap, Sample aStoryHitSound, string anOrigin)
+        private IEnumerable<Issue> GetStoryHitSoundIssue(Beatmap beatmap, Sample sample, string origin)
         {
-            yield return new Issue(GetTemplate("Storyboarded Hit Sound"), aBeatmap,
-                Timestamp.Get(aStoryHitSound.time),
-                aStoryHitSound.path, aStoryHitSound.volume,
-                anOrigin);
+            yield return new Issue(GetTemplate("Storyboarded Hit Sound"), beatmap,
+                Timestamp.Get(sample.time),
+                sample.path, sample.volume,
+                origin);
         }
     }
 }

@@ -64,36 +64,36 @@ namespace MapsetChecks.checks.general.resources
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            IEnumerable<Beatmap.Mode> modes = aBeatmapSet.beatmaps.Select(aBeatmap => aBeatmap.generalSettings.mode).Distinct();
+            IEnumerable<Beatmap.Mode> modes = beatmapSet.beatmaps.Select(beatmap => beatmap.generalSettings.mode).Distinct();
             List<KeyValuePair<string, Beatmap.Mode>> modeVideoPairs = new List<KeyValuePair<string, Beatmap.Mode>>();
 
             foreach (Beatmap.Mode mode in modes)
             {
-                IEnumerable<Beatmap> beatmaps = aBeatmapSet.beatmaps.Where(aBeatmap => aBeatmap.generalSettings.mode == mode);
+                IEnumerable<Beatmap> beatmaps = beatmapSet.beatmaps.Where(beatmap => beatmap.generalSettings.mode == mode);
                 IEnumerable<string> videoFiles =
-                    beatmaps.Select(aBeatmap =>
-                        aBeatmap.videos
+                    beatmaps.Select(beatmap =>
+                        beatmap.videos
                             .FirstOrDefault()?.path ?? "None")
-                            .Append(aBeatmapSet.osb?.videos.FirstOrDefault()?.path ?? "").Distinct();
+                            .Append(beatmapSet.osb?.videos.FirstOrDefault()?.path ?? "").Distinct();
 
                 foreach (string videoFile in videoFiles)
                 {
                     IEnumerable<Beatmap> issueBeatmaps =
-                        beatmaps.Where(aBeatmap =>
-                            aBeatmap.videos.FirstOrDefault()?.path == videoFile ||
-                            aBeatmapSet.osb?.videos.FirstOrDefault()?.path == videoFile);
+                        beatmaps.Where(beatmap =>
+                            beatmap.videos.FirstOrDefault()?.path == videoFile ||
+                            beatmapSet.osb?.videos.FirstOrDefault()?.path == videoFile);
 
-                    if (videoFiles.Count(aFile => aFile != "") > 1 && issueBeatmaps.Any())
+                    if (videoFiles.Count(file => file != "") > 1 && issueBeatmaps.Any())
                     {
-                        string joinedBeatmaps = String.Join(" ", issueBeatmaps.Select(aBeatmap => aBeatmap));
+                        string joinedBeatmaps = String.Join(" ", issueBeatmaps.Select(beatmap => beatmap));
 
                         yield return new Issue(GetTemplate("Same Mode"), null,
                             videoFile, joinedBeatmaps);
                     }
 
-                    if (videoFile != "" && !modeVideoPairs.Any(aPair => aPair.Key == videoFile && aPair.Value == mode))
+                    if (videoFile != "" && !modeVideoPairs.Any(pair => pair.Key == videoFile && pair.Value == mode))
                         modeVideoPairs.Add(new KeyValuePair<string, Beatmap.Mode>(videoFile, mode));
                 }
             }
@@ -103,7 +103,7 @@ namespace MapsetChecks.checks.general.resources
             foreach (KeyValuePair<string, Beatmap.Mode> pair in modeVideoPairs)
             {
                 iteratedModes.Add(pair.Value);
-                foreach (KeyValuePair<string, Beatmap.Mode> otherPair in modeVideoPairs.Where(aPair => !iteratedModes.Contains(aPair.Value)))
+                foreach (KeyValuePair<string, Beatmap.Mode> otherPair in modeVideoPairs.Where(pair => !iteratedModes.Contains(pair.Value)))
                 {
                     // Ignore inconsistencies with taiko, as taiko generally does not include videos due to their playfield covering it
                     if (pair.Value != otherPair.Value

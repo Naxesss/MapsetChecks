@@ -66,24 +66,24 @@ namespace MapsetChecks.checks.standard.compose
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (HitObject hitObject in aBeatmap.hitObjects)
+            foreach (HitObject hitObject in beatmap.hitObjects)
             {
                 if (hitObject is Spinner spinner)
                 {
-                    double od = aBeatmap.difficultySettings.overallDifficulty;
+                    double od = beatmap.difficultySettings.overallDifficulty;
 
                     double warningThreshold = 500 + (od < 5 ? (5 - od) * -21.8 : (od - 5) * 20);  // anything above this works fine
                     double problemThreshold = 450 + (od < 5 ? (5 - od) * -17 : (od - 5) * 17);  // anything above this only works sometimes
 
                     if (problemThreshold > spinner.endTime - spinner.time)
                         yield return new Issue(GetTemplate("Problem"),
-                            aBeatmap, Timestamp.Get(spinner));
+                            beatmap, Timestamp.Get(spinner));
 
                     else if (warningThreshold > spinner.endTime - spinner.time)
                         yield return new Issue(GetTemplate("Warning"),
-                            aBeatmap, Timestamp.Get(spinner));
+                            beatmap, Timestamp.Get(spinner));
                 }
             }
         }

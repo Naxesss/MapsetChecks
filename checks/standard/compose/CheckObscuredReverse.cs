@@ -71,15 +71,15 @@ namespace MapsetChecks.checks.standard.compose
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
             int closeThreshold    = 15;
             int tooCloseThreshold = 4;
 
             // Represents the duration the reverse arrow is fully opaque.
-            double opaqueTime = aBeatmap.difficultySettings.GetPreemptTime();
+            double opaqueTime = beatmap.difficultySettings.GetPreemptTime();
 
-            foreach (HitObject hitObject in aBeatmap.hitObjects)
+            foreach (HitObject hitObject in beatmap.hitObjects)
             {
                 if (hitObject is Slider slider && slider.edgeAmount > 1)
                 {
@@ -90,9 +90,9 @@ namespace MapsetChecks.checks.standard.compose
                     bool isSerious = false;
                     
                     IEnumerable<HitObject> hitObjectsRightBeforeReverse =
-                        aBeatmap.hitObjects.Where(anObject =>
-                            anObject.GetEndTime() > reverseTime - opaqueTime &&
-                            anObject.GetEndTime() < reverseTime);
+                        beatmap.hitObjects.Where(otherHitObject =>
+                            otherHitObject.GetEndTime() > reverseTime - opaqueTime &&
+                            otherHitObject.GetEndTime() < reverseTime);
 
                     foreach (HitObject otherHitObject in hitObjectsRightBeforeReverse)
                     {
@@ -129,7 +129,7 @@ namespace MapsetChecks.checks.standard.compose
                     }
 
                     if (selectedObjects.Count > 0)
-                        yield return new Issue(GetTemplate("Obscured"), aBeatmap,
+                        yield return new Issue(GetTemplate("Obscured"), beatmap,
                             Timestamp.Get(selectedObjects.ToArray()), (isSerious ? "" : "potentially "));
                 }
             }

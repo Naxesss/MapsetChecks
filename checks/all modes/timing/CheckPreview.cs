@@ -60,10 +60,10 @@ namespace MapsetChecks.checks.timing
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            Beatmap refBeatmap = aBeatmapSet.beatmaps[0];
-            foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
+            Beatmap refBeatmap = beatmapSet.beatmaps[0];
+            foreach (Beatmap beatmap in beatmapSet.beatmaps)
             {
                 if (beatmap.generalSettings.previewTime == -1)
                     yield return new Issue(GetTemplate("Not Set"), beatmap);

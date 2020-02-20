@@ -78,7 +78,7 @@ namespace MapsetChecks.checks.standard.spread
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
             double[] snapping = new double[] { 1, 1, 0.5, 0.25 };
 
@@ -87,10 +87,10 @@ namespace MapsetChecks.checks.standard.spread
                 double timeGap = snapping[diffIndex] * 60000 / 160d;
 
                 List<Stackable> iteratedObjects = new List<Stackable>();
-                foreach (Stackable hitObject in aBeatmap.hitObjects.OfType<Stackable>())
+                foreach (Stackable hitObject in beatmap.hitObjects.OfType<Stackable>())
                 {
                     iteratedObjects.Add(hitObject);
-                    foreach (Stackable otherHitObject in aBeatmap.hitObjects.OfType<Stackable>().Except(iteratedObjects))
+                    foreach (Stackable otherHitObject in beatmap.hitObjects.OfType<Stackable>().Except(iteratedObjects))
                     {
                         if (otherHitObject.time - hitObject.time < timeGap)
                         {
@@ -98,11 +98,11 @@ namespace MapsetChecks.checks.standard.spread
                             {
                                 int requiredStackLeniency =
                                     (int)Math.Ceiling((otherHitObject.time - hitObject.time) /
-                                        (aBeatmap.difficultySettings.GetFadeInTime() * 0.1));
+                                        (beatmap.difficultySettings.GetFadeInTime() * 0.1));
 
                                 string template = diffIndex == (int)Beatmap.Difficulty.Insane ? "Warning" : "Problem";
 
-                                yield return new Issue(GetTemplate(template), aBeatmap,
+                                yield return new Issue(GetTemplate(template), beatmap,
                                     Timestamp.Get(hitObject, otherHitObject), requiredStackLeniency)
                                     .ForDifficulties((Beatmap.Difficulty)diffIndex);
                             }
@@ -113,7 +113,7 @@ namespace MapsetChecks.checks.standard.spread
                                 if (distance > 2)
                                     continue;
 
-                                yield return new Issue(GetTemplate("Problem Failed Stack"), aBeatmap,
+                                yield return new Issue(GetTemplate("Problem Failed Stack"), beatmap,
                                     Timestamp.Get(hitObject, otherHitObject), $"{distance:0.##}")
                                     .ForDifficulties((Beatmap.Difficulty)diffIndex);
                             }

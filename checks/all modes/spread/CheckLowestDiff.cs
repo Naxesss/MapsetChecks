@@ -64,22 +64,22 @@ namespace MapsetChecks.checks.spread
             };
         }
         
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
             double hardThreshold   = (3 * 60 + 30) * 1000;
             double insaneThreshold = (4 * 60 + 15) * 1000;
             double expertThreshold = (5 * 60) * 1000;
             
-            Beatmap lowestBeatmap = aBeatmapSet.beatmaps.First();
+            Beatmap lowestBeatmap = beatmapSet.beatmaps.First();
 
-            foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
+            foreach (Beatmap beatmap in beatmapSet.beatmaps)
             {
                 double drainTime = beatmap.GetDrainTime();
                 double playTime  = beatmap.GetPlayTime();
                 
                 bool canUsePlayTime =
                     drainTime / playTime >= 0.8 &&
-                    aBeatmapSet.beatmaps.Last().metadataSettings.version != beatmap.metadataSettings.version;
+                    beatmapSet.beatmaps.Last().metadataSettings.version != beatmap.metadataSettings.version;
 
                 double effectiveTime = canUsePlayTime ? playTime : drainTime;
 

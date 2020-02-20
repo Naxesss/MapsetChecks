@@ -56,9 +56,9 @@ namespace MapsetChecks.checks.general.metadata
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            Beatmap refBeatmap = aBeatmapSet.beatmaps[0];
+            Beatmap refBeatmap = beatmapSet.beatmaps[0];
 
             // Matches strings which contain some version of "vs.", "CV:" or "feat." markers but not exactly.
             Regex regexVs   = new Regex(@"(?i)( vs\.)");
@@ -69,32 +69,32 @@ namespace MapsetChecks.checks.general.metadata
             Regex regexCVExact   = new Regex(@"CV(:|：)");
             Regex regexFeatExact = new Regex(@"feat\.");
 
-            foreach (Issue issue in GetFormattingIssues(refBeatmap.metadataSettings, aField =>
-                    regexVs.IsMatch(aField) && !regexVsExact.IsMatch(aField) ||
-                    regexCV.IsMatch(aField) && !regexCVExact.IsMatch(aField) ||
-                    regexFeat.IsMatch(aField) && !regexFeatExact.IsMatch(aField)))
+            foreach (Issue issue in GetFormattingIssues(refBeatmap.metadataSettings, field =>
+                    regexVs.IsMatch(field) && !regexVsExact.IsMatch(field) ||
+                    regexCV.IsMatch(field) && !regexCVExact.IsMatch(field) ||
+                    regexFeat.IsMatch(field) && !regexFeatExact.IsMatch(field)))
                 yield return issue;
         }
 
         /// <summary> Applies a predicate to all artist and title metadata fields. Yields an issue wherever the predicate is true. </summary>
-        private IEnumerable<Issue> GetFormattingIssues(MetadataSettings aSettings, Func<string, bool> aFunc)
+        private IEnumerable<Issue> GetFormattingIssues(MetadataSettings settings, Func<string, bool> Func)
         {
-            if (aFunc(aSettings.artist))
+            if (Func(settings.artist))
                 yield return new Issue(GetTemplate("Wrong Format"), null,
-                    "Romanized", "artist", aSettings.artist);
+                    "Romanized", "artist", settings.artist);
 
             // Unicode fields do not exist in file version 9.
-            if (aSettings.artistUnicode != null && aFunc(aSettings.artistUnicode))
+            if (settings.artistUnicode != null && Func(settings.artistUnicode))
                 yield return new Issue(GetTemplate("Wrong Format"), null,
-                    "Unicode", "artist", aSettings.artistUnicode);
+                    "Unicode", "artist", settings.artistUnicode);
 
-            if (aFunc(aSettings.title))
+            if (Func(settings.title))
                 yield return new Issue(GetTemplate("Wrong Format"), null,
-                    "Romanized", "title", aSettings.title);
+                    "Romanized", "title", settings.title);
 
-            if (aSettings.titleUnicode != null && aFunc(aSettings.titleUnicode))
+            if (settings.titleUnicode != null && Func(settings.titleUnicode))
                 yield return new Issue(GetTemplate("Wrong Format"), null,
-                    "Unicode", "title", aSettings.titleUnicode);
+                    "Unicode", "title", settings.titleUnicode);
         }
     }
 }

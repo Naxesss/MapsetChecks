@@ -56,11 +56,11 @@ namespace MapsetChecks.checks.compose
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (HitObject hitObject in aBeatmap.hitObjects)
+            foreach (HitObject hitObject in beatmap.hitObjects)
                 if (hitObject is Slider slider && slider.nodePositions.Count > 10 * Math.Sqrt(slider.pixelLength))
-                    yield return new Issue(GetTemplate("Abnormal"), aBeatmap,
+                    yield return new Issue(GetTemplate("Abnormal"), beatmap,
                         Timestamp.Get(slider), slider.nodePositions.Count);
         }
     }

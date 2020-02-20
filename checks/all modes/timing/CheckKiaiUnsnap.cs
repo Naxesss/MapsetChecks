@@ -65,35 +65,37 @@ namespace MapsetChecks.checks.timing
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (TimingLine line in aBeatmap.timingLines.Where(aLine => aLine.kiai))
+            foreach (TimingLine line in beatmap.timingLines.Where(line => line.kiai))
             {
                 // If we're inside of kiai, a new line with kiai won't cause kiai to start again.
-                if (aBeatmap.GetTimingLine(line.offset - 1).kiai)
+                if (beatmap.GetTimingLine(line.offset - 1).kiai)
                     continue;
 
-                double unsnap = aBeatmap.GetPracticalUnsnap(line.offset);
+                double unsnap = beatmap.GetPracticalUnsnap(line.offset);
 
                 if (Math.Abs(unsnap) >= 10)
-                    yield return new Issue(GetTemplate("Warning"), aBeatmap,
+                    yield return new Issue(GetTemplate("Warning"), beatmap,
                         Timestamp.Get(line.offset), unsnap);
 
                 else if (Math.Abs(unsnap) >= 1)
-                    yield return new Issue(GetTemplate("Minor"), aBeatmap,
+                    yield return new Issue(GetTemplate("Minor"), beatmap,
                         Timestamp.Get(line.offset), unsnap);
                 
                 // Prevents duplicate issues occuring from both red and green line on same tick picking next line.
-                if (aBeatmap.timingLines.Any(aLine => aLine.offset == line.offset && !aLine.uninherited && line.uninherited))
+                if (beatmap.timingLines.Any(
+                        otherLine => otherLine.offset == line.offset &&
+                        !otherLine.uninherited && line.uninherited))
                     continue;
 
-                TimingLine nextLine = aBeatmap.GetNextTimingLine(line.offset);
+                TimingLine nextLine = beatmap.GetNextTimingLine(line.offset);
                 if (nextLine != null && !nextLine.kiai)
                 {
-                    unsnap = aBeatmap.GetPracticalUnsnap(nextLine.offset);
+                    unsnap = beatmap.GetPracticalUnsnap(nextLine.offset);
 
                     if (Math.Abs(unsnap) >= 1)
-                        yield return new Issue(GetTemplate("Minor End"), aBeatmap,
+                        yield return new Issue(GetTemplate("Minor End"), beatmap,
                             Timestamp.Get(nextLine.offset), unsnap);
                 }
             }

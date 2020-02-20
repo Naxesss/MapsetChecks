@@ -57,11 +57,11 @@ namespace MapsetChecks.checks.compose
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            if (aBeatmap.GetDrainTime() < 30 * 1000)
-                yield return new Issue(GetTemplate("Problem"), aBeatmap,
-                    Timestamp.Get(aBeatmap.GetDrainTime()));
+            if (beatmap.GetDrainTime() < 30 * 1000)
+                yield return new Issue(GetTemplate("Problem"), beatmap,
+                    Timestamp.Get(beatmap.GetDrainTime()));
         }
     }
 }

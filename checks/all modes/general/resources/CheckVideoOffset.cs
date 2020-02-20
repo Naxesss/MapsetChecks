@@ -57,11 +57,11 @@ namespace MapsetChecks.checks.general.resources
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
             foreach (Issue issue in Common.GetInconsistencies(
-                aBeatmapSet,
-                aBeatmap => aBeatmap.videos.Count > 0 ? aBeatmap.videos[0].offset.ToString() : null,
+                beatmapSet,
+                beatmap => beatmap.videos.Count > 0 ? beatmap.videos[0].offset.ToString() : null,
                 GetTemplate("Multiple")))
             {
                 yield return issue;

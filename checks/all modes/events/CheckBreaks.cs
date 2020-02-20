@@ -66,25 +66,25 @@ namespace MapsetChecks.checks.events
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (Break @break in aBeatmap.breaks)
+            foreach (Break @break in beatmap.breaks)
             {
                 // sometimes breaks are 1 ms off for some reason
                 int leniency = 1;
                 
                 double minStart = 200;
-                double minEnd = aBeatmap.difficultySettings.GetFadeInTime();
+                double minEnd = beatmap.difficultySettings.GetFadeInTime();
 
                 double diffStart = 0;
                 double diffEnd = 0;
 
                 // checking from start of break forwards and end of break backwards ensures nothing is in between
-                if (@break.time - aBeatmap.GetHitObject(@break.time)?.time < minStart)
-                    diffStart = minStart - (@break.time - aBeatmap.GetHitObject(@break.time).time);
+                if (@break.time - beatmap.GetHitObject(@break.time)?.time < minStart)
+                    diffStart = minStart - (@break.time - beatmap.GetHitObject(@break.time).time);
 
-                if (aBeatmap.GetNextHitObject(@break.time)?.time - @break.endTime < minEnd)
-                    diffEnd = minEnd - (aBeatmap.GetNextHitObject(@break.time).time - @break.endTime);
+                if (beatmap.GetNextHitObject(@break.time)?.time - @break.endTime < minEnd)
+                    diffEnd = minEnd - (beatmap.GetNextHitObject(@break.time).time - @break.endTime);
 
                 if (diffStart > leniency || diffEnd > leniency)
                 {
@@ -97,14 +97,14 @@ namespace MapsetChecks.checks.events
                     else if (diffEnd > leniency)
                         issueMessage = $"ends {diffEnd:0.##} ms too late";
                     
-                    yield return new Issue(GetTemplate("Too early or late"), aBeatmap,
+                    yield return new Issue(GetTemplate("Too early or late"), beatmap,
                         Timestamp.Get(@break.time), Timestamp.Get(@break.endTime),
                         issueMessage);
                 }
 
                 // although this currently affects nothing, it may affect things in the future
                 if (@break.endTime - @break.time < 650)
-                    yield return new Issue(GetTemplate("Too short"), aBeatmap,
+                    yield return new Issue(GetTemplate("Too short"), beatmap,
                         Timestamp.Get(@break.time), Timestamp.Get(@break.endTime));
             }
         }

@@ -64,14 +64,14 @@ namespace MapsetChecks.checks.compose
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (Slider slider in aBeatmap.hitObjects.OfType<Slider>())
+            foreach (Slider slider in beatmap.hitObjects.OfType<Slider>())
                 if (slider.nodePositions.Count == 0)
-                    yield return new Issue(GetTemplate("Zero Nodes"), aBeatmap,
+                    yield return new Issue(GetTemplate("Zero Nodes"), beatmap,
                         Timestamp.Get(slider));
                 else if (slider.pixelLength < 0)
-                    yield return new Issue(GetTemplate("Negative Length"), aBeatmap,
+                    yield return new Issue(GetTemplate("Negative Length"), beatmap,
                         Timestamp.Get(slider));
         }
     }

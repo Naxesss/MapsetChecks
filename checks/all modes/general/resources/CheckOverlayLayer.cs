@@ -60,30 +60,30 @@ namespace MapsetChecks.checks.general.resources
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
             // Checks .osu-specific storyboard elements.
-            foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
+            foreach (Beatmap beatmap in beatmapSet.beatmaps)
                 foreach (Sprite sprite in beatmap.sprites)
                     if (sprite.layer == Sprite.Layer.Overlay)
                         yield return new Issue(GetTemplate("Warning"), beatmap,
                             sprite.path, ".osu");
 
-            foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
+            foreach (Beatmap beatmap in beatmapSet.beatmaps)
                 foreach (Animation animation in beatmap.animations)
                     if (animation.layer == Sprite.Layer.Overlay)
                         yield return new Issue(GetTemplate("Warning"), beatmap,
                             animation.path, ".osu");
 
             // Checks .osb storyboard elements.
-            if (aBeatmapSet.osb != null)
+            if (beatmapSet.osb != null)
             {
-                foreach (Sprite sprite in aBeatmapSet.osb.sprites)
+                foreach (Sprite sprite in beatmapSet.osb.sprites)
                     if (sprite.layer == Sprite.Layer.Overlay)
                         yield return new Issue(GetTemplate("Warning"), null,
                             sprite.path, ".osb");
 
-                foreach (Animation animation in aBeatmapSet.osb.animations)
+                foreach (Animation animation in beatmapSet.osb.animations)
                     if (animation.layer == Sprite.Layer.Overlay)
                         yield return new Issue(GetTemplate("Warning"), null,
                             animation.path, ".osb");

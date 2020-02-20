@@ -86,59 +86,59 @@ namespace MapsetChecks.checks.timing
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (Issue issue in GetUninheritedLineIssues(aBeatmap))
+            foreach (Issue issue in GetUninheritedLineIssues(beatmap))
                 yield return issue;
 
-            foreach (Issue issue in GetInheritedLineIssues(aBeatmap))
+            foreach (Issue issue in GetInheritedLineIssues(beatmap))
                 yield return issue;
         }
 
-        private IEnumerable<Issue> GetUninheritedLineIssues(Beatmap aBeatmap)
+        private IEnumerable<Issue> GetUninheritedLineIssues(Beatmap beatmap)
         {
-            List<TimingLine> lines = aBeatmap.timingLines.ToList();
+            List<TimingLine> lines = beatmap.timingLines.ToList();
             for (int i = 1; i < lines.Count; ++i)
             {
                 if (!(lines[i] is UninheritedLine currentLine))
                     continue;
 
                 // Can't do lines[i - 1] since that could give a green line on the same offset, which we don't want.
-                TimingLine previousLine = aBeatmap.GetTimingLine(currentLine.offset - 1);
-                UninheritedLine previousUninheritedLine = aBeatmap.GetTimingLine<UninheritedLine>(currentLine.offset - 1);
+                TimingLine previousLine = beatmap.GetTimingLine(currentLine.offset - 1);
+                UninheritedLine previousUninheritedLine = beatmap.GetTimingLine<UninheritedLine>(currentLine.offset - 1);
 
-                if (!SameDownbeatStructure(aBeatmap, currentLine, previousUninheritedLine))
+                if (!SameDownbeatStructure(beatmap, currentLine, previousUninheritedLine))
                     continue;
 
-                if (CanOmitBarLine(aBeatmap) && currentLine.omitsBarLine)
+                if (CanOmitBarLine(beatmap) && currentLine.omitsBarLine)
                     continue;
 
-                if (!IsLineUsed(aBeatmap, currentLine, previousLine))
+                if (!IsLineUsed(beatmap, currentLine, previousLine))
                 {
                     // In the nightcore mod, every 4th (or whatever the meter is) downbeat
                     // has an added cymbal, so that can technically change things.
-                    if (SameNightcoreCymbalStructure(aBeatmap, currentLine, previousUninheritedLine))
+                    if (SameNightcoreCymbalStructure(beatmap, currentLine, previousUninheritedLine))
                         yield return new Issue(GetTemplate("Problem Nothing"),
-                        aBeatmap, Timestamp.Get(currentLine.offset));
+                        beatmap, Timestamp.Get(currentLine.offset));
                     else
                         yield return new Issue(GetTemplate("Warning Nothing"),
-                            aBeatmap, Timestamp.Get(currentLine.offset));
+                            beatmap, Timestamp.Get(currentLine.offset));
                 }
                 else
                 {
-                    if (SameNightcoreCymbalStructure(aBeatmap, currentLine, previousUninheritedLine))
+                    if (SameNightcoreCymbalStructure(beatmap, currentLine, previousUninheritedLine))
                         yield return new Issue(GetTemplate("Problem Inherited"),
-                            aBeatmap, Timestamp.Get(currentLine.offset));
+                            beatmap, Timestamp.Get(currentLine.offset));
                     else
                         yield return new Issue(GetTemplate("Warning Inherited"),
-                            aBeatmap, Timestamp.Get(currentLine.offset));
+                            beatmap, Timestamp.Get(currentLine.offset));
                 }
             }
         }
 
-        private IEnumerable<Issue> GetInheritedLineIssues(Beatmap aBeatmap)
+        private IEnumerable<Issue> GetInheritedLineIssues(Beatmap beatmap)
         {
-            List<TimingLine> lines = aBeatmap.timingLines.ToList();
+            List<TimingLine> lines = beatmap.timingLines.ToList();
             for (int i = 1; i < lines.Count; ++i)
             {
                 if (!(lines[i] is InheritedLine currentLine))
@@ -148,19 +148,19 @@ namespace MapsetChecks.checks.timing
 
                 // Since "used" only includes false positives, this only includes false negatives,
                 // hence the check will never say that a used line is unused.
-                if (!IsLineUsed(aBeatmap, currentLine, previousLine))
+                if (!IsLineUsed(beatmap, currentLine, previousLine))
                 {
                     // Avoids confusion in case the line actually does change something from the
                     // previous, but just doesn't apply to anything.
                     string changesDesc = "";
-                    if (!UsesSV(aBeatmap, currentLine, previousLine) && currentLine.svMult != previousLine.svMult)
+                    if (!UsesSV(beatmap, currentLine, previousLine) && currentLine.svMult != previousLine.svMult)
                         changesDesc += "SV";
-                    if (!UsesSamples(aBeatmap, currentLine, previousLine) && SamplesDiffer(currentLine, previousLine))
+                    if (!UsesSamples(beatmap, currentLine, previousLine) && SamplesDiffer(currentLine, previousLine))
                         changesDesc += (changesDesc.Length > 0 ? " and " : "") + "sample settings";
                     changesDesc += changesDesc.Length > 0 ? ", but affects nothing" : "nothing";
 
                     yield return new Issue(GetTemplate("Minor Inherited"),
-                        aBeatmap, Timestamp.Get(currentLine.offset), changesDesc);
+                        beatmap, Timestamp.Get(currentLine.offset), changesDesc);
                 }
             }
         }
@@ -170,16 +170,16 @@ namespace MapsetChecks.checks.timing
         /// <br></br><br></br>
         /// Offset alignment is much more strict for omitted bar lines in taiko and mania due to bars otherwise
         /// becoming thicker than normal. </summary>
-        private bool SameDownbeatStructure(Beatmap aBeatmap, UninheritedLine aLine, UninheritedLine anOtherLine)
+        private bool SameDownbeatStructure(Beatmap beatmap, UninheritedLine line, UninheritedLine otherLine)
         {
-            bool negligibleDownbeatOffset = GetBeatOffset(anOtherLine, aLine, anOtherLine.meter) <= 1;
+            bool negligibleDownbeatOffset = GetBeatOffset(otherLine, line, otherLine.meter) <= 1;
 
-            if (CanOmitBarLine(aBeatmap) && anOtherLine.omitsBarLine)
-                negligibleDownbeatOffset = GetBeatOffset(anOtherLine, aLine, anOtherLine.meter) == 0;
+            if (CanOmitBarLine(beatmap) && otherLine.omitsBarLine)
+                negligibleDownbeatOffset = GetBeatOffset(otherLine, line, otherLine.meter) == 0;
 
             return
-                anOtherLine.bpm == aLine.bpm &&
-                anOtherLine.meter == aLine.meter &&
+                otherLine.bpm == line.bpm &&
+                otherLine.meter == line.meter &&
                 negligibleDownbeatOffset;
         }
 
@@ -187,27 +187,27 @@ namespace MapsetChecks.checks.timing
         /// from the other (1 measure = 4 beats in 4/4 meter). This first checks that the downbeat structure is the same.
         /// <br></br><br></br>
         /// In the Nightcore mod, cymbals can be heard every 4 measures. </summary>
-        private bool SameNightcoreCymbalStructure(Beatmap aBeatmap, UninheritedLine aLine, UninheritedLine anOtherLine) =>
-            SameDownbeatStructure(aBeatmap, aLine, anOtherLine) && GetBeatOffset(anOtherLine, aLine, 4 * anOtherLine.meter) <= 1;
+        private bool SameNightcoreCymbalStructure(Beatmap beatmap, UninheritedLine line, UninheritedLine otherLine) =>
+            SameDownbeatStructure(beatmap, line, otherLine) && GetBeatOffset(otherLine, line, 4 * otherLine.meter) <= 1;
 
         /// <summary> Returns the ms difference between two timing lines, where the timing lines reset offset every
         /// given number of beats. </summary>
-        private double GetBeatOffset(UninheritedLine aLine, UninheritedLine aNextLine, double aBeatModulo)
+        private double GetBeatOffset(UninheritedLine line, UninheritedLine nextLine, double beatModulo)
         {
-            double beatsIn = (aNextLine.offset - aLine.offset) / aLine.msPerBeat;
-            double offset = beatsIn % aBeatModulo;
+            double beatsIn = (nextLine.offset - line.offset) / line.msPerBeat;
+            double offset = beatsIn % beatModulo;
 
             return
                 Math.Min(
                     Math.Abs(offset),
-                    Math.Abs(offset - aBeatModulo)) *
-                aLine.msPerBeat;
+                    Math.Abs(offset - beatModulo)) *
+                line.msPerBeat;
         }
 
         /// <summary> Returns whether the beatmap supports omitting bar lines. This is currently limited to taiko and mania. </summary>
-        private bool CanOmitBarLine(Beatmap aBeatmap) =>
-            aBeatmap.generalSettings.mode == Beatmap.Mode.Taiko ||
-            aBeatmap.generalSettings.mode == Beatmap.Mode.Mania;
+        private bool CanOmitBarLine(Beatmap beatmap) =>
+            beatmap.generalSettings.mode == Beatmap.Mode.Taiko ||
+            beatmap.generalSettings.mode == Beatmap.Mode.Mania;
 
         /// <summary> Returns whether a line is considered used. Only partially covers uninherited lines.
         /// <br></br><br></br>
@@ -215,41 +215,41 @@ namespace MapsetChecks.checks.timing
         /// - Changes sampleset, custom index, or volume and there is an edge/body within the time frame <br></br>
         /// - Changes SV and there are sliders starting within the time frame or changes SV and the mode is mania <br></br>
         /// - Changes kiai (causes effects on screen during duration) </summary>
-        private bool IsLineUsed(Beatmap aBeatmap, TimingLine aCurrentLine, TimingLine aPreviousLine) =>
-            UsesSamples(aBeatmap, aCurrentLine, aPreviousLine) ||
-            UsesSV(aBeatmap, aCurrentLine, aPreviousLine) ||
-            aCurrentLine.kiai != aPreviousLine.kiai;
+        private bool IsLineUsed(Beatmap beatmap, TimingLine currentLine, TimingLine previousLine) =>
+            UsesSamples(beatmap, currentLine, previousLine) ||
+            UsesSV(beatmap, currentLine, previousLine) ||
+            currentLine.kiai != previousLine.kiai;
 
         /// <summary> Returns whether this section makes use of sample changes (i.e. volume, sampleset, or custom index). </summary>
-        private bool UsesSamples(Beatmap aBeatmap, TimingLine aCurrentLine, TimingLine aPreviousLine) =>
-            SectionContainsObject<HitObject>(aBeatmap, aCurrentLine) && SamplesDiffer(aCurrentLine, aPreviousLine);
+        private bool UsesSamples(Beatmap beatmap, TimingLine currentLine, TimingLine previousLine) =>
+            SectionContainsObject<HitObject>(beatmap, currentLine) && SamplesDiffer(currentLine, previousLine);
 
         /// <summary> Returns whether this section changes sample settings (i.e. volume, sampleset, or custom index). </summary>
-        private bool SamplesDiffer(TimingLine aCurrentLine, TimingLine aPreviousLine) =>
-            aCurrentLine.sampleset != aPreviousLine.sampleset ||
-            aCurrentLine.customIndex != aPreviousLine.customIndex ||
-            aCurrentLine.volume != aPreviousLine.volume;
+        private bool SamplesDiffer(TimingLine currentLine, TimingLine previousLine) =>
+            currentLine.sampleset != previousLine.sampleset ||
+            currentLine.customIndex != previousLine.customIndex ||
+            currentLine.volume != previousLine.volume;
 
         /// <summary> Returns whether this section is affected by SV changes. </summary>
-        private bool UsesSV(Beatmap aBeatmap, TimingLine aCurrentLine, TimingLine aPreviousLine) =>
-            CanUseSV(aBeatmap, aCurrentLine) && aCurrentLine.svMult != aPreviousLine.svMult;
+        private bool UsesSV(Beatmap beatmap, TimingLine currentLine, TimingLine previousLine) =>
+            CanUseSV(beatmap, currentLine) && currentLine.svMult != previousLine.svMult;
 
         /// <summary> Returns whether changes to SV for the line will be used. </summary>
-        private bool CanUseSV(Beatmap aBeatmap, TimingLine aLine) =>
-            SectionContainsObject<Slider>(aBeatmap, aLine) ||
+        private bool CanUseSV(Beatmap beatmap, TimingLine line) =>
+            SectionContainsObject<Slider>(beatmap, line) ||
             // Taiko and mania affect approach rate through SV.
-            aBeatmap.generalSettings.mode == Beatmap.Mode.Taiko ||
-            aBeatmap.generalSettings.mode == Beatmap.Mode.Mania;
+            beatmap.generalSettings.mode == Beatmap.Mode.Taiko ||
+            beatmap.generalSettings.mode == Beatmap.Mode.Mania;
 
         /// <summary> Returns whether this section contains the respective hit object type.
         /// Only counts the start of objects. </summary>
-        private bool SectionContainsObject<T>(Beatmap aBeatmap, TimingLine aLine) where T : HitObject
+        private bool SectionContainsObject<T>(Beatmap beatmap, TimingLine line) where T : HitObject
         {
-            TimingLine nextLine = aBeatmap.GetNextTimingLine(aLine.offset);
-            double nextSectionEnd = nextLine?.offset ?? aBeatmap.GetPlayTime();
-            double objectTimeBeforeEnd = aBeatmap.GetPrevHitObject<T>(nextSectionEnd)?.time ?? 0;
+            TimingLine nextLine = beatmap.GetNextTimingLine(line.offset);
+            double nextSectionEnd = nextLine?.offset ?? beatmap.GetPlayTime();
+            double objectTimeBeforeEnd = beatmap.GetPrevHitObject<T>(nextSectionEnd)?.time ?? 0;
 
-            return objectTimeBeforeEnd >= aLine.offset;
+            return objectTimeBeforeEnd >= line.offset;
         }
     }
 }

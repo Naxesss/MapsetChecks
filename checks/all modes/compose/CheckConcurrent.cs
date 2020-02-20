@@ -72,17 +72,17 @@ namespace MapsetChecks.checks.compose
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            int hitObjectCount = aBeatmap.hitObjects.Count();
+            int hitObjectCount = beatmap.hitObjects.Count();
             for (int i = 0; i < hitObjectCount - 1; ++i)
             {
                 for (int j = i + 1; j < hitObjectCount; ++j)
                 {
-                    HitObject hitObject = aBeatmap.hitObjects[i];
-                    HitObject otherHitObject = aBeatmap.hitObjects[j];
+                    HitObject hitObject = beatmap.hitObjects[i];
+                    HitObject otherHitObject = beatmap.hitObjects[j];
 
-                    if (aBeatmap.generalSettings.mode == Beatmap.Mode.Mania &&
+                    if (beatmap.generalSettings.mode == Beatmap.Mode.Mania &&
                         hitObject.Position.X != otherHitObject.Position.X)
                         continue;
 
@@ -90,11 +90,11 @@ namespace MapsetChecks.checks.compose
                     double msApart = otherHitObject.time - hitObject.GetEndTime();
 
                     if (msApart <= 0)
-                        yield return new Issue(GetTemplate("Concurrent Objects"), aBeatmap,
+                        yield return new Issue(GetTemplate("Concurrent Objects"), beatmap,
                             Timestamp.Get(hitObject, otherHitObject), ObjectsAsString(hitObject, otherHitObject));
 
                     else if (msApart <= 10)
-                        yield return new Issue(GetTemplate("Almost Concurrent Objects"), aBeatmap,
+                        yield return new Issue(GetTemplate("Almost Concurrent Objects"), beatmap,
                             Timestamp.Get(hitObject, otherHitObject), msApart);
 
                     else
@@ -104,10 +104,10 @@ namespace MapsetChecks.checks.compose
             }
         }
 
-        public string ObjectsAsString(HitObject aHitObject, HitObject anOtherHitObject)
+        public string ObjectsAsString(HitObject hitObject, HitObject otherHitObject)
         {
-            string type = aHitObject.GetObjectType();
-            string otherType = anOtherHitObject.GetObjectType();
+            string type = hitObject.GetObjectType();
+            string otherType = otherHitObject.GetObjectType();
 
             return
                 type == otherType ?

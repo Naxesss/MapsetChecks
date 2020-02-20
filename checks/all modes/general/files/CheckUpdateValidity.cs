@@ -80,11 +80,11 @@ namespace MapsetChecks.checks.general.files
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            for (int i = 0; i < aBeatmapSet.songFilePaths.Count; ++i)
+            for (int i = 0; i < beatmapSet.songFilePaths.Count; ++i)
             {
-                string filePath = aBeatmapSet.songFilePaths[i].Substring(aBeatmapSet.songPath.Length + 1);
+                string filePath = beatmapSet.songFilePaths[i].Substring(beatmapSet.songPath.Length + 1);
                 string fileName = filePath.Split(new char[] { '/', '\\' }).Last();
 
                 if(fileName.Length > 132)
@@ -93,13 +93,13 @@ namespace MapsetChecks.checks.general.files
                 
                 if (fileName.EndsWith(".osu"))
                 {
-                    Beatmap beatmap = aBeatmapSet.beatmaps.First(aBeatmap => aBeatmap.mapPath == filePath);
+                    Beatmap beatmap = beatmapSet.beatmaps.First(otherBeatmap => otherBeatmap.mapPath == filePath);
                     if (beatmap.GetOsuFileName().ToLower() != fileName.ToLower())
                         yield return new Issue(GetTemplate("Wrong Format"), null,
                             fileName, beatmap.GetOsuFileName());
 
                     // Updating .osu files larger than 1 mb will cause the update to stop at the 1 mb mark
-                    FileInfo fileInfo = new FileInfo(aBeatmapSet.songFilePaths[i]);
+                    FileInfo fileInfo = new FileInfo(beatmapSet.songFilePaths[i]);
                     double MB = fileInfo.Length / Math.Pow(1024, 2);
 
                     if (MB > 1)

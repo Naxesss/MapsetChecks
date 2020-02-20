@@ -77,23 +77,23 @@ namespace MapsetChecks.checks.general.resources
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
             foreach (Issue issue in Common.GetTagOsuIssues(
-                aBeatmapSet,
-                aBeatmap => aBeatmap.videos.Count > 0 ? aBeatmap.videos.Select(aVideo => aVideo.path) : null,
-                aTemplateArg => GetTemplate(aTemplateArg),
-                aTagFile =>
+                beatmapSet,
+                beatmap => beatmap.videos.Count > 0 ? beatmap.videos.Select(aVideo => aVideo.path) : null,
+                templateArg => GetTemplate(templateArg),
+                tagFile =>
                 {
                     // Executes for each non-faulty video file used in one of the beatmaps in the set.
                     List<Issue> issues = new List<Issue>();
-                    if (aTagFile.file.Properties.VideoWidth > 1280 ||
-                        aTagFile.file.Properties.VideoHeight > 720)
+                    if (tagFile.file.Properties.VideoWidth > 1280 ||
+                        tagFile.file.Properties.VideoHeight > 720)
                     {
                         issues.Add(new Issue(GetTemplate("Resolution"), null,
-                            aTagFile.templateArgs[0],
-                            aTagFile.file.Properties.VideoWidth,
-                            aTagFile.file.Properties.VideoHeight));
+                            tagFile.templateArgs[0],
+                            tagFile.file.Properties.VideoWidth,
+                            tagFile.file.Properties.VideoHeight));
                     }
 
                     return issues;

@@ -85,13 +85,13 @@ namespace MapsetChecks.checks.general.audio
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            if (aBeatmapSet.hitSoundFiles != null)
+            if (beatmapSet.hitSoundFiles != null)
             {
-                foreach (string hitSoundFile in aBeatmapSet.hitSoundFiles)
+                foreach (string hitSoundFile in beatmapSet.hitSoundFiles)
                 {
-                    string fullPath = Path.Combine(aBeatmapSet.songPath, hitSoundFile);
+                    string fullPath = Path.Combine(beatmapSet.songPath, hitSoundFile);
 
                     ManagedBass.ChannelType actualFormat = 0;
                     Exception exception = null;
@@ -111,7 +111,7 @@ namespace MapsetChecks.checks.general.audio
                     if (actualFormat == ManagedBass.ChannelType.MP3)
                     {
                         bool foundActiveMp3 = false;
-                        foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
+                        foreach (Beatmap beatmap in beatmapSet.beatmaps)
                         {
                             foreach (HitObject hitObject in beatmap.hitObjects)
                             {
@@ -119,10 +119,10 @@ namespace MapsetChecks.checks.general.audio
                                     continue;
 
                                 // Only the hit sound edge at which the object is clicked is considered active.
-                                if (hitObject.GetUsedHitSamples().Any(aSample =>
-                                        aSample.time == hitObject.time &&
-                                        aSample.hitSource == HitSample.HitSource.Edge &&
-                                        hitSoundFile.ToLower().StartsWith(aSample.GetFileName() + ".")))
+                                if (hitObject.GetUsedHitSamples().Any(sample =>
+                                        sample.time == hitObject.time &&
+                                        sample.hitSource == HitSample.HitSource.Edge &&
+                                        hitSoundFile.ToLower().StartsWith(sample.GetFileName() + ".")))
                                 {
                                     yield return new Issue(GetTemplate("mp3"), null,
                                         hitSoundFile, Timestamp.Get(hitObject), beatmap);

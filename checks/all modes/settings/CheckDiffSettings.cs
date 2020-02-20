@@ -79,49 +79,49 @@ namespace MapsetChecks.checks.settings
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(Beatmap aBeatmap)
+        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            Issue issue = GetIssue(aBeatmap.difficultySettings.hpDrain, "HP Drain Rate", aBeatmap);
+            Issue issue = GetIssue(beatmap.difficultySettings.hpDrain, "HP Drain Rate", beatmap);
             if (issue != null)
                 yield return issue;
 
             // Circle size does nothing in taiko.
-            if (aBeatmap.generalSettings.mode != Beatmap.Mode.Taiko)
+            if (beatmap.generalSettings.mode != Beatmap.Mode.Taiko)
             {
-                issue = GetIssue(aBeatmap.difficultySettings.circleSize, "Circle Size", aBeatmap,
-                    aBeatmap.generalSettings.mode == Beatmap.Mode.Mania ? 1 : 2,
-                    aBeatmap.generalSettings.mode == Beatmap.Mode.Mania ? 9 : 7);
+                issue = GetIssue(beatmap.difficultySettings.circleSize, "Circle Size", beatmap,
+                    beatmap.generalSettings.mode == Beatmap.Mode.Mania ? 1 : 2,
+                    beatmap.generalSettings.mode == Beatmap.Mode.Mania ? 9 : 7);
                 if (issue != null)
                     yield return issue;
             }
 
-            issue = GetIssue(aBeatmap.difficultySettings.approachRate, "Approach Rate", aBeatmap);
+            issue = GetIssue(beatmap.difficultySettings.approachRate, "Approach Rate", beatmap);
             if (issue != null)
                 yield return issue;
 
-            issue = GetIssue(aBeatmap.difficultySettings.overallDifficulty, "Overall Difficulty", aBeatmap);
+            issue = GetIssue(beatmap.difficultySettings.overallDifficulty, "Overall Difficulty", beatmap);
             if (issue != null)
                 yield return issue;
         }
 
         /// <summary> Returns an issue when a setting is either less than the minimum, more than the maximum or
         /// contains more than 1 decimal place. </summary>
-        private Issue GetIssue(float aDifficulty, string aType, Beatmap aBeatmap, int aMin = 0, int aMax = 10)
+        private Issue GetIssue(float setting, string type, Beatmap beatmap, int minSetting = 0, int maxSetting = 10)
         {
-            if (aDifficulty < aMin ||
-                aDifficulty > aMax)
+            if (setting < minSetting ||
+                setting > maxSetting)
             {
-                if (aType == "Circle Size")
-                    return new Issue(GetTemplate("CS"), aBeatmap,
-                        $"{aDifficulty:0.####}", aMin, aMax);
+                if (type == "Circle Size")
+                    return new Issue(GetTemplate("CS"), beatmap,
+                        $"{setting:0.####}", minSetting, maxSetting);
                 else
-                    return new Issue(GetTemplate("Other"), aBeatmap,
-                        $"{aDifficulty:0.####}", aType);
+                    return new Issue(GetTemplate("Other"), beatmap,
+                        $"{setting:0.####}", type);
             }
-            else if (aDifficulty - (float)Math.Floor(aDifficulty * 10) / 10 > 0)
+            else if (setting - (float)Math.Floor(setting * 10) / 10 > 0)
             {
-                return new Issue(GetTemplate("Decimals"), aBeatmap,
-                    $"{aDifficulty:0.####}", aType);
+                return new Issue(GetTemplate("Decimals"), beatmap,
+                    $"{setting:0.####}", type);
             }
 
             return null;

@@ -64,11 +64,11 @@ namespace MapsetChecks.checks.general.audio
             };
         }
 
-        public override IEnumerable<Issue> GetIssues(BeatmapSet aBeatmapSet)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            foreach (string hsFile in aBeatmapSet.hitSoundFiles)
+            foreach (string hsFile in beatmapSet.hitSoundFiles)
             {
-                string hsPath = Path.Combine(aBeatmapSet.songPath, hsFile);
+                string hsPath = Path.Combine(beatmapSet.songPath, hsFile);
 
                 double duration = 0;
                 Exception exception = null;
