@@ -104,7 +104,7 @@ namespace MapsetChecks.checks.standard.spread
                                 (int)Math.Ceiling((otherHitObject.time - hitObject.time) /
                                     (beatmap.difficultySettings.GetFadeInTime() * 0.1));
 
-                            string template = diffIndex == (int)Beatmap.Difficulty.Insane ? "Warning" : "Problem";
+                            string template = diffIndex >= (int)Beatmap.Difficulty.Insane ? "Warning" : "Problem";
 
                             yield return new Issue(GetTemplate(template), beatmap,
                                 Timestamp.Get(hitObject, otherHitObject), requiredStackLeniency)
