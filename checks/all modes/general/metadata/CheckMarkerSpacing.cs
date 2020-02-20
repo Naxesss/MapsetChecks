@@ -51,7 +51,7 @@ namespace MapsetChecks.checks.general.metadata
                 { "Problem",
                     new IssueTemplate(Issue.Level.Problem,
                         "Missing {0} in {1}; \"{2}\".",
-                        "something", "field", "field")
+                        "something", "field", "field content")
                     .WithCause(
                         "Some whitespace or parameter is missing from the artist or title fields where only alphabetic " +
                         "and numerical characters are involved.") },
@@ -59,7 +59,7 @@ namespace MapsetChecks.checks.general.metadata
                 { "Warning",
                     new IssueTemplate(Issue.Level.Warning,
                         "Missing {0} in {1}; \"{2}\".",
-                        "something", "field", "field")
+                        "something", "field", "field content")
                     .WithCause(
                         "Same as the other check, but can involve any type of characters.") }
             };
