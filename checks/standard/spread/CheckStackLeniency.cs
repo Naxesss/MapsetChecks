@@ -86,14 +86,17 @@ namespace MapsetChecks.checks.standard.spread
             {
                 double timeGap = snapping[diffIndex] * 60000 / 160d;
 
-                List<Stackable> iteratedObjects = new List<Stackable>();
-                foreach (Stackable hitObject in beatmap.hitObjects.OfType<Stackable>())
+                int hitObjectCount = beatmap.hitObjects.Count();
+                for (int i = 0; i < hitObjectCount - 1; ++i)
                 {
-                    iteratedObjects.Add(hitObject);
-                    foreach (Stackable otherHitObject in beatmap.hitObjects.OfType<Stackable>().Except(iteratedObjects))
+                    for (int j = i + 1; j < hitObjectCount; ++j)
                     {
+                        HitObject hitObject = beatmap.hitObjects[i];
+                        HitObject otherHitObject = beatmap.hitObjects[j];
+
+                        // Hit objects are sorted by time, so difference in time will only increase.
                         if (otherHitObject.time - hitObject.time >= timeGap)
-                            continue;
+                            break;
 
                         if (hitObject.Position == otherHitObject.Position)
                         {
