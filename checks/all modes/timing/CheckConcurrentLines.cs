@@ -89,14 +89,10 @@ namespace MapsetChecks.checks.timing
                     beatmap.timingLines[i - 1].sampleset != beatmap.timingLines[i].sampleset ||
                     beatmap.timingLines[i - 1].customIndex != beatmap.timingLines[i].customIndex)
                 {
-                    string conflictingGreenSettings = "";
-                    string conflictingRedSettings = "";
-
-                    InheritedLine greenLine;
-                    UninheritedLine redLine;
-
                     // We've guaranteed that one line is inherited and the other is
                     // uninherited, so we can figure out both by checking one.
+                    InheritedLine greenLine;
+                    UninheritedLine redLine;
                     string precedence;
                     if (beatmap.timingLines[i - 1] is InheritedLine)
                     {
@@ -110,6 +106,9 @@ namespace MapsetChecks.checks.timing
                         redLine = beatmap.timingLines[i - 1] as UninheritedLine;
                         precedence = "Green overrides red";
                     }
+
+                    string conflictingGreenSettings = "";
+                    string conflictingRedSettings = "";
 
                     if (greenLine.kiai != redLine.kiai)
                     {
