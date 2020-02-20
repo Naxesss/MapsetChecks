@@ -144,21 +144,21 @@ namespace MapsetChecks.checks.general.metadata
             foreach (Field field in fields)
             {
                 // old osu versions didn't have unicode fields
-                if (field.content != null)
-                {
-                    foreach (Func<string, string> problemTest in problemTests)
-                    {
-                        string message = problemTest(field.content);
-                        if (message != null && !fieldIssues.Any(fieldIssue => fieldIssue.message == message && fieldIssue.field == field))
-                            fieldIssues.Add(new FieldIssue(field, message, isProblem: true));
-                    }
+                if (field.content == null)
+                    continue;
 
-                    foreach (Func<string, string> warningTest in warningTests)
-                    {
-                        string message = warningTest(field.content);
-                        if (message != null && !fieldIssues.Any(fieldIssue => fieldIssue.message == message && fieldIssue.field == field))
-                            fieldIssues.Add(new FieldIssue(field, message, isProblem: false));
-                    }
+                foreach (Func<string, string> problemTest in problemTests)
+                {
+                    string message = problemTest(field.content);
+                    if (message != null && !fieldIssues.Any(fieldIssue => fieldIssue.message == message && fieldIssue.field == field))
+                        fieldIssues.Add(new FieldIssue(field, message, isProblem: true));
+                }
+
+                foreach (Func<string, string> warningTest in warningTests)
+                {
+                    string message = warningTest(field.content);
+                    if (message != null && !fieldIssues.Any(fieldIssue => fieldIssue.message == message && fieldIssue.field == field))
+                        fieldIssues.Add(new FieldIssue(field, message, isProblem: false));
                 }
             }
 
