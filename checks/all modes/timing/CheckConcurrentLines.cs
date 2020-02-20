@@ -92,12 +92,12 @@ namespace MapsetChecks.checks.timing
                     string conflictingGreenSettings = "";
                     string conflictingRedSettings = "";
 
-                    InheritedLine greenLine = null;
-                    UninheritedLine redLine = null;
+                    InheritedLine greenLine;
+                    UninheritedLine redLine;
 
                     // We've guaranteed that one line is inherited and the other is
                     // uninherited, so we can figure out both by checking one.
-                    string precedence = "";
+                    string precedence;
                     if (beatmap.timingLines[i - 1] is InheritedLine)
                     {
                         greenLine = beatmap.timingLines[i - 1] as InheritedLine;

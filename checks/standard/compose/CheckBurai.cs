@@ -99,7 +99,7 @@ namespace MapsetChecks.checks.standard.compose
                     double otherAngleIntersect;
                     double diffAngleIntersect;
 
-                    bool passedMargin = false;
+                    bool passedMargin;
                     
                     double distance;
                     double maxDistance = 3;
