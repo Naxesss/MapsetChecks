@@ -81,57 +81,57 @@ namespace MapsetChecks.checks.standard.compose
 
             foreach (HitObject hitObject in beatmap.hitObjects)
             {
-                if (hitObject is Slider slider && slider.edgeAmount > 1)
-                {
-                    double reverseTime = slider.time + slider.GetCurveDuration();
-                    Vector2 reversePosition = slider.GetPathPosition(reverseTime);
+                if (!(hitObject is Slider slider) || slider.edgeAmount <= 1)
+                    continue;
 
-                    List<HitObject> selectedObjects = new List<HitObject>();
-                    bool isSerious = false;
+                double reverseTime = slider.time + slider.GetCurveDuration();
+                Vector2 reversePosition = slider.GetPathPosition(reverseTime);
+
+                List<HitObject> selectedObjects = new List<HitObject>();
+                bool isSerious = false;
                     
-                    IEnumerable<HitObject> hitObjectsRightBeforeReverse =
-                        beatmap.hitObjects.Where(otherHitObject =>
-                            otherHitObject.GetEndTime() > reverseTime - opaqueTime &&
-                            otherHitObject.GetEndTime() < reverseTime);
+                IEnumerable<HitObject> hitObjectsRightBeforeReverse =
+                    beatmap.hitObjects.Where(otherHitObject =>
+                        otherHitObject.GetEndTime() > reverseTime - opaqueTime &&
+                        otherHitObject.GetEndTime() < reverseTime);
 
-                    foreach (HitObject otherHitObject in hitObjectsRightBeforeReverse)
+                foreach (HitObject otherHitObject in hitObjectsRightBeforeReverse)
+                {
+                    // Spinners don't really obscure anything and are handled by recovery time anyway.
+                    if (otherHitObject is Spinner)
+                        continue;
+
+                    float distanceToReverse;
+                    if (otherHitObject is Slider otherSlider)
+                        distanceToReverse =
+                            (float)Math.Sqrt(
+                                Math.Pow(otherSlider.EndPosition.X - reversePosition.X, 2) +
+                                Math.Pow(otherSlider.EndPosition.Y - reversePosition.Y, 2));
+                    else
+                        distanceToReverse =
+                            (float)Math.Sqrt(
+                                Math.Pow(otherHitObject.Position.X - reversePosition.X, 2) +
+                                Math.Pow(otherHitObject.Position.Y - reversePosition.Y, 2));
+
+                    if (distanceToReverse < tooCloseThreshold)
+                        isSerious = true;
+
+                    if (distanceToReverse < closeThreshold)
                     {
-                        // Spinners don't really obscure anything and are handled by recovery time anyway.
-                        if (otherHitObject is Spinner)
-                            continue;
-
-                        float distanceToReverse;
-                        if (otherHitObject is Slider otherSlider)
-                            distanceToReverse =
-                                (float)Math.Sqrt(
-                                    Math.Pow(otherSlider.EndPosition.X - reversePosition.X, 2) +
-                                    Math.Pow(otherSlider.EndPosition.Y - reversePosition.Y, 2));
+                        List<HitObject> hitObjects;
+                        if (hitObject.time > otherHitObject.time)
+                            hitObjects = new List<HitObject>() { otherHitObject, hitObject };
                         else
-                            distanceToReverse =
-                                (float)Math.Sqrt(
-                                    Math.Pow(otherHitObject.Position.X - reversePosition.X, 2) +
-                                    Math.Pow(otherHitObject.Position.Y - reversePosition.Y, 2));
+                            hitObjects = new List<HitObject>() { hitObject, otherHitObject };
 
-                        if (distanceToReverse < tooCloseThreshold)
-                            isSerious = true;
-
-                        if (distanceToReverse < closeThreshold)
-                        {
-                            List<HitObject> hitObjects;
-                            if (hitObject.time > otherHitObject.time)
-                                hitObjects = new List<HitObject>() { otherHitObject, hitObject };
-                            else
-                                hitObjects = new List<HitObject>() { hitObject, otherHitObject };
-
-                            selectedObjects.AddRange(hitObjects);
-                            break;
-                        }
+                        selectedObjects.AddRange(hitObjects);
+                        break;
                     }
-
-                    if (selectedObjects.Count > 0)
-                        yield return new Issue(GetTemplate("Obscured"), beatmap,
-                            Timestamp.Get(selectedObjects.ToArray()), (isSerious ? "" : "potentially "));
                 }
+
+                if (selectedObjects.Count > 0)
+                    yield return new Issue(GetTemplate("Obscured"), beatmap,
+                        Timestamp.Get(selectedObjects.ToArray()), (isSerious ? "" : "potentially "));
             }
         }
     }

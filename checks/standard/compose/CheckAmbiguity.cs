@@ -85,63 +85,65 @@ namespace MapsetChecks.checks.standard.compose
         {
             foreach (HitObject hitObject in beatmap.hitObjects)
             {
-                if (hitObject is Slider slider)
+                if (!(hitObject is Slider slider))
+                    continue;
+
+                Vector2 tailPosition = slider.GetPathPosition(slider.time + slider.GetCurveDuration());
+                float headTailDistance = Vector2.Distance(slider.Position, tailPosition);
+
+                if (headTailDistance <= 5)
+                    yield return new Issue(GetTemplate("Warning"), beatmap,
+                        Timestamp.Get(hitObject));
+
+                List<Vector2> anchorPositions = slider.redAnchorPositions;
+                if (slider.curveType == Slider.CurveType.Linear)
+                    anchorPositions = slider.nodePositions;
+
+                // Anchors only exist for bezier sliders (red nodes) and linear sliders (where any node acts as a red node).
+                if (slider.curveType != Slider.CurveType.Bezier &&
+                    slider.curveType != Slider.CurveType.Linear ||
+                    anchorPositions.Count == 0)
                 {
-                    Vector2 tailPosition = slider.GetPathPosition(slider.time + slider.GetCurveDuration());
-                    float headTailDistance = Vector2.Distance(slider.Position, tailPosition);
+                    continue;
+                }
+                
+                Vector2 prevAnchorPosition = anchorPositions[0];
+                double curDistance = 0;
+                double totalDistance = 0;
 
-                    if (headTailDistance <= 5)
-                        yield return new Issue(GetTemplate("Warning"), beatmap,
-                            Timestamp.Get(hitObject));
+                for (int i = 1; i < anchorPositions.Count; ++i)
+                    totalDistance += Vector2.Distance(anchorPositions[i - 1], anchorPositions[i]);
 
-                    List<Vector2> anchorPositions = slider.redAnchorPositions;
-                    if (slider.curveType == Slider.CurveType.Linear)
-                        anchorPositions = slider.nodePositions;
+                foreach(Vector2 anchorPosition in anchorPositions)
+                {
+                    float prevAnchorDistance = Vector2.Distance(anchorPosition, prevAnchorPosition);
+                    curDistance += prevAnchorDistance;
 
-                    // Anchors only exist for bezier sliders (red nodes) and linear sliders (where any node acts as a red node).
-                    if ((slider.curveType == Slider.CurveType.Bezier ||
-                        slider.curveType == Slider.CurveType.Linear) &&
-                        anchorPositions.Count > 0)
+                    float? headAnchorDistance = null;
+                    float? tailAnchorDistance = null;
+
+                    // We only consider ones over 60 px apart since things like zig-zag patterns would otherwise be false-positives.
+                    if (curDistance > 60)
+                        headAnchorDistance = Vector2.Distance(slider.Position, anchorPosition);
+
+                    if (totalDistance - curDistance > 60)
+                        tailAnchorDistance = Vector2.Distance(anchorPosition, tailPosition);
+
+                    if (headAnchorDistance != null && headAnchorDistance <= 5)
                     {
-                        Vector2 prevAnchorPosition = anchorPositions[0];
-                        double curDistance = 0;
-                        double totalDistance = 0;
-
-                        for (int i = 1; i < anchorPositions.Count; ++i)
-                            totalDistance += Vector2.Distance(anchorPositions[i - 1], anchorPositions[i]);
-
-                        foreach(Vector2 anchorPosition in anchorPositions)
-                        {
-                            float prevAnchorDistance = Vector2.Distance(anchorPosition, prevAnchorPosition);
-                            curDistance += prevAnchorDistance;
-
-                            float? headAnchorDistance = null;
-                            float? tailAnchorDistance = null;
-
-                            // We only consider ones over 60 px apart since things like zig-zag patterns would otherwise be false-positives.
-                            if (curDistance > 60)
-                                headAnchorDistance = Vector2.Distance(slider.Position, anchorPosition);
-
-                            if (totalDistance - curDistance > 60)
-                                tailAnchorDistance = Vector2.Distance(anchorPosition, tailPosition);
-
-                            if (headAnchorDistance != null && headAnchorDistance <= 5)
-                            {
-                                yield return new Issue(GetTemplate("Anchor"), beatmap,
-                                    Timestamp.Get(hitObject), "Head");
-                                break;
-                            }
-
-                            if (tailAnchorDistance != null && tailAnchorDistance <= 5)
-                            {
-                                yield return new Issue(GetTemplate("Anchor"), beatmap,
-                                    Timestamp.Get(hitObject), "Tail");
-                                break;
-                            }
-
-                            prevAnchorPosition = anchorPosition;
-                        }
+                        yield return new Issue(GetTemplate("Anchor"), beatmap,
+                            Timestamp.Get(hitObject), "Head");
+                        break;
                     }
+
+                    if (tailAnchorDistance != null && tailAnchorDistance <= 5)
+                    {
+                        yield return new Issue(GetTemplate("Anchor"), beatmap,
+                            Timestamp.Get(hitObject), "Tail");
+                        break;
+                    }
+
+                    prevAnchorPosition = anchorPosition;
                 }
             }
         }

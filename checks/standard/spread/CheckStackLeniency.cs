@@ -92,31 +92,31 @@ namespace MapsetChecks.checks.standard.spread
                     iteratedObjects.Add(hitObject);
                     foreach (Stackable otherHitObject in beatmap.hitObjects.OfType<Stackable>().Except(iteratedObjects))
                     {
-                        if (otherHitObject.time - hitObject.time < timeGap)
+                        if (otherHitObject.time - hitObject.time >= timeGap)
+                            continue;
+
+                        if (hitObject.Position == otherHitObject.Position)
                         {
-                            if (hitObject.Position == otherHitObject.Position)
-                            {
-                                int requiredStackLeniency =
-                                    (int)Math.Ceiling((otherHitObject.time - hitObject.time) /
-                                        (beatmap.difficultySettings.GetFadeInTime() * 0.1));
+                            int requiredStackLeniency =
+                                (int)Math.Ceiling((otherHitObject.time - hitObject.time) /
+                                    (beatmap.difficultySettings.GetFadeInTime() * 0.1));
 
-                                string template = diffIndex == (int)Beatmap.Difficulty.Insane ? "Warning" : "Problem";
+                            string template = diffIndex == (int)Beatmap.Difficulty.Insane ? "Warning" : "Problem";
 
-                                yield return new Issue(GetTemplate(template), beatmap,
-                                    Timestamp.Get(hitObject, otherHitObject), requiredStackLeniency)
-                                    .ForDifficulties((Beatmap.Difficulty)diffIndex);
-                            }
-                            else
-                            {
-                                // Unstacked objects within 2 px of one another are considered failed stacks.
-                                double distance = (hitObject.Position - otherHitObject.Position).Length();
-                                if (distance > 2)
-                                    continue;
+                            yield return new Issue(GetTemplate(template), beatmap,
+                                Timestamp.Get(hitObject, otherHitObject), requiredStackLeniency)
+                                .ForDifficulties((Beatmap.Difficulty)diffIndex);
+                        }
+                        else
+                        {
+                            // Unstacked objects within 2 px of one another are considered failed stacks.
+                            double distance = (hitObject.Position - otherHitObject.Position).Length();
+                            if (distance > 2)
+                                continue;
 
-                                yield return new Issue(GetTemplate("Problem Failed Stack"), beatmap,
-                                    Timestamp.Get(hitObject, otherHitObject), $"{distance:0.##}")
-                                    .ForDifficulties((Beatmap.Difficulty)diffIndex);
-                            }
+                            yield return new Issue(GetTemplate("Problem Failed Stack"), beatmap,
+                                Timestamp.Get(hitObject, otherHitObject), $"{distance:0.##}")
+                                .ForDifficulties((Beatmap.Difficulty)diffIndex);
                         }
                     }
                 }

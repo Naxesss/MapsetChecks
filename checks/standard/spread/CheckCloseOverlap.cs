@@ -85,31 +85,33 @@ namespace MapsetChecks.checks.standard.spread
                 HitObject nextHitObject = beatmap.hitObjects[i + 1];
 
                 // Slider ends do not need to overlap, same with spinners, spinners should be ignored overall.
-                if (hitObject is Circle &&
-                    !(nextHitObject is Spinner) &&
-                    nextHitObject.time - hitObject.time < warningThreshold)
+                if (!(hitObject is Circle) ||
+                    nextHitObject is Spinner ||
+                    nextHitObject.time - hitObject.time >= warningThreshold)
                 {
-                    double distance =
-                        Math.Sqrt(
-                            Math.Pow(hitObject.Position.X - nextHitObject.Position.X, 2) +
-                            Math.Pow(hitObject.Position.Y - nextHitObject.Position.Y, 2));
-
-                    // If the distance is larger or equal to two radiuses, then they're not overlapping.
-                    float radius = beatmap.difficultySettings.GetCircleRadius();
-                    if (distance >= radius * 2)
-                    {
-                        if (nextHitObject.time - hitObject.time < problemThreshold)
-                            yield return new Issue(GetTemplate("Problem"), beatmap,
-                                Timestamp.Get(hitObject, nextHitObject),
-                                $"{nextHitObject.time - hitObject.time:0.##}",
-                                problemThreshold);
-
-                        else
-                            yield return new Issue(GetTemplate("Warning"), beatmap,
-                                Timestamp.Get(hitObject, nextHitObject),
-                                $"{nextHitObject.time - hitObject.time:0.##}");
-                    }
+                    continue;
                 }
+
+                double distance =
+                    Math.Sqrt(
+                        Math.Pow(hitObject.Position.X - nextHitObject.Position.X, 2) +
+                        Math.Pow(hitObject.Position.Y - nextHitObject.Position.Y, 2));
+
+                // If the distance is larger or equal to two radiuses, then they're not overlapping.
+                float radius = beatmap.difficultySettings.GetCircleRadius();
+                if (distance < radius * 2)
+                    continue;
+
+                if (nextHitObject.time - hitObject.time < problemThreshold)
+                    yield return new Issue(GetTemplate("Problem"), beatmap,
+                        Timestamp.Get(hitObject, nextHitObject),
+                        $"{nextHitObject.time - hitObject.time:0.##}",
+                        problemThreshold);
+
+                else
+                    yield return new Issue(GetTemplate("Warning"), beatmap,
+                        Timestamp.Get(hitObject, nextHitObject),
+                        $"{nextHitObject.time - hitObject.time:0.##}");
             }
         }
     }

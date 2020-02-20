@@ -146,22 +146,22 @@ namespace MapsetChecks.checks.timing
                 
                 TimingLine previousLine = lines[i - 1];
 
-                // Since "used" only includes false positives, this only includes false negatives,
+                // Since "used" only includes false positives, this will only result in false negatives,
                 // hence the check will never say that a used line is unused.
-                if (!IsLineUsed(beatmap, currentLine, previousLine))
-                {
-                    // Avoids confusion in case the line actually does change something from the
-                    // previous, but just doesn't apply to anything.
-                    string changesDesc = "";
-                    if (!UsesSV(beatmap, currentLine, previousLine) && currentLine.svMult != previousLine.svMult)
-                        changesDesc += "SV";
-                    if (!UsesSamples(beatmap, currentLine, previousLine) && SamplesDiffer(currentLine, previousLine))
-                        changesDesc += (changesDesc.Length > 0 ? " and " : "") + "sample settings";
-                    changesDesc += changesDesc.Length > 0 ? ", but affects nothing" : "nothing";
+                if (IsLineUsed(beatmap, currentLine, previousLine))
+                    continue;
 
-                    yield return new Issue(GetTemplate("Minor Inherited"),
-                        beatmap, Timestamp.Get(currentLine.offset), changesDesc);
-                }
+                // Avoids confusion in case the line actually does change something from the
+                // previous, but just doesn't apply to anything.
+                string changesDesc = "";
+                if (!UsesSV(beatmap, currentLine, previousLine) && currentLine.svMult != previousLine.svMult)
+                    changesDesc += "SV";
+                if (!UsesSamples(beatmap, currentLine, previousLine) && SamplesDiffer(currentLine, previousLine))
+                    changesDesc += (changesDesc.Length > 0 ? " and " : "") + "sample settings";
+                changesDesc += changesDesc.Length > 0 ? ", but affects nothing" : "nothing";
+
+                yield return new Issue(GetTemplate("Minor Inherited"),
+                    beatmap, Timestamp.Get(currentLine.offset), changesDesc);
             }
         }
 

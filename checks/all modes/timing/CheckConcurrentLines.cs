@@ -71,71 +71,71 @@ namespace MapsetChecks.checks.timing
             // Since the list of timing lines is sorted by time we can just check the previous line.
             for (int i = 1; i < beatmap.timingLines.Count; ++i)
             {
-                if (beatmap.timingLines[i - 1].offset == beatmap.timingLines[i].offset)
+                if (beatmap.timingLines[i - 1].offset != beatmap.timingLines[i].offset)
+                    continue;
+
+                if (beatmap.timingLines[i - 1].uninherited == beatmap.timingLines[i].uninherited)
                 {
-                    if (beatmap.timingLines[i - 1].uninherited == beatmap.timingLines[i].uninherited)
+                    string inheritance =
+                        beatmap.timingLines[i].uninherited ?
+                            "uninherited" : "inherited";
+
+                    yield return new Issue(GetTemplate("Concurrent"), beatmap,
+                        Timestamp.Get(beatmap.timingLines[i].offset), inheritance);
+                }
+                else if (
+                    beatmap.timingLines[i - 1].kiai != beatmap.timingLines[i].kiai ||
+                    beatmap.timingLines[i - 1].volume != beatmap.timingLines[i].volume ||
+                    beatmap.timingLines[i - 1].sampleset != beatmap.timingLines[i].sampleset ||
+                    beatmap.timingLines[i - 1].customIndex != beatmap.timingLines[i].customIndex)
+                {
+                    string conflictingGreenSettings = "";
+                    string conflictingRedSettings = "";
+
+                    InheritedLine greenLine = null;
+                    UninheritedLine redLine = null;
+
+                    // We've guaranteed that one line is inherited and the other is
+                    // uninherited, so we can figure out both by checking one.
+                    string precedence = "";
+                    if (beatmap.timingLines[i - 1] is InheritedLine)
                     {
-                        string inheritance =
-                            beatmap.timingLines[i].uninherited ?
-                                "uninherited" : "inherited";
-
-                        yield return new Issue(GetTemplate("Concurrent"), beatmap,
-                            Timestamp.Get(beatmap.timingLines[i].offset), inheritance);
+                        greenLine = beatmap.timingLines[i - 1] as InheritedLine;
+                        redLine = beatmap.timingLines[i] as UninheritedLine;
+                        precedence = "Red overrides green";
                     }
-                    else if (
-                        beatmap.timingLines[i - 1].kiai != beatmap.timingLines[i].kiai ||
-                        beatmap.timingLines[i - 1].volume != beatmap.timingLines[i].volume ||
-                        beatmap.timingLines[i - 1].sampleset != beatmap.timingLines[i].sampleset ||
-                        beatmap.timingLines[i - 1].customIndex != beatmap.timingLines[i].customIndex)
+                    else
                     {
-                        string conflictingGreenSettings = "";
-                        string conflictingRedSettings = "";
-
-                        InheritedLine greenLine = null;
-                        UninheritedLine redLine = null;
-
-                        // We've guaranteed that one line is inherited and the other is
-                        // uninherited, so we can figure out both by checking one.
-                        string precedence = "";
-                        if (beatmap.timingLines[i - 1] is InheritedLine)
-                        {
-                            greenLine = beatmap.timingLines[i - 1] as InheritedLine;
-                            redLine = beatmap.timingLines[i] as UninheritedLine;
-                            precedence = "Red overrides green";
-                        }
-                        else
-                        {
-                            greenLine = beatmap.timingLines[i] as InheritedLine;
-                            redLine = beatmap.timingLines[i - 1] as UninheritedLine;
-                            precedence = "Green overrides red";
-                        }
-
-                        if (greenLine.kiai != redLine.kiai)
-                        {
-                            conflictingGreenSettings += (conflictingGreenSettings.Length > 0 ? ", " : "") + (greenLine.kiai ? "kiai" : "no kiai");
-                            conflictingRedSettings   += (conflictingRedSettings.Length > 0   ? ", " : "") + (redLine.kiai   ? "kiai" : "no kiai");
-                        }
-                        if (greenLine.volume != redLine.volume)
-                        {
-                            conflictingGreenSettings += (conflictingGreenSettings.Length > 0 ? ", " : "") + $"{greenLine.volume}% volume";
-                            conflictingRedSettings   += (conflictingRedSettings.Length > 0   ? ", " : "") + $"{redLine.volume}% volume";
-                        }
-                        if (greenLine.sampleset != redLine.sampleset)
-                        {
-                            conflictingGreenSettings += (conflictingGreenSettings.Length > 0 ? ", " : "") + $"{greenLine.sampleset} sampleset";
-                            conflictingRedSettings   += (conflictingRedSettings.Length > 0   ? ", " : "") + $"{redLine.sampleset} sampleset";
-                        }
-                        if (greenLine.customIndex != redLine.customIndex)
-                        {
-                            conflictingGreenSettings += (conflictingGreenSettings.Length > 0 ? ", " : "") + $"custom {greenLine.customIndex}";
-                            conflictingRedSettings   += (conflictingRedSettings.Length > 0   ? ", " : "") + $"custom {redLine.customIndex}";
-                        }
-
-                        yield return new Issue(GetTemplate("Conflicting"), beatmap,
-                            Timestamp.Get(beatmap.timingLines[i].offset),
-                            conflictingGreenSettings, conflictingRedSettings,
-                            precedence);
+                        greenLine = beatmap.timingLines[i] as InheritedLine;
+                        redLine = beatmap.timingLines[i - 1] as UninheritedLine;
+                        precedence = "Green overrides red";
                     }
+
+                    if (greenLine.kiai != redLine.kiai)
+                    {
+                        conflictingGreenSettings += (conflictingGreenSettings.Length > 0 ? ", " : "") + (greenLine.kiai ? "kiai" : "no kiai");
+                        conflictingRedSettings   += (conflictingRedSettings.Length > 0   ? ", " : "") + (redLine.kiai   ? "kiai" : "no kiai");
+                    }
+                    if (greenLine.volume != redLine.volume)
+                    {
+                        conflictingGreenSettings += (conflictingGreenSettings.Length > 0 ? ", " : "") + $"{greenLine.volume}% volume";
+                        conflictingRedSettings   += (conflictingRedSettings.Length > 0   ? ", " : "") + $"{redLine.volume}% volume";
+                    }
+                    if (greenLine.sampleset != redLine.sampleset)
+                    {
+                        conflictingGreenSettings += (conflictingGreenSettings.Length > 0 ? ", " : "") + $"{greenLine.sampleset} sampleset";
+                        conflictingRedSettings   += (conflictingRedSettings.Length > 0   ? ", " : "") + $"{redLine.sampleset} sampleset";
+                    }
+                    if (greenLine.customIndex != redLine.customIndex)
+                    {
+                        conflictingGreenSettings += (conflictingGreenSettings.Length > 0 ? ", " : "") + $"custom {greenLine.customIndex}";
+                        conflictingRedSettings   += (conflictingRedSettings.Length > 0   ? ", " : "") + $"custom {redLine.customIndex}";
+                    }
+
+                    yield return new Issue(GetTemplate("Conflicting"), beatmap,
+                        Timestamp.Get(beatmap.timingLines[i].offset),
+                        conflictingGreenSettings, conflictingRedSettings,
+                        precedence);
                 }
             }
         }
