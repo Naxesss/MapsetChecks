@@ -33,7 +33,8 @@ namespace MapsetChecks.checks.timing
                     "Reasoning",
                     @"
                     Since kiai is visual, unlike hit sounds, it doesn't need to be as precise in timing, but kiai being 
-                    notably unsnapped from any distinct sound is still probably something you'd want to fix."
+                    notably unsnapped from any distinct sound is still probably something you'd want to fix. Taiko has stronger
+                    kiai screen effects so this matters a bit more for that mode."
                 }
             }
         };
@@ -47,7 +48,7 @@ namespace MapsetChecks.checks.timing
                         "{0} Kiai is unsnapped by {1} ms.",
                         "timestamp - ", "unsnap")
                     .WithCause(
-                        "An inherited line with kiai enabled is unsnapped by 10 ms or more.") },
+                        "An inherited line with kiai enabled is unsnapped by 10 ms or more. For taiko this is 5 ms or more instead.") },
 
                 { "Minor",
                     new IssueTemplate(Issue.Level.Minor,
@@ -75,7 +76,9 @@ namespace MapsetChecks.checks.timing
 
                 double unsnap = beatmap.GetPracticalUnsnap(line.offset);
 
-                if (Math.Abs(unsnap) >= 10)
+                // In taiko the screen changes color more drastically, so timing is more noticable.
+                int warningThreshold = beatmap.generalSettings.mode == Beatmap.Mode.Taiko ? 5 : 10;
+                if (Math.Abs(unsnap) >= warningThreshold)
                     yield return new Issue(GetTemplate("Warning"), beatmap,
                         Timestamp.Get(line.offset), unsnap);
 
