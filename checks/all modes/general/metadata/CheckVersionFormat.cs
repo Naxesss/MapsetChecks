@@ -17,7 +17,7 @@ namespace MapsetChecks.checks.general.metadata
         public override CheckMetadata GetMetadata() => new CheckMetadata()
         {
             Category = "Metadata",
-            Message = "Incorrect format of (TV Size) / (Game Ver.) / (Short Ver.) in title.",
+            Message = "Incorrect format of (TV Size) / (Game Ver.) / (Short Ver.) / (Sped Up Ver.) in title.",
             Author = "Naxess",
 
             Documentation = new Dictionary<string, string>()
@@ -65,7 +65,14 @@ namespace MapsetChecks.checks.general.metadata
                         "{0} title field; \"{1}\" incorrect format of \"(Short Ver.)\".",
                         "Romanized/unicode", "field")
                     .WithCause(
-                        "The format of \"(Short Ver.)\" in either the romanized or unicode title is incorrect.") }
+                        "The format of \"(Short Ver.)\" in either the romanized or unicode title is incorrect.") },
+
+                { "Sped Up Ver",
+                    new IssueTemplate(Issue.Level.Problem,
+                        "{0} title field; \"{1}\" incorrect format of \"(Sped Up Ver.)\".",
+                        "Romanized/unicode", "field")
+                    .WithCause(
+                        "The format of \"(Sped Up Ver.)\" in either the romanized or unicode title is incorrect.") }
             };
         }
 
@@ -90,6 +97,12 @@ namespace MapsetChecks.checks.general.metadata
             Regex shortVerExactRegex = new Regex(@"\(Short Ver\.\)");
 
             foreach (Issue issue in GetIssuesFromRegex(beatmap, shortVerRegex, shortVerExactRegex, "Short Ver"))
+                yield return issue;
+
+            Regex spedVerRegex = new Regex(@"(?i)(sped|speed) ?up ver");
+            Regex spedVerExactRegex = new Regex(@"\(Sped Up Ver\.\)");
+
+            foreach (Issue issue in GetIssuesFromRegex(beatmap, spedVerRegex, spedVerExactRegex, "Sped Up Ver"))
                 yield return issue;
         }
 
