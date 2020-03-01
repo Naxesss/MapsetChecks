@@ -12,7 +12,7 @@ using System.Text.RegularExpressions;
 namespace MapsetChecks.checks.general.metadata
 {
     [Check]
-    public class CheckVersionFormat : GeneralCheck
+    public class CheckTitleMarkers : GeneralCheck
     {
         public override CheckMetadata GetMetadata() => new CheckMetadata()
         {
