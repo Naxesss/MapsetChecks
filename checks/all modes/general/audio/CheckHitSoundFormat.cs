@@ -122,7 +122,7 @@ namespace MapsetChecks.checks.general.audio
                                 if (hitObject.GetUsedHitSamples().Any(sample =>
                                         sample.time == hitObject.time &&
                                         sample.hitSource == HitSample.HitSource.Edge &&
-                                        hitSoundFile.ToLower().StartsWith(sample.GetFileName() + ".")))
+                                        sample.SameFileName(hitSoundFile)))
                                 {
                                     yield return new Issue(GetTemplate("mp3"), null,
                                         hitSoundFile, Timestamp.Get(hitObject), beatmap);

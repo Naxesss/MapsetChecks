@@ -162,7 +162,7 @@ namespace MapsetChecks.checks.general.audio
                     if (hitObject.GetUsedHitSamples().Any(sample =>
                             sample.time == hitObject.time &&
                             sample.hitSource == HitSample.HitSource.Edge &&
-                            hitSoundFile.StartsWith(sample.GetFileName() + ".")))
+                            sample.SameFileName(hitSoundFile)))
                     {
                         return true;
                     }
