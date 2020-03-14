@@ -94,6 +94,9 @@ namespace MapsetChecks.checks.standard.spread
                         HitObject hitObject = beatmap.hitObjects[i];
                         HitObject otherHitObject = beatmap.hitObjects[j];
 
+                        if (hitObject is Spinner || otherHitObject is Spinner)
+                            break;
+
                         // Hit objects are sorted by time, so difference in time will only increase.
                         if (otherHitObject.time - hitObject.time >= timeGap)
                             break;
