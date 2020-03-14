@@ -62,10 +62,10 @@ namespace MapsetChecks.checks.timing
 
                 { "Snap Count",
                     new IssueTemplate(Issue.Level.Warning,
-                        "{0} 1/{1} is used once or twice, ensure this makes sense.",
+                        "{0} 1/{1} is used 3 times or less, ensure this makes sense.",
                         "timestamp(s) -", "X")
                     .WithCause(
-                        "The beat snap divisor a hit object is on is used less than or equal to 2 times in the same difficulty " +
+                        "The beat snap divisor a hit object is on is used less than or equal to 3 times in the same difficulty " +
                         "and is 1/6 or lower.") },
 
                 { "Snap Percent",
@@ -79,10 +79,10 @@ namespace MapsetChecks.checks.timing
                 // minors
                 { "Minor Snap Count",
                     new IssueTemplate(Issue.Level.Minor,
-                        "{0} 1/{1} is used 6 or less times, ensure this makes sense.",
+                        "{0} 1/{1} is used 7 times or less, ensure this makes sense.",
                         "timestamp(s) -", "X")
                     .WithCause(
-                        "Same as the other check, except with 6 as threshold instead.") },
+                        "Same as the other check, except with 7 as threshold instead.") },
 
                 { "Minor Snap Percent",
                     new IssueTemplate(Issue.Level.Minor,
@@ -155,8 +155,8 @@ namespace MapsetChecks.checks.timing
         {
             // rather than calculating every single snapping, this instead just looks for potentially weird snappings
             // this makes it both more convenient, due to constraining unimportant options, and more optimized
-            const int countWarning = 2;
-            const int countMinor = 6;
+            const int countWarning = 3;
+            const int countMinor = 7;
             const double percentWarning = 0.005;
             const double percentMinor = 0.05;
 
