@@ -1,4 +1,5 @@
 ﻿using MapsetParser.objects;
+using MapsetParser.statics;
 using MapsetVerifierFramework;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
@@ -64,7 +65,14 @@ namespace MapsetChecks.checks.general.files
                         "path")
                     .WithCause(
                         "A file in the song folder is not used in any of the .osu or .osb files. " +
-                        "Includes unused .osb files. Ignores thumbs.db.") }
+                        "Includes unused .osb files. Ignores thumbs.db.") },
+
+                { "Unused Overridden",
+                    new IssueTemplate(Issue.Level.Problem,
+                        "\"{0}\", likely due to \"{1}\" being used instead.",
+                        "path", "path with different extension")
+                    .WithCause(
+                        "Same as the other check, but where a file with the same name is used.") }
             };
         }
 
@@ -73,11 +81,20 @@ namespace MapsetChecks.checks.general.files
             for (int i = 0; i < beatmapSet.songFilePaths.Count; ++i)
             {
                 string filePath = beatmapSet.songFilePaths[i].Substring(beatmapSet.songPath.Length + 1);
-                string fileName = filePath.Split(new char[] { '/', '\\' }).Last().ToLower();
+                string fileNameWithExtension = filePath.Split(new char[] { '/', '\\' }).Last().ToLower();
 
-                if (!beatmapSet.IsFileUsed(filePath) && fileName != "thumbs.db")
-                    yield return new Issue(GetTemplate("Unused"), null,
-                        filePath);
+                if (!beatmapSet.IsFileUsed(filePath) && fileNameWithExtension != "thumbs.db")
+                {
+                    string fileName = PathStatic.ParsePath(fileNameWithExtension, withoutExtension: true);
+                    string otherFilePath = beatmapSet.hitSoundFiles.FirstOrDefault(file => file.StartsWith(fileName + "."));
+
+                    if (otherFilePath != null)
+                        yield return new Issue(GetTemplate("Unused Overridden"), null,
+                            filePath, otherFilePath);
+                    else
+                        yield return new Issue(GetTemplate("Unused"), null,
+                            filePath);
+                }
             }
         }
     }
