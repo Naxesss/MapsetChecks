@@ -19,7 +19,7 @@ namespace MapsetChecks.checks.timing
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
         {
             Category = "Timing",
-            Message = "Inconsistent uninherited lines, meter signatures or BPM.",
+            Message = "Inconsistent uninherited lines, meter signatures, or BPM.",
             Author = "Naxess",
 
             Documentation = new Dictionary<string, string>()
