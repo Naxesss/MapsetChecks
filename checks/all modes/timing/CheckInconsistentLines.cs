@@ -105,8 +105,8 @@ namespace MapsetChecks.checks.timing
 
                         // Including decimal unsnaps
                         UninheritedLine respectiveLineExact =
-                        beatmap.timingLines.OfType<UninheritedLine>().FirstOrDefault(
-                            otherLine => otherLine.offset == line.offset);
+                            beatmap.timingLines.OfType<UninheritedLine>().FirstOrDefault(
+                                otherLine => otherLine.offset == line.offset);
 
                         if (respectiveLineExact == null)
                             yield return new Issue(GetTemplate("Missing Minor"), beatmap,
