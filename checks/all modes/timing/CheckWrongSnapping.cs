@@ -339,11 +339,11 @@ namespace MapsetChecks.checks.timing
                     return 2;
             }
 
-            int otherDivisor = Math.Max(otherBeatmap.GetLowestDivisor(otherTime.GetValueOrDefault()), 2);
+            int higherDiffDivisor = Math.Max(otherBeatmap.GetLowestDivisor(otherTime.GetValueOrDefault()), 2);
 
-            // should the difficulty range be too large, we only point it out if the lower difficulty has a higher divisor
-            // (since higher diffs having higher divisors is normal)
-            if (otherDivisor > divisor)
+            // If the higher difficulty uses higher snaps, that's assumed to be normal progression,
+            // unless we go from 1/3 to 1/4 or similar, which would be pretty odd.
+            if (divisor < higherDiffDivisor || divisor % 3 != 0 && higherDiffDivisor % 3 == 0)
                 return Math.Max(GetConsistencyRange(otherBeatmap, time, msPerBeat),
                                 GetConsistencyRange(otherBeatmap, otherTime.GetValueOrDefault(), msPerBeat));
             else
