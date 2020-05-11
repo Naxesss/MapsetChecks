@@ -16,11 +16,11 @@ using System.Linq;
 namespace MapsetChecks.checks.compose
 {
     [Check]
-    public class CheckAudioUsage : BeatmapSetCheck
+    public class CheckAudioUsage : GeneralCheck
     {
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
         {
-            Category = "Compose",
+            Category = "Audio",
             Message = "More than 20% unused audio at the end.",
             Author = "Naxess",
 
@@ -40,11 +40,14 @@ namespace MapsetChecks.checks.compose
                     @"
                     Audio files tend to be large in file size, so allowing them to be much longer than beatmaps would be a waste of resources, 
                     since few linger around score screens for that long. Something needs to be happening in the storyboard or video, to keep 
-                    people around from skipping to the score screen, to justify the audio file being longer."
+                    people around from skipping to the score screen, to justify the audio file being longer.
+
+                    Note that this applies only to beatmapsets where <b>all</b> beatmaps exclude the last portion of the audio. If <b>any</b> 
+                    uses it, then the audio does not need to be cut."
                 }
             }
         };
-        
+
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
             return new Dictionary<string, IssueTemplate>()
@@ -75,45 +78,68 @@ namespace MapsetChecks.checks.compose
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
+            Dictionary<string, List<AudioUsage>> audioUsage = new Dictionary<string, List<AudioUsage>>();
             foreach (Beatmap beatmap in beatmapSet.beatmaps)
             {
-                bool hasVideo      = beatmap.videos.Count > 0;
+                bool hasVideo = beatmap.videos.Count > 0;
                 bool hasStoryboard =
                     beatmap.HasDifficultySpecificStoryboard() ||
                     (beatmapSet.osb?.IsUsed() ?? false);
 
                 string audioPath = beatmap.GetAudioFilePath();
-                if (audioPath != null)
+                if (audioPath == null)
+                    continue;
+
+                double duration = 0;
+                Exception exception = null;
+                try
+                    { duration = Audio.GetDuration(audioPath); }
+                catch (Exception ex)
+                    { exception = ex; }
+
+                if (exception != null)
                 {
-                    double duration = 0;
-                    Exception exception = null;
-                    try
-                    {
-                        duration = Audio.GetDuration(audioPath);
-                    }
-                    catch (Exception ex)
-                    {
-                        exception = ex;
-                    }
-
-                    if (exception == null)
-                    {
-                        double lastEndTime = beatmap.hitObjects.LastOrDefault()?.GetEndTime() ?? 0;
-
-                        double unusedPercentage = 1 - lastEndTime / duration;
-                        if (unusedPercentage >= 0.2)
-                        {
-                            string roundedPercentage = $"{unusedPercentage * 100:0.##}";
-                            string templateKey = (hasStoryboard || hasVideo ? "With" : "Without") + " Video/Storyboard";
-
-                            yield return new Issue(GetTemplate(templateKey), beatmap,
-                                roundedPercentage);
-                        }
-                    }
-                    else
-                        yield return new Issue(GetTemplate("Unable to check"), null,
+                    yield return new Issue(GetTemplate("Unable to check"), null,
                         PathStatic.RelativePath(audioPath, beatmap.songPath), exception);
+                    continue;
                 }
+
+                double lastEndTime = beatmap.hitObjects.LastOrDefault()?.GetEndTime() ?? 0;
+                double fraction = lastEndTime / duration;
+
+                if (!audioUsage.ContainsKey(audioPath))
+                    audioUsage[audioPath] = new List<AudioUsage>();
+                audioUsage[audioPath].Add(new AudioUsage(fraction, hasVideo || hasStoryboard));
+            }
+            
+            foreach (string audioPath in audioUsage.Keys)
+            {
+                double maxFraction = 0;
+                bool anyHasVideoOrSB = false;
+                foreach (AudioUsage usage in audioUsage[audioPath])
+                {
+                    if (usage.fraction > maxFraction) maxFraction = usage.fraction;
+                    if (usage.hasVideoOrSB)           anyHasVideoOrSB = true;
+                }
+
+                if (maxFraction <= 0.8d)
+                {
+                    string templateKey = (anyHasVideoOrSB ? "With" : "Without") + " Video/Storyboard";
+
+                    yield return new Issue(GetTemplate(templateKey), null, $"{maxFraction * 100:0.##}");
+                }
+            }
+        }
+        
+        public struct AudioUsage
+        {
+            public double fraction;
+            public bool hasVideoOrSB;
+
+            public AudioUsage(double fraction, bool hasVideoOrSB = false)
+            {
+                this.fraction = fraction;
+                this.hasVideoOrSB = hasVideoOrSB;
             }
         }
     }
