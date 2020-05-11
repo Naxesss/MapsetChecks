@@ -55,9 +55,9 @@ namespace MapsetChecks.checks.timing
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "Behind",
+                { "Before",
                     new IssueTemplate(Issue.Level.Warning,
-                        "{0} {1} is snapped {2} ms behind a line which would modify its slider velocity.",
+                        "{0} {1} is snapped {2} ms before a line which would modify its slider velocity.",
                         "timestamp - ", "object", "unsnap")
                     .WithCause(
                         "A hit object is snapped 5 ms or less behind a timing line which would otherwise modify its slider velocity. " +
@@ -113,7 +113,7 @@ namespace MapsetChecks.checks.timing
                     Math.Abs(unsnap) <= 1 &&
                     Math.Abs(deltaEffectiveBPM) > 1)
                 {
-                    yield return new Issue(GetTemplate("Behind"), beatmap,
+                    yield return new Issue(GetTemplate("Before"), beatmap,
                         Timestamp.Get(time), type, $"{timeDiff:0.##}");
                 }
                 
