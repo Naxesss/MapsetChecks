@@ -13,7 +13,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 
-namespace MapsetChecks.checks.compose
+namespace MapsetChecks.checks.general.audio
 {
     [Check]
     public class CheckAudioUsage : GeneralCheck
