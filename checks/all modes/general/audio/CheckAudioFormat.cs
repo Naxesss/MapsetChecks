@@ -78,26 +78,25 @@ namespace MapsetChecks.checks.general.audio
         {
             string audioPath = beatmapSet.GetAudioFilePath();
             string audioName = beatmapSet.GetAudioFileName();
-            if (audioPath != null)
-            {
-                ManagedBass.ChannelType actualFormat = 0;
-                Exception exception = null;
-                try
+            if (audioPath == null)
+                yield break;
+
+            ManagedBass.ChannelType actualFormat = 0;
+            Exception exception = null;
+            try
                 { actualFormat = Audio.GetFormat(audioPath); }
-                catch (Exception ex)
+            catch (Exception ex)
                 { exception = ex; }
 
-                if (exception != null)
-                    yield return new Issue(GetTemplate("Exception"), null,
-                        audioName, exception.Message);
-
-                if ((ManagedBass.ChannelType.MP3 & actualFormat) == 0)
-                    yield return new Issue(GetTemplate("Incorrect Format"), null,
-                        audioName, Audio.EnumToString(actualFormat));
-                else if (!audioName.ToLower().EndsWith(".mp3"))
-                    yield return new Issue(GetTemplate("Incorrect Extension"), null,
-                        audioName, Audio.EnumToString(actualFormat));
-            }
+            if (exception != null)
+                yield return new Issue(GetTemplate("Exception"), null,
+                    audioName, exception.Message);
+            else if ((ManagedBass.ChannelType.MP3 & actualFormat) == 0)
+                yield return new Issue(GetTemplate("Incorrect Format"), null,
+                    audioName, Audio.EnumToString(actualFormat));
+            else if (!audioName.ToLower().EndsWith(".mp3"))
+                yield return new Issue(GetTemplate("Incorrect Extension"), null,
+                    audioName, Audio.EnumToString(actualFormat));
         }
     }
 }

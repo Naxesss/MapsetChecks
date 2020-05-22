@@ -116,17 +116,17 @@ namespace MapsetChecks.checks.standard.compose
                     if (distanceToReverse < tooCloseThreshold)
                         isSerious = true;
 
-                    if (distanceToReverse < closeThreshold)
-                    {
-                        List<HitObject> hitObjects;
-                        if (hitObject.time > otherHitObject.time)
-                            hitObjects = new List<HitObject>() { otherHitObject, hitObject };
-                        else
-                            hitObjects = new List<HitObject>() { hitObject, otherHitObject };
+                    if (distanceToReverse >= closeThreshold)
+                        continue;
 
-                        selectedObjects.AddRange(hitObjects);
-                        break;
-                    }
+                    List<HitObject> hitObjects;
+                    if (hitObject.time > otherHitObject.time)
+                        hitObjects = new List<HitObject>() { otherHitObject, hitObject };
+                    else
+                        hitObjects = new List<HitObject>() { hitObject, otherHitObject };
+
+                    selectedObjects.AddRange(hitObjects);
+                    break;
                 }
 
                 if (selectedObjects.Count > 0)

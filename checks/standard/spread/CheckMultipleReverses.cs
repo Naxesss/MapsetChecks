@@ -79,28 +79,28 @@ namespace MapsetChecks.checks.standard.spread
 
             foreach (Slider slider in beatmap.hitObjects.OfType<Slider>())
             {
-                if (slider.edgeAmount > 2)
-                {
-                    // 1/1 for Easy
-                    string easyTemplate =
-                        slider.endTime - slider.time < problemThreshold ? "Problem" :
-                        slider.endTime - slider.time < warningThreshold ? "Warning" :
-                        null;
+                if (slider.edgeAmount <= 2)
+                    continue;
 
-                    if (easyTemplate != null)
-                        yield return new Issue(GetTemplate(easyTemplate), beatmap, Timestamp.Get(slider))
-                            .ForDifficulties(Beatmap.Difficulty.Easy);
+                // 1/1 for Easy
+                string easyTemplate =
+                    slider.endTime - slider.time < problemThreshold ? "Problem" :
+                    slider.endTime - slider.time < warningThreshold ? "Warning" :
+                    null;
 
-                    // 1/2 for Normal
-                    string normalTemplate =
-                        slider.endTime - slider.time < problemThreshold * 0.5 ? "Problem" :
-                        slider.endTime - slider.time < warningThreshold * 0.5 ? "Warning" :
-                        null;
+                if (easyTemplate != null)
+                    yield return new Issue(GetTemplate(easyTemplate), beatmap, Timestamp.Get(slider))
+                        .ForDifficulties(Beatmap.Difficulty.Easy);
 
-                    if (normalTemplate != null)
-                        yield return new Issue(GetTemplate(normalTemplate), beatmap, Timestamp.Get(slider))
-                            .ForDifficulties(Beatmap.Difficulty.Normal);
-                }
+                // 1/2 for Normal
+                string normalTemplate =
+                    slider.endTime - slider.time < problemThreshold * 0.5 ? "Problem" :
+                    slider.endTime - slider.time < warningThreshold * 0.5 ? "Warning" :
+                    null;
+
+                if (normalTemplate != null)
+                    yield return new Issue(GetTemplate(normalTemplate), beatmap, Timestamp.Get(slider))
+                        .ForDifficulties(Beatmap.Difficulty.Normal);
             }
         }
     }

@@ -90,22 +90,22 @@ namespace MapsetChecks.checks.general.files
                 if(fileName.Length > 132)
                     yield return new Issue(GetTemplate("Too Long Name"), null,
                             filePath, fileName.Length);
-                
-                if (fileName.EndsWith(".osu"))
-                {
-                    Beatmap beatmap = beatmapSet.beatmaps.First(otherBeatmap => otherBeatmap.mapPath == filePath);
-                    if (beatmap.GetOsuFileName().ToLower() != fileName.ToLower())
-                        yield return new Issue(GetTemplate("Wrong Format"), null,
-                            fileName, beatmap.GetOsuFileName());
 
-                    // Updating .osu files larger than 1 mb will cause the update to stop at the 1 mb mark
-                    FileInfo fileInfo = new FileInfo(beatmapSet.songFilePaths[i]);
-                    double MB = fileInfo.Length / Math.Pow(1024, 2);
+                if (!fileName.EndsWith(".osu"))
+                    continue;
 
-                    if (MB > 1)
-                        yield return new Issue(GetTemplate("File Size"), null,
-                            filePath, $"{MB:0.##}");
-                }
+                Beatmap beatmap = beatmapSet.beatmaps.First(otherBeatmap => otherBeatmap.mapPath == filePath);
+                if (beatmap.GetOsuFileName().ToLower() != fileName.ToLower())
+                    yield return new Issue(GetTemplate("Wrong Format"), null,
+                        fileName, beatmap.GetOsuFileName());
+
+                // Updating .osu files larger than 1 mb will cause the update to stop at the 1 mb mark
+                FileInfo fileInfo = new FileInfo(beatmapSet.songFilePaths[i]);
+                double MB = fileInfo.Length / Math.Pow(1024, 2);
+
+                if (MB > 1)
+                    yield return new Issue(GetTemplate("File Size"), null,
+                        filePath, $"{MB:0.##}");
             }
         }
     }

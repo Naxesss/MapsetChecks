@@ -98,98 +98,98 @@ namespace MapsetChecks.checks.standard.compose
             foreach (HitObject hitObject in beatmap.hitObjects)
             {
                 string type = hitObject is Circle ? "Circle" : "Slider head";
-                if (hitObject is Circle || hitObject is Slider)
-                {
-                    float circleRadius = beatmap.difficultySettings.GetCircleRadius();
-                    Vector2 stackedOffset = new Vector2(0, 0);
-                    if (hitObject is Stackable stackable)
-                        stackedOffset = stackable.Position - stackable.UnstackedPosition;
+                if (!(hitObject is Circle) && !(hitObject is Slider))
+                    continue;
 
-                    if (hitObject.Position.Y + circleRadius > LOWER_LIMIT)
+                float circleRadius = beatmap.difficultySettings.GetCircleRadius();
+                Vector2 stackedOffset = new Vector2(0, 0);
+                if (hitObject is Stackable stackable)
+                    stackedOffset = stackable.Position - stackable.UnstackedPosition;
+
+                if (hitObject.Position.Y + circleRadius > LOWER_LIMIT)
+                    yield return new Issue(GetTemplate("Offscreen"), beatmap,
+                        Timestamp.Get(hitObject), type);
+
+                // The game prevents the head of objects from going offscreen inside a 512 by 512 px square,
+                // meaning heads can still go offscreen at the bottom due to how aspect ratios work.
+                else if (GetOffscreenBy(hitObject.Position, beatmap) > 0)
+                {
+                    // It does not prevent stacked objects from going offscreen, though.
+
+                    // for each stackindex it goes 3px up and left, so for it to be prevented it'd be
+                    // top, left : stackindex <= 0
+                    // right     : stackindex >= 0
+
+                    Stackable stackableObject = hitObject as Stackable;
+
+                    bool goesOffscreenTopOrLeft =
+                        (stackableObject.Position.Y - circleRadius < UPPER_LIMIT ||
+                        stackableObject.Position.X - circleRadius < LEFT_LIMIT) &&
+                        stackableObject.stackIndex > 0;
+
+                    bool goesOffscreenRight =
+                        stackableObject.Position.X + circleRadius > RIGHT_LIMIT &&
+                        stackableObject.stackIndex < 0;
+
+                    if (goesOffscreenTopOrLeft || goesOffscreenRight)
                         yield return new Issue(GetTemplate("Offscreen"), beatmap,
                             Timestamp.Get(hitObject), type);
+                    else
+                        yield return new Issue(GetTemplate("Prevented"), beatmap,
+                            Timestamp.Get(hitObject), type);
+                }
 
-                    // The game prevents the head of objects from going offscreen inside a 512 by 512 px square,
-                    // meaning heads can still go offscreen at the bottom due to how aspect ratios work.
-                    else if (GetOffscreenBy(hitObject.Position, beatmap) > 0)
+                if (!(hitObject is Slider slider))
+                    continue;
+
+                if (GetOffscreenBy(slider.EndPosition, beatmap) > 0)
+                    yield return new Issue(GetTemplate("Offscreen"), beatmap,
+                        Timestamp.Get(hitObject.GetEndTime()), "Slider tail");
+                else
+                {
+                    bool offscreenBodyFound = false;
+                    foreach(Vector2 pathPosition in slider.pathPxPositions)
                     {
-                        // It does not prevent stacked objects from going offscreen, though.
+                        if (GetOffscreenBy(pathPosition + stackedOffset, beatmap) <= 0)
+                            continue;
 
-                        // for each stackindex it goes 3px up and left, so for it to be prevented it'd be
-                        // top, left : stackindex <= 0
-                        // right     : stackindex >= 0
+                        yield return new Issue(GetTemplate("Offscreen"), beatmap,
+                            Timestamp.Get(hitObject), "Slider body");
 
-                        Stackable stackableObject = hitObject as Stackable;
-
-                        bool goesOffscreenTopOrLeft =
-                            (stackableObject.Position.Y - circleRadius < UPPER_LIMIT ||
-                            stackableObject.Position.X - circleRadius < LEFT_LIMIT) &&
-                            stackableObject.stackIndex > 0;
-
-                        bool goesOffscreenRight =
-                            stackableObject.Position.X + circleRadius > RIGHT_LIMIT &&
-                            stackableObject.stackIndex < 0;
-
-                        if (goesOffscreenTopOrLeft || goesOffscreenRight)
-                            yield return new Issue(GetTemplate("Offscreen"), beatmap,
-                                Timestamp.Get(hitObject), type);
-                        else
-                            yield return new Issue(GetTemplate("Prevented"), beatmap,
-                                Timestamp.Get(hitObject), type);
+                        offscreenBodyFound = true;
+                        break;
                     }
-                    
-                    if (hitObject is Slider slider)
+
+                    // Since we sample parts of slider bodies, and these aren't math formulas (although they could be),
+                    // we'd need to sample an infinite amount of points on the path, which is too intensive, so instead
+                    // we approximate and apply leniency to ensure false-positive over false-negative.
+                    if (offscreenBodyFound)
+                        continue;
+
+                    foreach (Vector2 pathPosition in slider.pathPxPositions)
                     {
-                        if (GetOffscreenBy(slider.EndPosition, beatmap) > 0)
-                            yield return new Issue(GetTemplate("Offscreen"), beatmap,
-                                Timestamp.Get(hitObject.GetEndTime()), "Slider tail");
-                        else
+                        Vector2 exactPathPosition = pathPosition + stackedOffset;
+                        if (GetOffscreenBy(exactPathPosition, beatmap, 2) <= 0 || slider.curveType == Slider.CurveType.Linear)
+                            continue;
+
+                        bool isOffscreen = false;
+                        for (int j = 0; j < slider.GetCurveDuration() * 50; ++j)
                         {
-                            bool offscreenBodyFound = false;
-                            foreach(Vector2 pathPosition in slider.pathPxPositions)
-                            {
-                                if (GetOffscreenBy(pathPosition + stackedOffset, beatmap) > 0)
-                                {
-                                    yield return new Issue(GetTemplate("Offscreen"), beatmap,
-                                        Timestamp.Get(hitObject), "Slider body");
+                            exactPathPosition = slider.GetPathPosition(slider.time + j / 50d);
 
-                                    offscreenBodyFound = true;
-                                    break;
-                                }
-                            }
-
-                            // Since we sample parts of slider bodies, and these aren't math formulas (although they could be),
-                            // we'd need to sample an infinite amount of points on the path, which is too intensive, so instead
-                            // we approximate and apply leniency to ensure false-positive over false-negative.
-                            if (!offscreenBodyFound)
-                            {
-                                foreach (Vector2 pathPosition in slider.pathPxPositions)
-                                {
-                                    Vector2 exactPathPosition = pathPosition + stackedOffset;
-                                    if (GetOffscreenBy(exactPathPosition, beatmap, 2) > 0 && slider.curveType != Slider.CurveType.Linear)
-                                    {
-                                        bool isOffscreen = false;
-                                        for (int j = 0; j < slider.GetCurveDuration() * 50; ++j)
-                                        {
-                                            exactPathPosition = slider.GetPathPosition(slider.time + j / 50d);
-
-                                            double offscreenBy = GetOffscreenBy(exactPathPosition, beatmap);
-                                            if (offscreenBy > 0)
-                                                isOffscreen = true;
-                                        }
-
-                                        if (isOffscreen)
-                                            yield return new Issue(GetTemplate("Offscreen"), beatmap,
-                                                Timestamp.Get(hitObject), "Slider body");
-                                        else
-                                            yield return new Issue(GetTemplate("Bezier Margin"), beatmap,
-                                                Timestamp.Get(hitObject));
-
-                                        break;
-                                    }
-                                }
-                            }
+                            double offscreenBy = GetOffscreenBy(exactPathPosition, beatmap);
+                            if (offscreenBy > 0)
+                                isOffscreen = true;
                         }
+
+                        if (isOffscreen)
+                            yield return new Issue(GetTemplate("Offscreen"), beatmap,
+                                Timestamp.Get(hitObject), "Slider body");
+                        else
+                            yield return new Issue(GetTemplate("Bezier Margin"), beatmap,
+                                Timestamp.Get(hitObject));
+
+                        break;
                     }
                 }
             }

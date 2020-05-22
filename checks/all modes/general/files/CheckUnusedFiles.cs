@@ -83,18 +83,18 @@ namespace MapsetChecks.checks.general.files
                 string filePath = beatmapSet.songFilePaths[i].Substring(beatmapSet.songPath.Length + 1);
                 string fileNameWithExtension = filePath.Split(new char[] { '/', '\\' }).Last().ToLower();
 
-                if (!beatmapSet.IsFileUsed(filePath) && fileNameWithExtension != "thumbs.db")
-                {
-                    string fileName = PathStatic.ParsePath(fileNameWithExtension, withoutExtension: true);
-                    string otherFilePath = beatmapSet.hitSoundFiles.FirstOrDefault(file => file.StartsWith(fileName + "."));
+                if (beatmapSet.IsFileUsed(filePath) || fileNameWithExtension == "thumbs.db")
+                    continue;
 
-                    if (otherFilePath != null)
-                        yield return new Issue(GetTemplate("Unused Overridden"), null,
-                            filePath, otherFilePath);
-                    else
-                        yield return new Issue(GetTemplate("Unused"), null,
-                            filePath);
-                }
+                string fileName = PathStatic.ParsePath(fileNameWithExtension, withoutExtension: true);
+                string otherFilePath = beatmapSet.hitSoundFiles.FirstOrDefault(file => file.StartsWith(fileName + "."));
+
+                if (otherFilePath != null)
+                    yield return new Issue(GetTemplate("Unused Overridden"), null,
+                        filePath, otherFilePath);
+                else
+                    yield return new Issue(GetTemplate("Unused"), null,
+                        filePath);
             }
         }
     }

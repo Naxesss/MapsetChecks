@@ -83,20 +83,20 @@ namespace MapsetChecks.checks.general.metadata
                 issues.AddRange(GetInconsistency("creator",        beatmap, refBeatmap, otherBeatmap => otherBeatmap.metadataSettings.creator));
                 foreach (Issue issue in issues)
                     yield return issue;
-                
-                if (beatmap.metadataSettings.tags != refSettings.tags)
-                {
-                    IEnumerable<string> refTags = refSettings.tags.Split(' ');
-                    IEnumerable<string> curTags = beatmap.metadataSettings.tags.Split(' ');
-                    IEnumerable<string> differenceTags = refTags.Except(curTags).Union(curTags.Except(refTags)).Distinct();
 
-                    string difference = String.Join(" ", differenceTags);
-                    if (difference != "")
-                        yield return
-                            new Issue(GetTemplate("Tags"), null,
-                                curVersion, refVersion,
-                                difference);
-                }
+                if (beatmap.metadataSettings.tags == refSettings.tags)
+                    continue;
+
+                IEnumerable<string> refTags = refSettings.tags.Split(' ');
+                IEnumerable<string> curTags = beatmap.metadataSettings.tags.Split(' ');
+                IEnumerable<string> differenceTags = refTags.Except(curTags).Union(curTags.Except(refTags)).Distinct();
+
+                string difference = String.Join(" ", differenceTags);
+                if (difference != "")
+                    yield return
+                        new Issue(GetTemplate("Tags"), null,
+                            curVersion, refVersion,
+                            difference);
             }
         }
         

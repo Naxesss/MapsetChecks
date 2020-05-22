@@ -131,13 +131,13 @@ namespace MapsetChecks.checks.timing
                             .Where(tuple => tuple.Item1 == inconsistentTime)
                             .Select(tuple => tuple.Item2).FirstOrDefault();
 
-                    if (beatmap.GetLowestDivisor(stampTime) != 0 && beatmap.GetLowestDivisor(inconsistentTime) != 0)
-                    {
-                        yield return new Issue(GetTemplate("Snap Consistency"), beatmap,
-                            Timestamp.Get(stampTime), beatmap.GetLowestDivisor(stampTime),
-                            Timestamp.Get(inconsistentTime), beatmap.GetLowestDivisor(inconsistentTime),
-                            otherBeatmap);
-                    }
+                    if (beatmap.GetLowestDivisor(stampTime) == 0 || beatmap.GetLowestDivisor(inconsistentTime) == 0)
+                        continue;
+
+                    yield return new Issue(GetTemplate("Snap Consistency"), beatmap,
+                        Timestamp.Get(stampTime), beatmap.GetLowestDivisor(stampTime),
+                        Timestamp.Get(inconsistentTime), beatmap.GetLowestDivisor(inconsistentTime),
+                        otherBeatmap);
                 }
 
                 PrepareRareDivisors(beatmap);
@@ -185,14 +185,14 @@ namespace MapsetChecks.checks.timing
             {
                 double precentage = divisorGroup.count / (double)divisorsTotal;
 
-                if (divisorGroup.divisor >= 6)
-                {
-                    if (divisorGroup.count <= countWarning) countWarningDivisors.Add(divisorGroup.divisor);
-                    else if (divisorGroup.count <= countMinor) countMinorDivisors.Add(divisorGroup.divisor);
+                if (divisorGroup.divisor < 6)
+                    continue;
 
-                    if (precentage < percentWarning) percentWarningDivisors.Add(divisorGroup.divisor);
-                    else if (precentage < percentMinor) percentMinorDivisors.Add(divisorGroup.divisor);
-                }
+                if (divisorGroup.count <= countWarning) countWarningDivisors.Add(divisorGroup.divisor);
+                else if (divisorGroup.count <= countMinor) countMinorDivisors.Add(divisorGroup.divisor);
+
+                if (precentage < percentWarning) percentWarningDivisors.Add(divisorGroup.divisor);
+                else if (precentage < percentMinor) percentMinorDivisors.Add(divisorGroup.divisor);
             }
         }
 
@@ -218,15 +218,15 @@ namespace MapsetChecks.checks.timing
         /// which we can then return in GetIssues. </summary>
         private IEnumerable<Issue> GetDivisorIssues(Beatmap beatmap, List<Tuple<int, string>> divisorTupleList, string templateKey)
         {
-            if (divisorTupleList.Count > 0)
-            {
-                foreach (int divisor in divisorTupleList.Select(stamp => stamp.Item1).Distinct())
-                {
-                    IEnumerable<string> stamps = divisorTupleList.Where(stamp => stamp.Item1 == divisor).Select(stamp => stamp.Item2);
+            if (divisorTupleList.Count == 0)
+                yield break;
 
-                    yield return new Issue(GetTemplate(templateKey), beatmap,
-                        String.Join(" ", stamps), divisor);
-                }
+            foreach (int divisor in divisorTupleList.Select(stamp => stamp.Item1).Distinct())
+            {
+                IEnumerable<string> stamps = divisorTupleList.Where(stamp => stamp.Item1 == divisor).Select(stamp => stamp.Item2);
+
+                yield return new Issue(GetTemplate(templateKey), beatmap,
+                    String.Join(" ", stamps), divisor);
             }
         }
 
@@ -234,21 +234,21 @@ namespace MapsetChecks.checks.timing
         private void TryAddDivisorIssue(double time, Beatmap beatmap)
         {
             // no need to double error, unsnap check will take care of this
-            if (beatmap.GetUnsnapIssue(time) == null)
-            {
-                int divisor = beatmap.GetLowestDivisor(time);
+            if (beatmap.GetUnsnapIssue(time) != null)
+                return;
 
-                if (countWarningDivisors  .Contains(divisor) ||
-                    percentWarningDivisors.Contains(divisor) ||
-                    countMinorDivisors    .Contains(divisor) ||
-                    percentMinorDivisors  .Contains(divisor))
-                {
-                    if      (countWarningDivisors.Contains(divisor))    countWarningStamps  .Add(new Tuple<int, string>(divisor, Timestamp.Get(time)));
-                    else if (percentWarningDivisors.Contains(divisor))  percentWarningStamps.Add(new Tuple<int, string>(divisor, Timestamp.Get(time)));
-                    else if (countMinorDivisors.Contains(divisor))      countMinorStamps    .Add(new Tuple<int, string>(divisor, Timestamp.Get(time)));
-                    else if (percentMinorDivisors.Contains(divisor))    percentMinorStamps  .Add(new Tuple<int, string>(divisor, Timestamp.Get(time)));
-                }
-            }
+            int divisor = beatmap.GetLowestDivisor(time);
+
+            if (!countWarningDivisors  .Contains(divisor) &&
+                !percentWarningDivisors.Contains(divisor) &&
+                !countMinorDivisors    .Contains(divisor) &&
+                !percentMinorDivisors  .Contains(divisor))
+                return;
+
+            if      (countWarningDivisors.Contains(divisor))    countWarningStamps  .Add(new Tuple<int, string>(divisor, Timestamp.Get(time)));
+            else if (percentWarningDivisors.Contains(divisor))  percentWarningStamps.Add(new Tuple<int, string>(divisor, Timestamp.Get(time)));
+            else if (countMinorDivisors.Contains(divisor))      countMinorStamps    .Add(new Tuple<int, string>(divisor, Timestamp.Get(time)));
+            else if (percentMinorDivisors.Contains(divisor))    percentMinorStamps  .Add(new Tuple<int, string>(divisor, Timestamp.Get(time)));
         }
 
         /// <summary> Populates the inconsistent places list, which keeps track of any
@@ -266,6 +266,8 @@ namespace MapsetChecks.checks.timing
         /// object within 3 ms in the other beatmap. </summary>
         private IEnumerable<double> GetDifferenceTimes(Beatmap beatmap, Beatmap otherBeatmap)
         {
+            // TODO: Surely, this can be optimized. May want to swap the `otherBeatmap.hitObjects` loop with
+            //       the `hitObject.GetEdgeTimes()` one, for example, in order to improve the time complexity.
             foreach (HitObject hitObject in beatmap.hitObjects)
             {
                 foreach (double edgeTime in hitObject.GetEdgeTimes())
@@ -291,21 +293,19 @@ namespace MapsetChecks.checks.timing
         {
             List<double> inconsistencies = differenceTimes.Where(time =>
             {
-                if (Math.Abs(time - otherTime) >= 3)
-                {
-                    UninheritedLine line = otherBeatmap.GetTimingLine<UninheritedLine>(time);
-                    double msPerBeat = line.msPerBeat;
+                if (Math.Abs(time - otherTime) < 3)
+                    return false;
 
-                    if (Math.Abs(time - otherTime) < msPerBeat)
-                    {
-                        double consistencyRange = GetConsistencyRange(otherBeatmap, time, msPerBeat, otherTime);
-                        return
-                            time + consistencyRange > otherTime &&
-                            time - consistencyRange < otherTime;
-                    }
-                }
+                UninheritedLine line = otherBeatmap.GetTimingLine<UninheritedLine>(time);
+                double msPerBeat = line.msPerBeat;
 
-                return false;
+                if (Math.Abs(time - otherTime) >= msPerBeat)
+                    return false;
+
+                double consistencyRange = GetConsistencyRange(otherBeatmap, time, msPerBeat, otherTime);
+                return
+                    time + consistencyRange > otherTime &&
+                    time - consistencyRange < otherTime;
             }).ToList();
 
             foreach (double inconsistency in inconsistencies)
@@ -328,15 +328,11 @@ namespace MapsetChecks.checks.timing
                     Array.IndexOf(divisors, divisor) == -1 ? divisors.Length :
                     Array.IndexOf(divisors, divisor);
 
-                if (index != -1)
-                {
-                    double range = msPerBeat / divisors.ElementAt(index + 2 > divisors.Length - 1 ? divisors.Length - 1 : index + 2) - 2;
-
-                    return range;
-                }
-                else
-                    // if the divisor is 0, that means the time we gave it was unsnapped
+                // if the divisor is 0, that means the time we gave it was unsnapped
+                if (index == -1)
                     return 2;
+
+                return msPerBeat / divisors.ElementAt(index + 2 > divisors.Length - 1 ? divisors.Length - 1 : index + 2) - 2;
             }
 
             int higherDiffDivisor = Math.Max(otherBeatmap.GetLowestDivisor(otherTime.GetValueOrDefault()), 2);

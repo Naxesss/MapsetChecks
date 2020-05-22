@@ -70,21 +70,21 @@ namespace MapsetChecks.checks.standard.compose
         {
             foreach (HitObject hitObject in beatmap.hitObjects)
             {
-                if (hitObject is Spinner spinner)
-                {
-                    double od = beatmap.difficultySettings.overallDifficulty;
+                if (!(hitObject is Spinner spinner))
+                    continue;
 
-                    double warningThreshold = 500 + (od < 5 ? (5 - od) * -21.8 : (od - 5) * 20);  // anything above this works fine
-                    double problemThreshold = 450 + (od < 5 ? (5 - od) * -17 : (od - 5) * 17);  // anything above this only works sometimes
+                double od = beatmap.difficultySettings.overallDifficulty;
 
-                    if (problemThreshold > spinner.endTime - spinner.time)
-                        yield return new Issue(GetTemplate("Problem"),
-                            beatmap, Timestamp.Get(spinner));
+                double warningThreshold = 500 + (od < 5 ? (5 - od) * -21.8 : (od - 5) * 20);  // anything above this works fine
+                double problemThreshold = 450 + (od < 5 ? (5 - od) * -17 : (od - 5) * 17);  // anything above this only works sometimes
 
-                    else if (warningThreshold > spinner.endTime - spinner.time)
-                        yield return new Issue(GetTemplate("Warning"),
-                            beatmap, Timestamp.Get(spinner));
-                }
+                if (problemThreshold > spinner.endTime - spinner.time)
+                    yield return new Issue(GetTemplate("Problem"),
+                        beatmap, Timestamp.Get(spinner));
+
+                else if (warningThreshold > spinner.endTime - spinner.time)
+                    yield return new Issue(GetTemplate("Warning"),
+                        beatmap, Timestamp.Get(spinner));
             }
         }
     }

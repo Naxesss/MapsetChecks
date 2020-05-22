@@ -76,18 +76,18 @@ namespace MapsetChecks.checks.general.resources
                             animation.path, ".osu");
 
             // Checks .osb storyboard elements.
-            if (beatmapSet.osb != null)
-            {
-                foreach (Sprite sprite in beatmapSet.osb.sprites)
-                    if (sprite.layer == Sprite.Layer.Overlay)
-                        yield return new Issue(GetTemplate("Warning"), null,
-                            sprite.path, ".osb");
+            if (beatmapSet.osb == null)
+                yield break;
 
-                foreach (Animation animation in beatmapSet.osb.animations)
-                    if (animation.layer == Sprite.Layer.Overlay)
-                        yield return new Issue(GetTemplate("Warning"), null,
-                            animation.path, ".osb");
-            }
+            foreach (Sprite sprite in beatmapSet.osb.sprites)
+                if (sprite.layer == Sprite.Layer.Overlay)
+                    yield return new Issue(GetTemplate("Warning"), null,
+                        sprite.path, ".osb");
+
+            foreach (Animation animation in beatmapSet.osb.animations)
+                if (animation.layer == Sprite.Layer.Overlay)
+                    yield return new Issue(GetTemplate("Warning"), null,
+                        animation.path, ".osb");
         }
     }
 }

@@ -88,67 +88,67 @@ namespace MapsetChecks.checks.standard.compose
         {
             foreach (HitObject hitObject in beatmap.hitObjects)
             {
-                if (hitObject is Slider slider && slider.curveType == Slider.CurveType.Bezier)
+                if (!(hitObject is Slider slider) || slider.curveType != Slider.CurveType.Bezier)
+                    continue;
+
+                // Make sure the path doesn't go back on itself (basically the angle shouldn't be too similar
+                // between intersecting parts of a slider). Only checks sections of a slider that have some
+                // distance in time between each other, allowing very small burai-like structure, which is
+                // usually readable.
+                    
+                double angleIntersect;
+                double otherAngleIntersect;
+                double diffAngleIntersect;
+
+                bool passedMargin;
+                    
+                double distance;
+                double maxDistance = 3;
+                    
+                List<double> buraiScores = new List<double>();
+
+                for (int i = 1; i < slider.pathPxPositions.Count; ++i)
                 {
-                    // Make sure the path doesn't go back on itself (basically the angle shouldn't be too similar
-                    // between intersecting parts of a slider). Only checks sections of a slider that have some
-                    // distance in time between each other, allowing very small burai-like structure, which is
-                    // usually readable.
-                    
-                    double angleIntersect;
-                    double otherAngleIntersect;
-                    double diffAngleIntersect;
+                    passedMargin = false;
 
-                    bool passedMargin;
-                    
-                    double distance;
-                    double maxDistance = 3;
-                    
-                    List<double> buraiScores = new List<double>();
-
-                    for (int i = 1; i < slider.pathPxPositions.Count; ++i)
+                    // Only check places we haven't been yet for optimization.
+                    for (int j = i + 1; j < slider.pathPxPositions.Count - 1; ++j)
                     {
-                        passedMargin = false;
-
-                        // Only check places we haven't been yet for optimization.
-                        for (int j = i + 1; j < slider.pathPxPositions.Count - 1; ++j)
-                        {
-                            distance = GetDistance(slider.pathPxPositions[i], slider.pathPxPositions[j]);
+                        distance = GetDistance(slider.pathPxPositions[i], slider.pathPxPositions[j]);
                             
-                            // First ensure the point is far enough away to not be a small burai structure.
-                            if (!passedMargin && distance >= maxDistance)
-                                passedMargin = true;
+                        // First ensure the point is far enough away to not be a small burai structure.
+                        if (!passedMargin && distance >= maxDistance)
+                            passedMargin = true;
 
-                            // Then if it returns, we know the slider is intersecting itself.
-                            if (passedMargin && distance < maxDistance)
-                            {
-                                angleIntersect = GetAngle(slider.pathPxPositions[i - 1], slider.pathPxPositions[i]);
-                                otherAngleIntersect = GetAngle(slider.pathPxPositions[j], slider.pathPxPositions[j + 1]);
+                        // Then if it returns, we know the slider is intersecting itself.
+                        if (passedMargin && distance >= maxDistance)
+                            continue;
+
+                        angleIntersect = GetAngle(slider.pathPxPositions[i - 1], slider.pathPxPositions[i]);
+                        otherAngleIntersect = GetAngle(slider.pathPxPositions[j], slider.pathPxPositions[j + 1]);
                                 
-                                // Compare the intersection angles, resets after 180 degrees since we're comparing tangents.
-                                diffAngleIntersect = Math.Abs(WrapAngle(angleIntersect - otherAngleIntersect, 0.5));
+                        // Compare the intersection angles, resets after 180 degrees since we're comparing tangents.
+                        diffAngleIntersect = Math.Abs(WrapAngle(angleIntersect - otherAngleIntersect, 0.5));
                                 
-                                double distanceScore = 100 * Math.Sqrt(10) / Math.Pow(10, 2 * distance) / 125;
-                                double angleScore = 1 / (Math.Pow(diffAngleIntersect / Math.PI * 20, 3) + 0.01) / 250;
+                        double distanceScore = 100 * Math.Sqrt(10) / Math.Pow(10, 2 * distance) / 125;
+                        double angleScore = 1 / (Math.Pow(diffAngleIntersect / Math.PI * 20, 3) + 0.01) / 250;
 
-                                buraiScores.Add(angleScore * distanceScore);
-                            }
-                        }
-                    }
-
-                    double totalBuraiScore = GetWeighedScore(buraiScores);
-                    if (totalBuraiScore > 0)
-                    {
-                        // Note that this may false positive in places with slight but readable overlapping curves.
-                        if (totalBuraiScore > 5)
-                            yield return new Issue(GetTemplate("Definitely"), beatmap,
-                                Timestamp.Get(hitObject));
-
-                        else if (totalBuraiScore > 2)
-                            yield return new Issue(GetTemplate("Potentially"), beatmap,
-                                Timestamp.Get(hitObject));
+                        buraiScores.Add(angleScore * distanceScore);
                     }
                 }
+
+                double totalBuraiScore = GetWeighedScore(buraiScores);
+                if (totalBuraiScore <= 0)
+                    continue;
+
+                // Note that this may false positive in places with slight but readable overlapping curves.
+                if (totalBuraiScore > 5)
+                    yield return new Issue(GetTemplate("Definitely"), beatmap,
+                        Timestamp.Get(hitObject));
+
+                else if (totalBuraiScore > 2)
+                    yield return new Issue(GetTemplate("Potentially"), beatmap,
+                        Timestamp.Get(hitObject));
             }
         }
 

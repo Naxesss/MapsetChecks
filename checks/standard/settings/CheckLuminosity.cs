@@ -132,13 +132,15 @@ namespace MapsetChecks.checks.standard.settings
                 int combo = beatmap.GetComboColourIndex(hitObject.time);
                 
                 // Spinners don't have a colour.
-                if (!(hitObject is Spinner) &&
-                    beatmap.GetTimingLine(hitObject.time).kiai &&
-                    !comboColoursInKiai.Contains(combo))
+                if (hitObject is Spinner ||
+                    !beatmap.GetTimingLine(hitObject.time).kiai ||
+                    comboColoursInKiai.Contains(combo))
                 {
-                    comboColoursInKiai.Add(combo);
-                    comboColourTime.Add(hitObject.time);
+                    continue;
                 }
+
+                comboColoursInKiai.Add(combo);
+                comboColourTime.Add(hitObject.time);
             }
 
             for (int i = 0; i < beatmap.colourSettings.combos.Count; ++i)

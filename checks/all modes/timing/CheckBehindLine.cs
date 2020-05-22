@@ -83,13 +83,13 @@ namespace MapsetChecks.checks.timing
                     "Spinner";
 
                 // SV in taiko and mania speed up all objects, whereas in catch and standard it only affects sliders
-                if (hitObject is Slider ||
-                    beatmap.generalSettings.mode == Beatmap.Mode.Taiko ||
-                    beatmap.generalSettings.mode == Beatmap.Mode.Mania)
-                {
-                    foreach (Issue issue in GetIssue(type, hitObject.time, beatmap))
-                        yield return issue;
-                }
+                if (!(hitObject is Slider) &&
+                    beatmap.generalSettings.mode != Beatmap.Mode.Taiko &&
+                    beatmap.generalSettings.mode != Beatmap.Mode.Mania)
+                    continue;
+
+                foreach (Issue issue in GetIssue(type, hitObject.time, beatmap))
+                    yield return issue;
             }
         }
 

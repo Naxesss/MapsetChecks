@@ -72,42 +72,42 @@ namespace MapsetChecks.checks.hit_sounds
             int lineIndex = 0;
             foreach (HitObject hitObject in beatmap.hitObjects)
             {
-                if (hitObject is Circle || hitObject is Slider || hitObject is HoldNote)
-                {
-                    // Object-specific volume overrides line-specific volume for circles and hold notes
-                    // (feature for Mania hit sounding) when it is > 0. However, this applies to other modes as well.
-                    float volume =
-                        !(hitObject is Slider) && hitObject.volume > 0 && hitObject.volume != null ?
-                            hitObject.volume.GetValueOrDefault() :
-                            GetTimingLine(beatmap, ref lineIndex, hitObject.time).volume;
+                if (!(hitObject is Circle || hitObject is Slider || hitObject is HoldNote))
+                    continue;
 
-                    // < 5% is interpreted as 5%
-                    if (volume < 5)
-                        volume = 5;
+                // Object-specific volume overrides line-specific volume for circles and hold notes
+                // (feature for Mania hit sounding) when it is > 0. However, this applies to other modes as well.
+                float volume =
+                    !(hitObject is Slider) && hitObject.volume > 0 && hitObject.volume != null ?
+                        hitObject.volume.GetValueOrDefault() :
+                        GetTimingLine(beatmap, ref lineIndex, hitObject.time).volume;
+
+                // < 5% is interpreted as 5%
+                if (volume < 5)
+                    volume = 5;
                     
+                if (volume <= 10)
+                    yield return new Issue(GetTemplate("Warning Volume"), beatmap,
+                        Timestamp.Get(hitObject), volume, hitObject.GetPartName(hitObject.time).ToLower());
+
+                else if (volume <= 20)
+                    yield return new Issue(GetTemplate("Minor Volume"), beatmap,
+                        Timestamp.Get(hitObject), volume, hitObject.GetPartName(hitObject.time).ToLower());
+
+                if (!(hitObject is Slider slider))
+                    continue;
+
+                for (int edgeIndex = 0; edgeIndex < slider.edgeAmount; ++edgeIndex)
+                {
+                    double time = Timestamp.Round(slider.time + slider.GetCurveDuration() * edgeIndex);
+
+                    if (edgeIndex == slider.edgeAmount - 1)
+                        time = slider.endTime;
+
+                    volume = GetTimingLine(beatmap, ref lineIndex, hitObject.time).volume;
                     if (volume <= 10)
-                        yield return new Issue(GetTemplate("Warning Volume"), beatmap,
-                            Timestamp.Get(hitObject), volume, hitObject.GetPartName(hitObject.time).ToLower());
-
-                    else if (volume <= 20)
-                        yield return new Issue(GetTemplate("Minor Volume"), beatmap,
-                            Timestamp.Get(hitObject), volume, hitObject.GetPartName(hitObject.time).ToLower());
-
-                    if (hitObject is Slider slider)
-                    {
-                        for (int edgeIndex = 0; edgeIndex < slider.edgeAmount; ++edgeIndex)
-                        {
-                            double time = Timestamp.Round(slider.time + slider.GetCurveDuration() * edgeIndex);
-
-                            if (edgeIndex == slider.edgeAmount - 1)
-                                time = slider.endTime;
-
-                            volume = GetTimingLine(beatmap, ref lineIndex, hitObject.time).volume;
-                            if (volume <= 10)
-                                yield return new Issue(GetTemplate("Passive"), beatmap,
-                                    Timestamp.Get(time), volume, hitObject.GetPartName(time).ToLower());
-                        }
-                    }
+                        yield return new Issue(GetTemplate("Passive"), beatmap,
+                            Timestamp.Get(time), volume, hitObject.GetPartName(time).ToLower());
                 }
             }
         }

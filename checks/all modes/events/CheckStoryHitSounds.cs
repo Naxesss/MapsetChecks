@@ -73,10 +73,12 @@ namespace MapsetChecks.checks.events
                     foreach (Issue issue in GetStoryHitSoundIssue(beatmap, storyHitSound, ".osu"))
                         yield return issue;
 
-                if (beatmapSet.osb != null)
-                    foreach (Sample storyHitSound in beatmapSet.osb.samples)
-                        foreach (Issue issue in GetStoryHitSoundIssue(beatmap, storyHitSound, ".osb"))
-                            yield return issue;
+                if (beatmapSet.osb == null)
+                    continue;
+
+                foreach (Sample storyHitSound in beatmapSet.osb.samples)
+                    foreach (Issue issue in GetStoryHitSoundIssue(beatmap, storyHitSound, ".osb"))
+                        yield return issue;
             }
         }
 

@@ -107,14 +107,14 @@ namespace MapsetChecks.checks.general.audio
             {
                 string hitSoundPath = Path.Combine(beatmapSet.songPath, hitSoundFile);
                 ManagedBass.ChannelType hitSoundFormat = Audio.GetFormat(hitSoundPath);
-                if ((hitSoundFormat & ManagedBass.ChannelType.OGG) == 0 ||
-                    (hitSoundFormat & ManagedBass.ChannelType.MP3) == 0)
-                {
-                    // Hit sounds only need to follow the lower limit for quality requirements, as
-                    // Wave (which is the most used hit sound format currently) is otherwise uncompressed anyway.
-                    foreach (Issue issue in GetIssue(beatmapSet, hitSoundPath, true))
-                        yield return issue;
-                }
+                if ((hitSoundFormat & ManagedBass.ChannelType.OGG) != 0 &&
+                    (hitSoundFormat & ManagedBass.ChannelType.MP3) != 0)
+                    continue;
+
+                // Hit sounds only need to follow the lower limit for quality requirements, as
+                // Wave (which is the most used hit sound format currently) is otherwise uncompressed anyway.
+                foreach (Issue issue in GetIssue(beatmapSet, hitSoundPath, true))
+                    yield return issue;
             }
         }
 
@@ -128,43 +128,40 @@ namespace MapsetChecks.checks.general.audio
             double minBitrate = file.GetLowestBitrate() / 1000;
             double maxBitrate = file.GetHighestBitrate() / 1000;
 
+            if (bitrate >= 128 && (bitrate <= 192 || isHitSound))
+                yield break;
+
             if (minBitrate == maxBitrate)
             {
-                if (minBitrate < 128 || (maxBitrate > 192 && !isHitSound))
-                {
-                    if(!isHitSound)
-                        yield return new Issue(GetTemplate("CBR"), null,
-                            audioRelPath, $"{bitrate:0.##}",
-                            (bitrate < 128 ? "low" : "high"));
-                    else
-                        yield return new Issue(GetTemplate("CBR Hit Sound"), null,
-                            audioRelPath, $"{bitrate:0.##}");
-                }
+                if(!isHitSound)
+                    yield return new Issue(GetTemplate("CBR"), null,
+                        audioRelPath, $"{bitrate:0.##}",
+                        (bitrate < 128 ? "low" : "high"));
+                else
+                    yield return new Issue(GetTemplate("CBR Hit Sound"), null,
+                        audioRelPath, $"{bitrate:0.##}");
+
+                yield break;
             }
-            else
+
+            if (Math.Round(bitrate) < 128 || (Math.Round(bitrate) > 192 && !isHitSound))
             {
-                if (bitrate < 128 || (bitrate > 192 && !isHitSound))
-                {
-                    if (Math.Round(bitrate) < 128 || (Math.Round(bitrate) > 192 && !isHitSound))
-                    {
-                        if (!isHitSound)
-                            yield return new Issue(GetTemplate("VBR"), null,
-                                audioRelPath,
-                                $"{bitrate:0.##}", $"{minBitrate:0.##}", $"{maxBitrate:0.##}",
-                                (bitrate < 128 ? "low" : "high"));
-                        else
-                            yield return new Issue(GetTemplate("VBR Hit Sound"), null,
-                                audioRelPath,
-                                $"{bitrate:0.##}", $"{minBitrate:0.##}", $"{maxBitrate:0.##}");
-                    }
-                    else if (!isHitSound)
-                    {
-                        yield return new Issue(GetTemplate("Exact VBR"), null,
-                            audioRelPath,
-                            $"{bitrate:0.##}", $"{minBitrate:0.##}", $"{maxBitrate:0.##}",
-                            (bitrate < 128 ? "low" : "high"));
-                    }
-                }
+                if (!isHitSound)
+                    yield return new Issue(GetTemplate("VBR"), null,
+                        audioRelPath,
+                        $"{bitrate:0.##}", $"{minBitrate:0.##}", $"{maxBitrate:0.##}",
+                        (bitrate < 128 ? "low" : "high"));
+                else
+                    yield return new Issue(GetTemplate("VBR Hit Sound"), null,
+                        audioRelPath,
+                        $"{bitrate:0.##}", $"{minBitrate:0.##}", $"{maxBitrate:0.##}");
+            }
+            else if (!isHitSound)
+            {
+                yield return new Issue(GetTemplate("Exact VBR"), null,
+                    audioRelPath,
+                    $"{bitrate:0.##}", $"{minBitrate:0.##}", $"{maxBitrate:0.##}",
+                    (bitrate < 128 ? "low" : "high"));
             }
         }
     }

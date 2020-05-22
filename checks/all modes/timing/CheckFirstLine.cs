@@ -77,17 +77,18 @@ namespace MapsetChecks.checks.timing
 
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            if (beatmap.timingLines.Count > 0)
+            if (beatmap.timingLines.Count == 0)
             {
-                TimingLine line = beatmap.timingLines[0];
-
-                if (!line.uninherited)
-                    yield return new Issue(GetTemplate("Inherited"), beatmap, Timestamp.Get(line.offset));
-                else if (line.kiai)
-                    yield return new Issue(GetTemplate("Toggles Kiai"), beatmap, Timestamp.Get(line.offset));
-            }
-            else
                 yield return new Issue(GetTemplate("No Lines"), beatmap);
+                yield break;
+            }
+
+            TimingLine line = beatmap.timingLines[0];
+
+            if (!line.uninherited)
+                yield return new Issue(GetTemplate("Inherited"), beatmap, Timestamp.Get(line.offset));
+            else if (line.kiai)
+                yield return new Issue(GetTemplate("Toggles Kiai"), beatmap, Timestamp.Get(line.offset));
         }
     }
 }

@@ -70,25 +70,29 @@ namespace MapsetChecks.checks.general.resources
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
             if (beatmapSet.beatmaps.All(beatmap => beatmap.backgrounds.Count == 0))
-                yield return new Issue(GetTemplate("All"), null);
-            else
             {
-                foreach (Beatmap beatmap in beatmapSet.beatmaps)
-                {
-                    if (beatmap.backgrounds.Count == 0)
-                        yield return new Issue(GetTemplate("One"), null,
-                            beatmap.metadataSettings.version);
+                yield return new Issue(GetTemplate("All"), null);
+                yield break;
+            }
 
-                    else if (beatmapSet.songPath != null)
-                    {
-                        foreach (Background bg in beatmap.backgrounds)
-                        {
-                            string path = beatmapSet.songPath + Path.DirectorySeparatorChar + bg.path;
-                            if (!File.Exists(path))
-                                yield return new Issue(GetTemplate("Missing"), null,
-                                    beatmap.metadataSettings.version, bg.path);
-                        }
-                    }
+            foreach (Beatmap beatmap in beatmapSet.beatmaps)
+            {
+                if (beatmap.backgrounds.Count == 0)
+                {
+                    yield return new Issue(GetTemplate("One"), null,
+                        beatmap.metadataSettings.version);
+                    continue;
+                }
+
+                if (beatmapSet.songPath == null)
+                    continue;
+
+                foreach (Background bg in beatmap.backgrounds)
+                {
+                    string path = beatmapSet.songPath + Path.DirectorySeparatorChar + bg.path;
+                    if (!File.Exists(path))
+                        yield return new Issue(GetTemplate("Missing"), null,
+                            beatmap.metadataSettings.version, bg.path);
                 }
             }
         }

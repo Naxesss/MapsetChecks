@@ -93,14 +93,14 @@ namespace MapsetChecks.checks.timing
                     continue;
 
                 TimingLine nextLine = beatmap.GetNextTimingLine(line.offset);
-                if (nextLine != null && !nextLine.kiai)
-                {
-                    unsnap = beatmap.GetPracticalUnsnap(nextLine.offset);
+                if (nextLine == null || nextLine.kiai)
+                    continue;
 
-                    if (Math.Abs(unsnap) >= 1)
-                        yield return new Issue(GetTemplate("Minor End"), beatmap,
-                            Timestamp.Get(nextLine.offset), unsnap);
-                }
+                unsnap = beatmap.GetPracticalUnsnap(nextLine.offset);
+
+                if (Math.Abs(unsnap) >= 1)
+                    yield return new Issue(GetTemplate("Minor End"), beatmap,
+                        Timestamp.Get(nextLine.offset), unsnap);
             }
         }
     }

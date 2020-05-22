@@ -122,12 +122,12 @@ namespace MapsetChecks.checks.general.audio
                     if (usage.hasVideoOrSB)           anyHasVideoOrSB = true;
                 }
 
-                if (maxFraction <= 0.8d)
-                {
-                    string templateKey = (anyHasVideoOrSB ? "With" : "Without") + " Video/Storyboard";
+                if (maxFraction > 0.8d)
+                    continue;
 
-                    yield return new Issue(GetTemplate(templateKey), null, $"{maxFraction * 100:0.##}");
-                }
+                string templateKey = (anyHasVideoOrSB ? "With" : "Without") + " Video/Storyboard";
+
+                yield return new Issue(GetTemplate(templateKey), null, $"{maxFraction * 100:0.##}");
             }
         }
         
