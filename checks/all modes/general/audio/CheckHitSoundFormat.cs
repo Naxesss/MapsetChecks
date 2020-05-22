@@ -96,9 +96,9 @@ namespace MapsetChecks.checks.general.audio
                     ManagedBass.ChannelType actualFormat = 0;
                     Exception exception = null;
                     try
-                    { actualFormat = Audio.GetFormat(fullPath); }
+                        { actualFormat = Audio.GetFormat(fullPath); }
                     catch (Exception ex)
-                    { exception = ex; }
+                        { exception = ex; }
 
                     if (exception != null)
                     {

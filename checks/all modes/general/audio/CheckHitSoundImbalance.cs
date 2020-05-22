@@ -97,7 +97,7 @@ namespace MapsetChecks.checks.general.audio
                     peaks    = Audio.GetPeaks(hsPath);
                 }
                 catch (Exception ex)
-                { exception = ex; }
+                    { exception = ex; }
 
                 // Cannot yield in catch statements, hence externally handled.
                 if (exception != null)

@@ -73,13 +73,9 @@ namespace MapsetChecks.checks.general.audio
                 double duration = 0;
                 Exception exception = null;
                 try
-                {
-                    duration = Audio.GetDuration(hsPath);
-                }
+                    { duration = Audio.GetDuration(hsPath); }
                 catch (Exception ex)
-                {
-                    exception = ex;
-                }
+                    { exception = ex; }
 
                 if (exception == null)
                 {
