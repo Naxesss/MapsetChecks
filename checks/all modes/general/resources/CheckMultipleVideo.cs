@@ -64,59 +64,82 @@ namespace MapsetChecks.checks.general.resources
             };
         }
 
+        private struct ModeVideoPair
+        {
+            public Beatmap.Mode mode;
+            public string videoName;
+
+            public ModeVideoPair(Beatmap.Mode mode, string videoName)
+            {
+                this.mode = mode;
+                this.videoName = videoName;
+            }
+        }
+
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            IEnumerable<Beatmap.Mode> modes = beatmapSet.beatmaps.Select(beatmap => beatmap.generalSettings.mode).Distinct();
-            List<KeyValuePair<string, Beatmap.Mode>> modeVideoPairs = new List<KeyValuePair<string, Beatmap.Mode>>();
+            List<ModeVideoPair> modeVideoPairs = new List<ModeVideoPair>();
 
+            IEnumerable<Beatmap.Mode> modes = beatmapSet.beatmaps.Select(beatmap => beatmap.generalSettings.mode).Distinct();
             foreach (Beatmap.Mode mode in modes)
             {
-                IEnumerable<Beatmap> beatmaps = beatmapSet.beatmaps.Where(beatmap => beatmap.generalSettings.mode == mode);
-                IEnumerable<string> videoFiles =
-                    beatmaps.Select(beatmap =>
-                        beatmap.videos
-                            .FirstOrDefault()?.path ?? "None")
-                            .Append(beatmapSet.osb?.videos.FirstOrDefault()?.path ?? "").Distinct();
+                IEnumerable<string> videoNames =
+                    beatmapSet.beatmaps
+                        .Where(beatmap => beatmap.generalSettings.mode == mode)
+                        .Select(beatmap => beatmap.videos.FirstOrDefault()?.path ?? "None")
+                        .Append(beatmapSet.osb?.videos.FirstOrDefault()?.path ?? "")
+                        .Distinct();
 
-                foreach (string videoFile in videoFiles)
+                foreach (string videoName in videoNames)
                 {
-                    IEnumerable<Beatmap> issueBeatmaps =
-                        beatmaps.Where(beatmap =>
-                            beatmap.videos.FirstOrDefault()?.path == videoFile ||
-                            beatmapSet.osb?.videos.FirstOrDefault()?.path == videoFile);
+                    IEnumerable<Beatmap> suchBeatmaps =
+                        beatmapSet.beatmaps
+                            .Where(beatmap =>
+                                beatmap.videos.FirstOrDefault()?.path == videoName ||
+                                beatmapSet.osb?.videos.FirstOrDefault()?.path == videoName);
 
-                    if (videoFiles.Count(file => file != "") > 1 && issueBeatmaps.Any())
-                    {
-                        string joinedBeatmaps = String.Join(" ", issueBeatmaps.Select(beatmap => beatmap));
-
+                    if (videoNames.Count() > 1 && suchBeatmaps.Any())
                         yield return new Issue(GetTemplate("Same Mode"), null,
-                            videoFile, joinedBeatmaps);
-                    }
+                            videoName, string.Join(", ", suchBeatmaps));
 
-                    if (videoFile != "" && !modeVideoPairs.Any(pair => pair.Key == videoFile && pair.Value == mode))
-                        modeVideoPairs.Add(new KeyValuePair<string, Beatmap.Mode>(videoFile, mode));
+                    if (!modeVideoPairs.Any(pair =>
+                            pair.mode == mode &&
+                            pair.videoName == videoName))
+                        modeVideoPairs.Add(new ModeVideoPair(mode, videoName));
                 }
             }
 
-            List<Beatmap.Mode> iteratedModes = new List<Beatmap.Mode>();
-            List<Beatmap.Mode> erroredModes = new List<Beatmap.Mode>();
-            foreach (KeyValuePair<string, Beatmap.Mode> pair in modeVideoPairs)
-            {
-                iteratedModes.Add(pair.Value);
-                foreach (KeyValuePair<string, Beatmap.Mode> otherPair in modeVideoPairs.Where(pair => !iteratedModes.Contains(pair.Value)))
-                {
-                    // Ignore inconsistencies with taiko, as taiko generally does not include videos due to their playfield covering it
-                    if (pair.Value != otherPair.Value
-                        && pair.Key != otherPair.Key
-                        && pair.Value != Beatmap.Mode.Taiko && otherPair.Value != Beatmap.Mode.Taiko
-                        && !(erroredModes.Contains(pair.Value) && erroredModes.Contains(otherPair.Value)))
-                    {
-                        erroredModes.Add(pair.Value);
-                        erroredModes.Add(otherPair.Value);
+            foreach (Issue issue in GetCrossModeIssues(modeVideoPairs))
+                yield return issue;
+        }
 
-                        yield return new Issue(GetTemplate("Cross Mode"), null,
-                            pair.Value.ToString().ToLower(), otherPair.Value.ToString().ToLower());
-                    }
+        private IEnumerable<Issue> GetCrossModeIssues(List<ModeVideoPair> modeVideoPairs)
+        {
+            var inconsistentModes = new List<(Beatmap.Mode, Beatmap.Mode)>();
+            for (int i = 0; i < modeVideoPairs.Count - 1; ++i)
+            {
+                for (int j = i; j < modeVideoPairs.Count; ++j)
+                {
+                    var pair      = modeVideoPairs[i];
+                    var otherPair = modeVideoPairs[j];
+
+                    // We're only looking for inconsistenties between modes here.
+                    if (pair.mode == otherPair.mode || pair.videoName == otherPair.videoName)
+                        continue;
+
+                    // Taiko generally does not include videos due to their playfield covering it, hence ignoring inconsistencies.
+                    if (pair.mode == Beatmap.Mode.Taiko || otherPair.mode == Beatmap.Mode.Taiko)
+                        continue;
+
+                    // Only mention this once for each combination of modes.
+                    if (inconsistentModes.Contains((pair.mode, otherPair.mode)) ||
+                        inconsistentModes.Contains((otherPair.mode, pair.mode)))
+                        continue;
+
+                    inconsistentModes.Add((pair.mode, otherPair.mode));
+
+                    yield return new Issue(GetTemplate("Cross Mode"), null,
+                        pair.mode.ToString().ToLower(), otherPair.mode.ToString().ToLower());
                 }
             }
         }
