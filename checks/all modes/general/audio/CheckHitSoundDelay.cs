@@ -155,7 +155,7 @@ namespace MapsetChecks.checks.general.audio
                         continue;
 
                     // Only the hit sound edge at which the object is clicked is considered active.
-                    if (hitObject.GetUsedHitSamples().Any(sample =>
+                    if (hitObject.usedHitSamples.Any(sample =>
                             sample.time == hitObject.time &&
                             sample.hitSource == HitSample.HitSource.Edge &&
                             sample.SameFileName(hitSoundFile)))

@@ -190,7 +190,7 @@ namespace MapsetChecks
                 prevTime = beatmap.hitObjects.FirstOrDefault()?.time ?? 0;
                 foreach (HitObject hitObject in beatmap.hitObjects)
                 {
-                    if (!hitObject.GetUsedHitSamples().Any(aSample => aSample.SameFileName(aHsFileName)))
+                    if (!hitObject.usedHitSamples.Any(aSample => aSample.SameFileName(aHsFileName)))
                         continue;
 
                     ++aUseData[beatmap];
