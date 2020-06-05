@@ -13,7 +13,7 @@ using System.Globalization;
 namespace MapsetChecks.checks.timing
 {
     [Check]
-    public class CheckBehindLine : BeatmapCheck
+    public class CheckBeforeLine : BeatmapCheck
     {
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
         {
@@ -26,7 +26,7 @@ namespace MapsetChecks.checks.timing
             },
 
             Category = "Timing",
-            Message = "Hit object is slightly behind a line which would modify it.",
+            Message = "Hit object is unaffected by a line very close to it.",
             Author = "Naxess",
 
             Documentation = new Dictionary<string, string>()
