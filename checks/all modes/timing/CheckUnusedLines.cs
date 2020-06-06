@@ -206,6 +206,8 @@ namespace MapsetChecks.checks.timing
 
         /// <summary> Returns whether the beatmap supports omitting bar lines. This is currently limited to taiko and mania. </summary>
         private bool CanOmitBarLine(Beatmap beatmap) =>
+            beatmap.generalSettings.mode == Beatmap.Mode.Standard || // Standard includes converts to taiko and
+                                                                     // mania, so it would technically be used.
             beatmap.generalSettings.mode == Beatmap.Mode.Taiko ||
             beatmap.generalSettings.mode == Beatmap.Mode.Mania;
 
