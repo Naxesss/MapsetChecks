@@ -127,7 +127,7 @@ namespace MapsetChecks.checks.general.audio
 
                 string templateKey = (anyHasVideoOrSB ? "With" : "Without") + " Video/Storyboard";
 
-                yield return new Issue(GetTemplate(templateKey), null, $"{maxFraction * 100:0.##}");
+                yield return new Issue(GetTemplate(templateKey), null, $"{(1 - maxFraction) * 100:0.##}");
             }
         }
         
