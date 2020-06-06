@@ -83,12 +83,18 @@ namespace MapsetChecks.checks.general.resources
             IEnumerable<Beatmap.Mode> modes = beatmapSet.beatmaps.Select(beatmap => beatmap.generalSettings.mode).Distinct();
             foreach (Beatmap.Mode mode in modes)
             {
-                IEnumerable<string> videoNames =
+                List<string> videoNames =
                     beatmapSet.beatmaps
                         .Where(beatmap => beatmap.generalSettings.mode == mode)
                         .Select(beatmap => beatmap.videos.FirstOrDefault()?.path ?? "None")
-                        .Append(beatmapSet.osb?.videos.FirstOrDefault()?.path ?? "")
-                        .Distinct();
+                        .Distinct()
+                        .ToList();
+
+                // It's possible the .osb file includes a video as well, which would run at the
+                // same time as *any* .osu video file (either in front of or behind the other).
+                string osbVideoPath = beatmapSet.osb?.videos.FirstOrDefault()?.path;
+                if (osbVideoPath != null && !videoNames.Contains(osbVideoPath))
+                    videoNames.Append(osbVideoPath);
 
                 foreach (string videoName in videoNames)
                 {
