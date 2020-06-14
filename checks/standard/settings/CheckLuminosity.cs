@@ -148,7 +148,7 @@ namespace MapsetChecks.checks.standard.settings
                 Vector3 colour = beatmap.colourSettings.combos.ElementAt(i);
                 float luminosity = GetLuminosity(colour);
 
-                int displayedColourIndex = beatmap.GetDisplayedComboColourIndex(i);
+                int displayedColourIndex = beatmap.AsDisplayedComboColourIndex(i);
                 
                 if (luminosity < luminosityMinRankable)
                     yield return new Issue(GetTemplate("Problem Combo"), beatmap,
