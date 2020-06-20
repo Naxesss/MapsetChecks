@@ -85,15 +85,15 @@ namespace MapsetChecks.checks.general.metadata
             return new Dictionary<string, IssueTemplate>()
             {
                 { "Genre",
-                    new IssueTemplate(Issue.Level.Problem,
-                        "No genre tag was found (\"rock\", \"pop\", \"electronic\", etc).")
+                    new IssueTemplate(Issue.Level.Warning,
+                        "Missing genre tag (\"rock\", \"pop\", \"electronic\", etc), ignore if none fit.")
                     .WithCause(
                         "None of the following tags were found (case insensitive):" +
                         ToCause(genreTagCombinations)) },
 
                 { "Language",
-                    new IssueTemplate(Issue.Level.Problem,
-                        "No language tag was found (\"english\", \"japanese\", \"instrumental\", etc).")
+                    new IssueTemplate(Issue.Level.Warning,
+                        "Missing language tag (\"english\", \"japanese\", \"instrumental\", etc), ignore if none fit.")
                     .WithCause(
                         "None of the following tags were found (case insensitive):" +
                         ToCause(languageTagCombinations)) }
