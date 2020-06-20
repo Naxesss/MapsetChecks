@@ -45,7 +45,11 @@ namespace MapsetChecks.checks.general.metadata
             new string[] { "Other" },
             new string[] { "Novelty" },
             new string[] { "Hip", "Hop" },
-            new string[] { "Electronic" }
+            new string[] { "Electronic" },
+            new string[] { "Metal" },
+            new string[] { "Classical" },
+            new string[] { "Folk" },
+            new string[] { "Jazz" }
         };
 
         private static readonly string[][] languageTagCombinations = {
@@ -58,6 +62,8 @@ namespace MapsetChecks.checks.general.metadata
             new string[] { "Korean" },
             new string[] { "Spanish" },
             new string[] { "Swedish" },
+            new string[] { "Russian" },
+            new string[] { "Polish" },
             new string[] { "Instrumental" }
         };
 
