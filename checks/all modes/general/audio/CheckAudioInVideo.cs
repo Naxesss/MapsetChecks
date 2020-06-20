@@ -44,28 +44,28 @@ namespace MapsetChecks.checks.general.audio
                 { "Audio",
                     new IssueTemplate(Issue.Level.Problem,
                         "\"{0}\"",
-                        "file name")
+                        "path")
                     .WithCause(
                         "An audio track is present in one of the video files.") },
                 
                 { "Leaves Folder",
                     new IssueTemplate(Issue.Level.Problem,
                         "\"{0}\" leaves the current song folder, which shouldn't ever happen.",
-                        "file name")
+                        "path")
                     .WithCause(
                         "The file path of a video file starts with two dots.") },
 
                 { "Missing",
                     new IssueTemplate(Issue.Level.Warning,
                         "\"{0}\" is missing, so unable to check that. Make sure you've downloaded with video.",
-                        "file name")
+                        "path")
                     .WithCause(
                         "A video file referenced is not present.") },
 
                 { "Exception",
                     new IssueTemplate(Issue.Level.Error,
                         Common.FILE_EXCEPTION_MESSAGE,
-                        "file name", "exception")
+                        "path", "exception")
                     .WithCause(
                         "An exception occurred trying to parse a video file.") }
             };
