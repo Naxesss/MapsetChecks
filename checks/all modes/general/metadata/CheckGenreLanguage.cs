@@ -26,13 +26,17 @@ namespace MapsetChecks.checks.general.metadata
                 {
                     "Purpose",
                     @"
-                    Ensuring that at least one web genre and language field is specified in the tags."
+                    Consistent searching between web and in-game."
                 },
                 {
                     "Reasoning",
                     @"
-                    Although they're set on the web's genre and language fields, you can't search for 
-                    these fields in-game, so that's why they're also put in the tags for consistency."
+                    Web's language/genre fields can be searched for on the web, but not in-game. 
+                    They are therefore added to the tags for consistency.
+                    <image-right>
+                        https://i.imgur.com/g6zlqhy.png
+                        An example of web genre/language also in the tags.
+                    </image>"
                 }
             }
         };
