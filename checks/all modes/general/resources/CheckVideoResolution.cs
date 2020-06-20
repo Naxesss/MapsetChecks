@@ -63,14 +63,14 @@ namespace MapsetChecks.checks.general.resources
 
                 { "Missing",
                     new IssueTemplate(Issue.Level.Warning,
-                        "\"{0}\" is missing, so unable to check that.",
+                        "\"{0}\" is missing" + Common.CHECK_MANUALLY_MESSAGE,
                         "file name")
                     .WithCause(
                         "A video referenced is not present.") },
 
                 { "Exception",
                     new IssueTemplate(Issue.Level.Error,
-                        "\"{0}\" returned exception \"{1}\", so unable to check that.",
+                        Common.FILE_EXCEPTION_MESSAGE,
                         "file name", "exception")
                     .WithCause(
                         "An exception occurred trying to parse a video.") }

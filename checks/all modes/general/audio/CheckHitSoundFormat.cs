@@ -78,7 +78,7 @@ namespace MapsetChecks.checks.general.audio
 
                 { "Exception",
                     new IssueTemplate(Issue.Level.Error,
-                        "\"{0}\" returned exception \"{1}\", so unable to check that.",
+                        Common.FILE_EXCEPTION_MESSAGE,
                         "path", "exception")
                     .WithCause(
                         "An error occurred trying to check the format of a hit sound file.") }

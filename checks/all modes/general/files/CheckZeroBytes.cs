@@ -56,7 +56,7 @@ namespace MapsetChecks.checks.general.files
 
                 { "Exception",
                     new IssueTemplate(Issue.Level.Error,
-                        "\"{0}\" threw \"{1}\"",
+                        Common.FILE_EXCEPTION_MESSAGE,
                         "path", "exception")
                     .WithCause(
                         "A file which was attempted to be checked could not be opened.") }

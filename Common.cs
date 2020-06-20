@@ -12,6 +12,9 @@ namespace MapsetChecks
 {
     public class Common
     {
+        public const string CHECK_MANUALLY_MESSAGE = ", so couldn't check, needs to be done manually.";
+        public const string FILE_EXCEPTION_MESSAGE = "\"{0}\" returned exception \"{1}\"" + CHECK_MANUALLY_MESSAGE;
+
         public static IEnumerable<Issue> GetInconsistencies(
             BeatmapSet beatmapSet,
             Func<Beatmap, string> ConsistencyCheck,

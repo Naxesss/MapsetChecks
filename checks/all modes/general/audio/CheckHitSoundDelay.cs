@@ -71,7 +71,7 @@ namespace MapsetChecks.checks.general.audio
 
                 { "Unable to check",
                     new IssueTemplate(Issue.Level.Error,
-                        "\"{0}\" {1}, so unable to check that.",
+                        Common.FILE_EXCEPTION_MESSAGE,
                         "path", "error")
                     .WithCause(
                         "There was an error parsing a hit sound file.") }
@@ -141,7 +141,7 @@ namespace MapsetChecks.checks.general.audio
                 }
                 else
                     yield return new Issue(GetTemplate("Unable to check"), null,
-                        hsFile, exception);
+                        hsFile, exception.Message);
             }
         }
 
