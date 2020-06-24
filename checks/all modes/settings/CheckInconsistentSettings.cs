@@ -150,7 +150,7 @@ namespace MapsetChecks.checks.settings
                     // Only warn on the difficulty with the storyboard.
                     if (beatmap.HasDifficultySpecificStoryboard() && !otherBeatmap.HasDifficultySpecificStoryboard())
                         yield return new Issue(GetTemplate("Warning"), beatmap,
-                            "difficulty-specifc storyboard presence", otherBeatmap);
+                            "difficulty-specific storyboard presence", otherBeatmap);
 
                     // Epilepsy warning requires either a storyboard or video to show.
                     if (beatmap.HasDifficultySpecificStoryboard() &&
