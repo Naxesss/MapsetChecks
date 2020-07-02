@@ -55,13 +55,12 @@ namespace MapsetChecks.checks.settings
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "CS",
+                { "CS Mania",
                     new IssueTemplate(Issue.Level.Problem,
-                        "Circle Size {0} is less than {1} or greater than {2}.",
+                        "Key count {0} is less than {1} or greater than {2}.",
                         "setting", "min", "max")
                     .WithCause(
-                        "Circle size is less than 2 (1 for mania) or greater than 7 (9 for mania). " +
-                        "Ignored in taiko.") },
+                        "The circle size settings is less than 4 or greater than 9. Only applies to mania.") },
 
                 { "Decimals",
                     new IssueTemplate(Issue.Level.Problem,
@@ -86,11 +85,9 @@ namespace MapsetChecks.checks.settings
                 yield return issue;
 
             // Circle size does nothing in taiko.
-            if (beatmap.generalSettings.mode != Beatmap.Mode.Taiko)
+            if (beatmap.generalSettings.mode == Beatmap.Mode.Mania)
             {
-                issue = GetIssue(beatmap.difficultySettings.circleSize, "Circle Size", beatmap,
-                    beatmap.generalSettings.mode == Beatmap.Mode.Mania ? 1 : 2,
-                    beatmap.generalSettings.mode == Beatmap.Mode.Mania ? 9 : 7);
+                issue = GetIssue(beatmap.difficultySettings.circleSize, "Circle Size", beatmap, minSetting: 4, maxSetting: 9);
                 if (issue != null)
                     yield return issue;
             }
@@ -112,7 +109,7 @@ namespace MapsetChecks.checks.settings
                 setting > maxSetting)
             {
                 if (type == "Circle Size")
-                    return new Issue(GetTemplate("CS"), beatmap,
+                    return new Issue(GetTemplate("CS Mania"), beatmap,
                         $"{setting:0.####}", minSetting, maxSetting);
                 else
                     return new Issue(GetTemplate("Other"), beatmap,
