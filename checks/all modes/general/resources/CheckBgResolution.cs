@@ -82,7 +82,7 @@ namespace MapsetChecks.checks.general.resources
 
                 { "Missing",
                     new IssueTemplate(Issue.Level.Problem,
-                        "\"{0}\" is missing, so unable to check that.",
+                        "\"{0}\" is missing" + Common.CHECK_MANUALLY_MESSAGE,
                         "file name")
                     .WithCause(
                         "A background file referenced is not present.") },
