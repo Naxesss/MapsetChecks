@@ -57,7 +57,7 @@ namespace MapsetChecks.checks.general.files
                 { "Exception",
                     new IssueTemplate(Issue.Level.Error,
                         Common.FILE_EXCEPTION_MESSAGE,
-                        "path", "exception")
+                        "path", "exception info")
                     .WithCause(
                         "A file which was attempted to be checked could not be opened.") }
             };
@@ -77,7 +77,7 @@ namespace MapsetChecks.checks.general.files
                 {
                     errorIssue = new Issue(GetTemplate("Exception"), null,
                         PathStatic.RelativePath(filePath, beatmapSet.songPath),
-                        exception);
+                        Common.AsExceptionDiv(exception));
                 }
 
                 if (errorIssue != null)

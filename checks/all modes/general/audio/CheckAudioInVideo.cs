@@ -65,7 +65,7 @@ namespace MapsetChecks.checks.general.audio
                 { "Exception",
                     new IssueTemplate(Issue.Level.Error,
                         Common.FILE_EXCEPTION_MESSAGE,
-                        "path", "exception")
+                        "path", "exception info")
                     .WithCause(
                         "An exception occurred trying to parse a video file.") }
             };

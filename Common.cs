@@ -12,8 +12,25 @@ namespace MapsetChecks
 {
     public class Common
     {
-        public const string CHECK_MANUALLY_MESSAGE = ", so couldn't check, needs to be done manually.";
-        public const string FILE_EXCEPTION_MESSAGE = "\"{0}\" returned exception \"{1}\"" + CHECK_MANUALLY_MESSAGE;
+        public const string CHECK_MANUALLY_MESSAGE = ", so you'll need to check that manually.";
+        public const string FILE_EXCEPTION_MESSAGE = "\"{0}\" couldn't be checked, so you'll need to do that manually.{1}";
+
+        public static string AsExceptionDiv(Exception exception)
+        {
+            return $@"
+                <div
+                    class=""exception-shortcut detail-shortcut shows-info""
+                    data-tooltip=""Show exception info""
+                    data-shown-info=""
+                        <div class=&quot;exception-message&quot;>
+                            &quot;{exception.Message.Replace("\"", "&quot;").Replace("\n", "<br />")}&quot;
+                        </div>
+                        <div class=&quot;paste-separator&quot;></div>
+                        <div class=&quot;exception-trace&quot;>
+                            {exception.StackTrace.Replace("\"", "&quot;").Replace("\n", "<br />")}
+                        </div>"">
+                </div>";
+        }
 
         public static IEnumerable<Issue> GetInconsistencies(
             BeatmapSet beatmapSet,
@@ -62,14 +79,8 @@ namespace MapsetChecks
             {
                 // error
                 if (tagFile.file == null)
-                {
-                    List<object> templateArgs = new List<object> { tagFile.templateArgs[0] };
-                    if (tagFile.templateArgs.Count() > 1)
-                        templateArgs.Add(tagFile.templateArgs[1]);
-
                     yield return new Issue(TemplateFunc(tagFile.templateName), null,
-                        templateArgs.ToArray());
-                }
+                        tagFile.templateArgs.ToArray());
 
                 // success
                 else
@@ -164,7 +175,7 @@ namespace MapsetChecks
                             catch (Exception exception)
                             {
                                 errorTemplate = "Exception";
-                                arguments.Add(exception.Message);
+                                arguments.Add(AsExceptionDiv(exception));
                             }
                         }
                         else

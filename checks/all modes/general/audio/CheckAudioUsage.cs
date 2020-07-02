@@ -70,7 +70,7 @@ namespace MapsetChecks.checks.general.audio
                 { "Unable to check",
                     new IssueTemplate(Issue.Level.Error,
                         Common.FILE_EXCEPTION_MESSAGE,
-                        "path", "error")
+                        "path", "exception info")
                     .WithCause(
                         "There was an error parsing the audio file.") }
             };
@@ -100,7 +100,7 @@ namespace MapsetChecks.checks.general.audio
                 if (exception != null)
                 {
                     yield return new Issue(GetTemplate("Unable to check"), null,
-                        PathStatic.RelativePath(audioPath, beatmap.songPath), exception.Message);
+                        PathStatic.RelativePath(audioPath, beatmap.songPath), Common.AsExceptionDiv(exception));
                     continue;
                 }
 

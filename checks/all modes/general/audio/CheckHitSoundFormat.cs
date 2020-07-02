@@ -79,7 +79,7 @@ namespace MapsetChecks.checks.general.audio
                 { "Exception",
                     new IssueTemplate(Issue.Level.Error,
                         Common.FILE_EXCEPTION_MESSAGE,
-                        "path", "exception")
+                        "path", "exception info")
                     .WithCause(
                         "An error occurred trying to check the format of a hit sound file.") }
             };
@@ -103,7 +103,7 @@ namespace MapsetChecks.checks.general.audio
                     if (exception != null)
                     {
                         yield return new Issue(GetTemplate("Exception"), null,
-                            hitSoundFile, exception.Message);
+                            hitSoundFile, Common.AsExceptionDiv(exception));
                         continue;
                     }
 
