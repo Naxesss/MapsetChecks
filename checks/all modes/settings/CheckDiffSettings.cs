@@ -40,9 +40,16 @@ namespace MapsetChecks.checks.settings
                         Circle size 0 compared to circle size 10.
                     </image>
 
-                    Settings should also not have more than 1 decimal place, as the precision for anything greater matters too little 
-                    to be worth increasing the amount of digits in the song selection screen or website for, even if it already rounds 
-                    to 2 decimal places in-game.
+                    Settings having more than 1 decimal place is currently unrankable for, what is probably, two reasons:
+                    <li>
+                        <ul>
+                            The precision for anything greater than 1 place matters too little to be worth increasing the amount of 
+                            digits in the song selection screen/website.
+                        </ul>
+                        <ul>
+                            Searching for e.g. AR=9.25 will not find maps with AR 9.25. However, searching for AR=9.2 will.
+                        </ul>
+                    </li>
                     <image>
                         https://i.imgur.com/ySldNaU.png
                         More than 1 decimal place compared to 1 decimal place.
