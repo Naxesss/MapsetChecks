@@ -90,7 +90,7 @@ namespace MapsetChecks.checks.general.resources
                 { "Exception",
                     new IssueTemplate(Issue.Level.Error,
                         Common.FILE_EXCEPTION_MESSAGE,
-                        "file name", "exception")
+                        "file name", "exception info")
                     .WithCause(
                         "An exception occurred trying to parse a background file.") }
             };
