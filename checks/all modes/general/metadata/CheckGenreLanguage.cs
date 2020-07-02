@@ -119,8 +119,10 @@ namespace MapsetChecks.checks.general.metadata
         /// (e.g. contains both "Video" and "Game", or "Electronic"), case insensitive. </summary>
         private bool HasAnyCombination(string[][] tagCombinations, string[] tags) =>
             tagCombinations.Any(tagCombination =>
-                tagCombination.All(tag =>
-                    tags.Contains(tag.ToLower())
+                tagCombination.All(tagInCombination =>
+                    tags.Any(tag =>
+                        tag.Contains(tagInCombination.ToLower())
+                    )
                 )
             );
     }
