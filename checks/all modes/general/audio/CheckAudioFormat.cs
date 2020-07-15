@@ -27,14 +27,13 @@ namespace MapsetChecks.checks.general.audio
                 {
                     "Purpose",
                     @"
-                    Ensures that all audio files used for the song itself is in MP3 format."
+                    Ensures that all audio files used for the song itself is in MP3 or OGG format."
                 },
                 {
                     "Reasoning",
                     @"
                     Although the Wave format can support compressed audio, it is usually not efficient and takes up 
-                    more space than the MP3 format. OGG can be used for hit sounds, but is deprecated for song audio 
-                    files, and is as such not allowed in this case.
+                    more space than the MP3 format.
                     <note>
                         Note that extension is not the same thing as format. If you take an OGG file and change its 
                         extension to "".mp3"", for example, it will still be a OGG file. To change the format of a 
@@ -53,15 +52,15 @@ namespace MapsetChecks.checks.general.audio
             {
                 { "Incorrect Format",
                     new IssueTemplate(Issue.Level.Problem,
-                        "\"{0}\" is using the {1} format. Song audio files must be in the MP3 format.",
+                        "\"{0}\" is using the {1} format. Song audio files must be in either MP3 or OGG format.",
                         "path", "actual format")
                     .WithCause(
                         "A song audio file is not using the MP3 format.") },
 
                 { "Incorrect Extension",
                     new IssueTemplate(Issue.Level.Warning,
-                        "\"{0}\" is using the {1} format, but doesn't use the .mp3 extension.",
-                        "path", "actual format")
+                        "\"{0}\" is using the {1} format, but doesn't use the {2} extension.",
+                        "path", "actual format", "expected extension")
                     .WithCause(
                         "A song audio file is using an incorrect extension.") },
 
@@ -91,12 +90,19 @@ namespace MapsetChecks.checks.general.audio
             if (exception != null)
                 yield return new Issue(GetTemplate("Exception"), null,
                     audioName, Common.AsExceptionDiv(exception));
-            else if ((ManagedBass.ChannelType.MP3 & actualFormat) == 0)
+
+            else if ((ManagedBass.ChannelType.MP3 & actualFormat) != ManagedBass.ChannelType.MP3 &&
+                     (ManagedBass.ChannelType.OGG & actualFormat) != ManagedBass.ChannelType.OGG)
                 yield return new Issue(GetTemplate("Incorrect Format"), null,
                     audioName, Audio.EnumToString(actualFormat));
-            else if (!audioName.ToLower().EndsWith(".mp3"))
+
+            else if (!audioName.ToLower().EndsWith(".mp3") && (ManagedBass.ChannelType.MP3 & actualFormat) == ManagedBass.ChannelType.MP3)
                 yield return new Issue(GetTemplate("Incorrect Extension"), null,
-                    audioName, Audio.EnumToString(actualFormat));
+                    audioName, Audio.EnumToString(actualFormat), ".mp3");
+
+            else if (!audioName.ToLower().EndsWith(".ogg") && (ManagedBass.ChannelType.OGG & actualFormat) == ManagedBass.ChannelType.OGG)
+                yield return new Issue(GetTemplate("Incorrect Extension"), null,
+                    audioName, Audio.EnumToString(actualFormat), ".ogg");
         }
     }
 }
