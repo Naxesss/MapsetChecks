@@ -19,7 +19,7 @@ namespace MapsetChecks.checks.general.resources
         public override CheckMetadata GetMetadata() => new CheckMetadata()
         {
             Category = "Resources",
-            Message = "Multiple videos.",
+            Message = "Inconsistent video usage.",
             Author = "Naxess",
 
             Documentation = new Dictionary<string, string>()
