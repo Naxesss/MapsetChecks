@@ -101,7 +101,7 @@ namespace MapsetChecks.checks.general.resources
                     IEnumerable<Beatmap> suchBeatmaps =
                         beatmapSet.beatmaps
                             .Where(beatmap =>
-                                beatmap.videos.FirstOrDefault()?.path == videoName ||
+                                (beatmap.videos.FirstOrDefault()?.path ?? "None") == videoName ||
                                 beatmapSet.osb?.videos.FirstOrDefault()?.path == videoName);
 
                     if (videoNames.Count() > 1 && suchBeatmaps.Any())
