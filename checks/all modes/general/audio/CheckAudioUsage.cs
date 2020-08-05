@@ -18,7 +18,7 @@ namespace MapsetChecks.checks.general.audio
     [Check]
     public class CheckAudioUsage : GeneralCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new CheckMetadata()
         {
             Category = "Audio",
             Message = "More than 20% unused audio at the end.",
