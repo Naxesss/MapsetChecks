@@ -181,7 +181,7 @@ namespace MapsetChecks.checks.timing
 
         /// <summary> Returns whether the offset aligns in such a way that one line is a multiple of 4 beats away
         /// from the other, and the BPM and timing signature (meter) is the same. </summary>
-        private bool SameDownbeatStructure(Beatmap beatmap, UninheritedLine line, UninheritedLine otherLine)
+        private bool DownbeatsAlign(Beatmap beatmap, UninheritedLine line, UninheritedLine otherLine)
         {
             bool negligibleDownbeatOffset = GetBeatOffset(otherLine, line, otherLine.meter) <= 1;
             return
@@ -200,8 +200,8 @@ namespace MapsetChecks.checks.timing
         /// from the other (1 measure = 4 beats in 4/4 meter). This first checks that the downbeat structure is the same.
         /// <br></br><br></br>
         /// In the Nightcore mod, cymbals can be heard every 4 measures. </summary>
-        private bool SameNightcoreCymbalStructure(Beatmap beatmap, UninheritedLine line, UninheritedLine otherLine) =>
-            SameDownbeatStructure(beatmap, line, otherLine) && GetBeatOffset(otherLine, line, 4 * otherLine.meter) <= 1;
+        private bool NightcoreCymbalsAlign(Beatmap beatmap, UninheritedLine line, UninheritedLine otherLine) =>
+            DownbeatsAlign(beatmap, line, otherLine) && GetBeatOffset(otherLine, line, 4 * otherLine.meter) <= 1;
 
         /// <summary> Returns the ms difference between two timing lines, where the timing lines reset offset every
         /// given number of beats. </summary>
