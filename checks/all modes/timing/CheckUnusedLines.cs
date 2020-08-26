@@ -110,6 +110,10 @@ namespace MapsetChecks.checks.timing
                 if (!DownbeatsAlign(beatmap, currentLine, previousUninheritedLine))
                     continue;
 
+                bool changesNCCymbals = false;
+                if (!NightcoreCymbalsAlign(beatmap, currentLine, previousUninheritedLine))
+                    changesNCCymbals = true;
+
                 bool omittingBarline = false;
                 bool correctingBarline = false;
                 if (CanOmitBarLine(beatmap))
@@ -127,6 +131,7 @@ namespace MapsetChecks.checks.timing
                 List<string> notImmediatelyObvious = new List<string>();
                 if (omittingBarline)   notImmediatelyObvious.Add("omitting first barline");
                 if (correctingBarline) notImmediatelyObvious.Add($"correcting the omitted barline at {Timestamp.Get(previousUninheritedLine.offset)}");
+                if (changesNCCymbals)  notImmediatelyObvious.Add("nightcore mod cymbals");
                 string notImmediatelyObviousStr = string.Join(" and ", notImmediatelyObvious);
 
                 if (!IsLineUsed(beatmap, currentLine, previousLine))
