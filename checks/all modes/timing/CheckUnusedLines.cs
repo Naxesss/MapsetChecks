@@ -47,7 +47,7 @@ namespace MapsetChecks.checks.timing
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "Problem Nothing",
+                { "Problem",
                     new IssueTemplate(Issue.Level.Problem,
                         "{0} Uninherited line changes nothing.",
                         "timestamp - ")
@@ -62,21 +62,21 @@ namespace MapsetChecks.checks.timing
                     .WithCause(
                         "Same as the first check, but changes volume, sampleset, or another setting that an inherited line could change instead.") },
 
-                { "Warning Nothing",
+                { "Warning",
                     new IssueTemplate(Issue.Level.Warning,
-                        "{0} Uninherited line changes nothing, other than the finish with the nightcore mod. Ensure it makes sense to have a finish here.",
-                        "timestamp - ")
+                        "{0} Uninherited line changes nothing, other than {1}, ensure this makes sense.",
+                        "timestamp - ", "something not immediately obvious")
                     .WithCause(
-                        "Same as the first check, but is not on a multiple of 4 downbeats away from the previous uninherited line.") },
+                        "Same as the first check, but changes something that inherited lines cannot, yet isn't immediately obvious, " +
+                        "i.e. omitting barline, correcting an omitted barline, or nightcore cymbals.") },
 
                 { "Warning Inherited",
                     new IssueTemplate(Issue.Level.Warning,
-                        "{0} Uninherited line changes nothing that can't be changed with an inherited line, other than the finish with the nightcore mod. " +
-                        "Ensure it makes sense to have a finish here.",
-                        "timestamp - ")
+                        "{0} Uninherited line changes nothing that can't be changed with an inherited line, other than {1}, ensure this makes sense.",
+                        "timestamp - ", "something not immediately obvious")
                     .WithCause(
-                        "An uninherited line is not placed on a multiple of 4 downbeats away from the previous uninherited line, " +
-                        "and only changes settings which an inherited line could do instead.") },
+                        "Same as the second check, but changes something that inherited lines cannot, yet isn't immediately obvious, " +
+                        "i.e. omitting barline, correcting an omitted barline, or nightcore cymbals.") },
 
                 { "Minor Inherited",
                     new IssueTemplate(Issue.Level.Minor,
@@ -113,25 +113,26 @@ namespace MapsetChecks.checks.timing
                 if (CanOmitBarLine(beatmap) && currentLine.omitsBarLine)
                     continue;
 
+                List<string> notImmediatelyObvious = new List<string>();
+                string notImmediatelyObviousStr = string.Join(" and ", notImmediatelyObvious);
+
                 if (!IsLineUsed(beatmap, currentLine, previousLine))
                 {
-                    // In the nightcore mod, every 4th (or whatever the meter is) downbeat
-                    // has an added cymbal, so that can technically change things.
-                    if (SameNightcoreCymbalStructure(beatmap, currentLine, previousUninheritedLine))
-                        yield return new Issue(GetTemplate("Problem Nothing"),
-                        beatmap, Timestamp.Get(currentLine.offset));
-                    else
-                        yield return new Issue(GetTemplate("Warning Nothing"),
+                    if (notImmediatelyObvious.Count == 0)
+                        yield return new Issue(GetTemplate("Problem"),
                             beatmap, Timestamp.Get(currentLine.offset));
+                    else
+                        yield return new Issue(GetTemplate("Warning"),
+                            beatmap, Timestamp.Get(currentLine.offset), notImmediatelyObviousStr);
                 }
                 else
                 {
-                    if (SameNightcoreCymbalStructure(beatmap, currentLine, previousUninheritedLine))
+                    if (notImmediatelyObvious.Count == 0)
                         yield return new Issue(GetTemplate("Problem Inherited"),
                             beatmap, Timestamp.Get(currentLine.offset));
                     else
                         yield return new Issue(GetTemplate("Warning Inherited"),
-                            beatmap, Timestamp.Get(currentLine.offset));
+                            beatmap, Timestamp.Get(currentLine.offset), notImmediatelyObviousStr);
                 }
             }
         }
