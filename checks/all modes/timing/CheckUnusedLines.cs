@@ -107,13 +107,26 @@ namespace MapsetChecks.checks.timing
                 TimingLine previousLine = beatmap.GetTimingLine(currentLine.offset - 1);
                 UninheritedLine previousUninheritedLine = beatmap.GetTimingLine<UninheritedLine>(currentLine.offset - 1);
 
-                if (!SameDownbeatStructure(beatmap, currentLine, previousUninheritedLine))
+                if (!DownbeatsAlign(beatmap, currentLine, previousUninheritedLine))
                     continue;
 
-                if (CanOmitBarLine(beatmap) && currentLine.omitsBarLine)
-                    continue;
+                bool omittingBarline = false;
+                bool correctingBarline = false;
+                if (CanOmitBarLine(beatmap))
+                {
+                    // e.g. red line used mid-measure to account for bpm change shouldn't create a barline, so it's omitted, but the
+                    // end of the measure won't have a barline unless another red line is placed there to correct it, hence both used.
+                    omittingBarline = currentLine.omitsBarLine;
+                    correctingBarline = previousUninheritedLine.omitsBarLine && !BarLinesAlign(beatmap, currentLine, previousUninheritedLine);
+                    // Omitting bar lines isn't commonly seen in standard, so it's likely that people will
+                    // miss incorrect usages of it, hence warn if it's the only thing keeping it used.
+                    if ((omittingBarline || correctingBarline) && beatmap.generalSettings.mode != Beatmap.Mode.Standard)
+                        continue;
+                }
 
                 List<string> notImmediatelyObvious = new List<string>();
+                if (omittingBarline)   notImmediatelyObvious.Add("omitting first barline");
+                if (correctingBarline) notImmediatelyObvious.Add($"correcting the omitted barline at {Timestamp.Get(previousUninheritedLine.offset)}");
                 string notImmediatelyObviousStr = string.Join(" and ", notImmediatelyObvious);
 
                 if (!IsLineUsed(beatmap, currentLine, previousLine))
@@ -167,22 +180,21 @@ namespace MapsetChecks.checks.timing
         }
 
         /// <summary> Returns whether the offset aligns in such a way that one line is a multiple of 4 beats away
-        /// from the other, and the BPM and timing signature (meter) is the same.
-        /// <br></br><br></br>
-        /// Offset alignment is much more strict for omitted bar lines in taiko and mania due to bars otherwise
-        /// becoming thicker than normal. </summary>
+        /// from the other, and the BPM and timing signature (meter) is the same. </summary>
         private bool SameDownbeatStructure(Beatmap beatmap, UninheritedLine line, UninheritedLine otherLine)
         {
             bool negligibleDownbeatOffset = GetBeatOffset(otherLine, line, otherLine.meter) <= 1;
-
-            if (CanOmitBarLine(beatmap) && otherLine.omitsBarLine)
-                negligibleDownbeatOffset = GetBeatOffset(otherLine, line, otherLine.meter) == 0;
-
             return
                 otherLine.bpm == line.bpm &&
                 otherLine.meter == line.meter &&
                 negligibleDownbeatOffset;
         }
+
+        /// <summary> Returns whether the bar lines from the first line align perfectly with those of the second.
+        /// Assumes the two lines have identical BPM and meter, use <see cref="DownbeatsAlign"/> for that. </summary>
+        private bool BarLinesAlign(Beatmap beatmap, UninheritedLine line, UninheritedLine otherLine) =>
+            // Even differences in 1 ms would be visible since it'd make 2 barlines next to each other.
+            GetBeatOffset(otherLine, line, otherLine.meter) == 0;
 
         /// <summary> Returns whether the offset aligns in such a way that one line is a multiple of 4 measures away
         /// from the other (1 measure = 4 beats in 4/4 meter). This first checks that the downbeat structure is the same.
