@@ -83,7 +83,7 @@ namespace MapsetChecks.checks.settings
                         "{0} {1}, although is capped between 0 to 10 in-game.",
                         "value", "setting")
                     .WithCause(
-                        "A difficulty setting (not CS) is less than 0 or greater than 10.") }
+                        "A difficulty setting is less than 0 or greater than 10.") }
             };
         }
 
@@ -97,6 +97,12 @@ namespace MapsetChecks.checks.settings
             if (beatmap.generalSettings.mode == Beatmap.Mode.Mania)
             {
                 issue = GetIssue(beatmap.difficultySettings.circleSize, "Circle Size", beatmap, minSetting: 4, maxSetting: 9);
+                if (issue != null)
+                    yield return issue;
+            }
+            else
+            {
+                issue = GetIssue(beatmap.difficultySettings.approachRate, "Circle Size", beatmap);
                 if (issue != null)
                     yield return issue;
             }
@@ -117,7 +123,7 @@ namespace MapsetChecks.checks.settings
             if (setting < minSetting ||
                 setting > maxSetting)
             {
-                if (type == "Circle Size")
+                if (type == "Circle Size" && beatmap.generalSettings.mode == Beatmap.Mode.Mania)
                     return new Issue(GetTemplate("CS Mania"), beatmap,
                         $"{setting:0.####}", minSetting, maxSetting);
                 else
