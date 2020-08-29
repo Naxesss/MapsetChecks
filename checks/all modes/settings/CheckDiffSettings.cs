@@ -27,19 +27,11 @@ namespace MapsetChecks.checks.settings
                 {
                     "Purpose",
                     @"
-                    Preventing circle size from being too small or large and difficulty settings from including more than 1 decimal."
+                    Preventing difficulty settings from including more than 1 decimal, and mania key counts from being too large or small."
                 },
                 {
                     "Reasoning",
                     @"
-                    All difficulty settings cap at 0 and 10, including circle size, making it the only setting that can go beyond its 
-                    minimum and maximum values, 2 and 7 respectively (1 and 9 for mania). These limits are intentional and represent the 
-                    largest and smallest circle size acceptable, anything smaller or larger is considered ridiculous.
-                    <image>
-                        https://i.imgur.com/JT9JNMb.jpg
-                        Circle size 0 compared to circle size 10.
-                    </image>
-
                     Settings having more than 1 decimal place is currently unrankable for, what is probably, two reasons:
                     <li>
                         <ul>
@@ -53,7 +45,17 @@ namespace MapsetChecks.checks.settings
                     <image>
                         https://i.imgur.com/ySldNaU.png
                         More than 1 decimal place compared to 1 decimal place.
-                    </image>"
+                    </image>
+
+                    The circle size setting in mania determines the key count, and is limited between 4 and 9.
+                    <li>
+                        <ul>
+                            3K or fewer leaves little room for patterning, making 2 maps of the same difficulty and song almost identical.
+                        </ul>
+                        <ul>
+                            10K is currently only possible using co-op, which automatically makes any score unranked.
+                        </ul>
+                    </li>"
                 }
             }
         };
@@ -78,7 +80,7 @@ namespace MapsetChecks.checks.settings
 
                 { "Other",
                     new IssueTemplate(Issue.Level.Warning,
-                        "{0} {1}, although is normalized to 0 to 10 in-game.",
+                        "{0} {1}, although is capped between 0 to 10 in-game.",
                         "value", "setting")
                     .WithCause(
                         "A difficulty setting (not CS) is less than 0 or greater than 10.") }
