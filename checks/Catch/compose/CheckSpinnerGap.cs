@@ -67,6 +67,9 @@ namespace MapsetChecks.checks.Catch.compose
             HitObject lastObject = null;
             foreach (HitObject hitObject in beatmap.hitObjects)
             {
+                if (lastObject is Spinner && hitObject is Spinner)
+                    continue;
+
                 // Check if the previous object was a spinner so we can determine the 'after' gap 
                 if (lastObject is Spinner)
                 {
