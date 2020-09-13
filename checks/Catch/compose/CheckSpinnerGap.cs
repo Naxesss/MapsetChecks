@@ -37,7 +37,7 @@ namespace MapsetChecks.checks.Catch.compose
                     "Reasoning",
                     @"
                     Spinners can make it difficult to read when provided shortly before/after an object. On lower difficulties 
-                    the approach rate becomes slower and will result in a more clustered experience. The spinner gap is essential 
+                    the approach rate is slower and will result in a more clustered experience. The spinner gap is essential 
                     to give the player enough time to react to the next object and to avoid spinner traps."
                 }
             }
