@@ -12,16 +12,16 @@ namespace MapsetChecks.checks.Catch.compose
     [Check]
     public class CheckSpinnerGap : BeatmapCheck
     {
-        // Allowed spinner gaps in milliseconds
-        private const int ThresholdBeforeCupSalad = 250;
-        private const int ThresholdBeforePlatterRain = 125;
-        private const int ThresholdBeforeOverdose = 62;
+        // Allowed spinner gaps in milliseconds.
+        private const int ThresholdBeforeCupSalad       = 250; // Shortest acceptable gap is 1/1 at 240 BPM.
+        private const int ThresholdBeforePlatterRain    = 125; // Shortest acceptable gap is 1/2 at 240 BPM.
+        private const int ThresholdBeforeOverdose       = 62;  // Shortest acceptable gap is 1/4 at 240 BPM.
         private const int ThresholdAfterCupSaladPlatter = 250;
-        private const int ThresholdAfterRainOverdose = 125;
+        private const int ThresholdAfterRainOverdose    = 125;
 
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
         {
-            Modes = new[] {Mode.Catch},
+            Modes = new[] { Mode.Catch },
             Category = "Compose",
             Message = "Spinner gap too small.",
             Author = "Greaper",
@@ -49,13 +49,13 @@ namespace MapsetChecks.checks.Catch.compose
             {
                 { "SpinnerBefore",
                     new IssueTemplate(Issue.Level.Problem,
-                            "{0} The spinner must be at least {1} ms apart from the previous object, currently it is {2} ms.",
+                            "{0} The spinner must be at least {1} ms apart from the previous object, currently {2} ms.",
                             "timestamp - ", "required duration", "current duration")
                         .WithCause(
                             "The spinner starts too early.") },
                 { "SpinnerAfter",
                     new IssueTemplate(Issue.Level.Problem,
-                            "{0} The spinner must be at least {1} ms apart from the next object, currently it is {2} ms.",
+                            "{0} The spinner must be at least {1} ms apart from the next object, currently {2} ms.",
                             "timestamp - ", "required duration", "current duration")
                         .WithCause(
                             "The spinner ends too late.") }
@@ -70,24 +70,20 @@ namespace MapsetChecks.checks.Catch.compose
                 if (lastObject is Spinner && hitObject is Spinner)
                     continue;
 
-                // Check if the previous object was a spinner so we can determine the 'after' gap 
+                // Check if the previous object was a spinner so we can determine the 'after' gap.
                 if (lastObject is Spinner)
                 {
                     double timeBetweenSpinnerAndNextObject = hitObject.GetPrevDeltaTime();
 
                     if (timeBetweenSpinnerAndNextObject < ThresholdAfterCupSaladPlatter)
-                    {
                         yield return new Issue(GetTemplate("SpinnerAfter"), beatmap,
                                 Timestamp.Get(lastObject, hitObject), ThresholdAfterCupSaladPlatter, timeBetweenSpinnerAndNextObject)
                             .ForDifficulties(Difficulty.Easy, Difficulty.Normal, Difficulty.Hard);
-                    }
 
                     if (timeBetweenSpinnerAndNextObject < ThresholdAfterRainOverdose)
-                    {
                         yield return new Issue(GetTemplate("SpinnerAfter"), beatmap,
                                 Timestamp.Get(lastObject, hitObject), ThresholdAfterRainOverdose, timeBetweenSpinnerAndNextObject)
                             .ForDifficulties(Difficulty.Insane, Difficulty.Expert, Difficulty.Ultra);
-                    }
                 }
 
                 if (hitObject is Spinner)
@@ -95,28 +91,22 @@ namespace MapsetChecks.checks.Catch.compose
                     double timeBetweenPreviousObjectAndSpinner = hitObject.GetPrevDeltaTime();
 
                     if (timeBetweenPreviousObjectAndSpinner < ThresholdBeforeCupSalad)
-                    {
                         yield return new Issue(GetTemplate("SpinnerBefore"), beatmap,
                                 Timestamp.Get(lastObject, hitObject), ThresholdBeforeCupSalad, timeBetweenPreviousObjectAndSpinner)
                             .ForDifficulties(Difficulty.Easy, Difficulty.Normal);
-                    }
 
                     if (timeBetweenPreviousObjectAndSpinner < ThresholdBeforePlatterRain)
-                    {
                         yield return new Issue(GetTemplate("SpinnerBefore"), beatmap,
                                 Timestamp.Get(lastObject, hitObject), ThresholdBeforePlatterRain, timeBetweenPreviousObjectAndSpinner)
                             .ForDifficulties(Difficulty.Hard, Difficulty.Insane);
-                    }
 
                     if (timeBetweenPreviousObjectAndSpinner < ThresholdBeforeOverdose)
-                    {
                         yield return new Issue(GetTemplate("SpinnerBefore"), beatmap, 
                                 Timestamp.Get(lastObject, hitObject), ThresholdBeforeOverdose, timeBetweenPreviousObjectAndSpinner)
                             .ForDifficulties(Difficulty.Expert, Difficulty.Ultra);
-                    }
                 }
                 
-                // Specify the last object so we can use it to determine the 'after' gap if needed
+                // Specify the last object so we can use it to determine the 'after' gap if needed.
                 lastObject = hitObject;
             }
         }
