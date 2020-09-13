@@ -23,7 +23,7 @@ namespace MapsetChecks.checks.Catch.compose
         {
             Modes = new[] {Mode.Catch},
             Category = "Compose",
-            Message = "Too short spinner gap.",
+            Message = "Spinner gap too small.",
             Author = "Greaper",
 
             Documentation = new Dictionary<string, string>
@@ -36,9 +36,9 @@ namespace MapsetChecks.checks.Catch.compose
                 {
                     "Reasoning",
                     @"
-                    Spinners can give a hard time to catch the next object. On lower difficulties the approach rate becomes slower and
-                    will result in a more clustered experience. The spinner gap is essential to give the player enough time 
-                    to react to the next object and to avoid spinner traps."
+                    Spinners can make it difficult to read when provided shortly before/after an object. On lower difficulties 
+                    the approach rate becomes slower and will result in a more clustered experience. The spinner gap is essential 
+                    to give the player enough time to react to the next object and to avoid spinner traps."
                 }
             }
         };
@@ -52,13 +52,13 @@ namespace MapsetChecks.checks.Catch.compose
                             "{0} The spinner must be at least {1} ms apart from the previous object, currently it is {2} ms.",
                             "timestamp - ", "required duration", "current duration")
                         .WithCause(
-                            "The spinner starts to early.") },
+                            "The spinner starts too early.") },
                 { "SpinnerAfter",
                     new IssueTemplate(Issue.Level.Problem,
                             "{0} The spinner must be at least {1} ms apart from the next object, currently it is {2} ms.",
                             "timestamp - ", "required duration", "current duration")
                         .WithCause(
-                            "The spinner ends to late.") }
+                            "The spinner ends too late.") }
             };
         }
 
