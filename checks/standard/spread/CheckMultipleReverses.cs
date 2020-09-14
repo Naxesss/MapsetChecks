@@ -12,7 +12,7 @@ using System.Globalization;
 using System.Linq;
 using System.Numerics;
 
-namespace MapsetChecks.checks.standard.spread
+namespace MapsetChecks.Checks.Standard.Spread
 {
     [Check]
     public class CheckMultipleReverses : BeatmapCheck

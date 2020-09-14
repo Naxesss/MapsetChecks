@@ -12,7 +12,7 @@ using System.Globalization;
 using System.Linq;
 using System.Numerics;
 
-namespace MapsetChecks.checks.standard.settings
+namespace MapsetChecks.Checks.Standard.Settings
 {
     [Check]
     public class CheckLuminosity : BeatmapCheck

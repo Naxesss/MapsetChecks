@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using MapsetVerifierFramework.objects.resources;
 
-namespace MapsetChecks.checks.general.audio
+namespace MapsetChecks.Checks.General.Audio
 {
     [Check]
     public class CheckHitSoundLength : GeneralCheck

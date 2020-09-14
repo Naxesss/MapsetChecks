@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace MapsetChecks.checks.timing
+namespace MapsetChecks.Checks.Timing
 {
     [Check]
     public class CheckUnsnaps : BeatmapCheck

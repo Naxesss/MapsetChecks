@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace MapsetChecks.checks.timing
+namespace MapsetChecks.Checks.Timing
 {
     [Check]
     public class CheckUnusedLines : BeatmapCheck

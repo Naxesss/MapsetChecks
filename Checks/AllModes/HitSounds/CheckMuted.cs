@@ -12,7 +12,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 
-namespace MapsetChecks.checks.hit_sounds
+namespace MapsetChecks.Checks.HitSounds
 {
     [Check]
     public class CheckMuted : BeatmapCheck

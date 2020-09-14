@@ -5,7 +5,7 @@ using MapsetVerifierFramework.objects.metadata;
 using System;
 using System.Collections.Generic;
 
-namespace MapsetChecks.checks.examples
+namespace MapsetChecks.Checks.Examples
 {
     // This attribute tells the framework that it's a check it should register.
     // Since this is just an example class, we're not going to register this.

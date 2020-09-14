@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace MapsetChecks.checks.general.audio
+namespace MapsetChecks.Checks.General.Audio
 {
     [Check]
     public class CheckCommonFinish : GeneralCheck

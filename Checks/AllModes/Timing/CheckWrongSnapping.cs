@@ -12,7 +12,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MapsetChecks.checks.timing
+namespace MapsetChecks.Checks.Timing
 {
     [Check]
     public class CheckWrongSnapping : BeatmapSetCheck

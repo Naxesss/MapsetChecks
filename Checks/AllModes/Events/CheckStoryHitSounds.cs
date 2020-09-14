@@ -12,7 +12,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 
-namespace MapsetChecks.checks.events
+namespace MapsetChecks.Checks.Events
 {
     [Check]
     public class CheckStoryHitSounds : BeatmapSetCheck

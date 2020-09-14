@@ -11,7 +11,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 
-namespace MapsetChecks.checks.settings
+namespace MapsetChecks.Checks.Settings
 {
     [Check]
     public class CheckTickRate : BeatmapCheck

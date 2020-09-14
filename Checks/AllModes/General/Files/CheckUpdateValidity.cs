@@ -9,7 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 
-namespace MapsetChecks.checks.general.files
+namespace MapsetChecks.Checks.General.Files
 {
     [Check]
     public class CheckUpdateValidity : GeneralCheck

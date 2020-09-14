@@ -10,7 +10,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 
-namespace MapsetChecks.checks.general.audio
+namespace MapsetChecks.Checks.General.Audio
 {
     [Check]
     public class CheckMultipleAudio : GeneralCheck

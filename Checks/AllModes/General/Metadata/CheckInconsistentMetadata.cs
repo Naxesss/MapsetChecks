@@ -10,7 +10,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace MapsetChecks.checks.general.metadata
+namespace MapsetChecks.Checks.General.Metadata
 {
     [Check]
     public class CheckInconsistentMetadata : GeneralCheck
