@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using MapsetParser.objects;
 using MapsetParser.objects.hitobjects;
 using MapsetParser.statics;
@@ -64,50 +65,44 @@ namespace MapsetChecks.checks.Catch.compose
 
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            HitObject lastObject = null;
-            foreach (HitObject hitObject in beatmap.hitObjects)
+            foreach (Spinner spinner in beatmap.hitObjects.OfType<Spinner>())
             {
-                if (lastObject is Spinner && hitObject is Spinner)
-                    continue;
-
-                // Check if the previous object was a spinner so we can determine the 'after' gap.
-                if (lastObject is Spinner)
+                // Check the gap after the spinner.
+                if (spinner.Next() is HitObject next && !(next is Spinner))
                 {
-                    double timeBetweenSpinnerAndNextObject = hitObject.GetPrevDeltaTime();
+                    double nextGap = next.time - spinner.endTime;
 
-                    if (timeBetweenSpinnerAndNextObject < ThresholdAfterCupSaladPlatter)
+                    if (nextGap < ThresholdAfterCupSaladPlatter)
                         yield return new Issue(GetTemplate("SpinnerAfter"), beatmap,
-                                Timestamp.Get(lastObject, hitObject), ThresholdAfterCupSaladPlatter, timeBetweenSpinnerAndNextObject)
+                                Timestamp.Get(spinner, next), ThresholdAfterCupSaladPlatter, nextGap)
                             .ForDifficulties(Difficulty.Easy, Difficulty.Normal, Difficulty.Hard);
 
-                    if (timeBetweenSpinnerAndNextObject < ThresholdAfterRainOverdose)
+                    if (nextGap < ThresholdAfterRainOverdose)
                         yield return new Issue(GetTemplate("SpinnerAfter"), beatmap,
-                                Timestamp.Get(lastObject, hitObject), ThresholdAfterRainOverdose, timeBetweenSpinnerAndNextObject)
+                                Timestamp.Get(spinner, next), ThresholdAfterRainOverdose, nextGap)
                             .ForDifficulties(Difficulty.Insane, Difficulty.Expert, Difficulty.Ultra);
                 }
 
-                if (hitObject is Spinner)
+                // Check the gap before the spinner.
+                if (spinner.Prev() is HitObject prev && !(prev is Spinner))
                 {
-                    double timeBetweenPreviousObjectAndSpinner = hitObject.GetPrevDeltaTime();
+                    double prevGap = spinner.time - prev.GetEndTime();
 
-                    if (timeBetweenPreviousObjectAndSpinner < ThresholdBeforeCupSalad)
+                    if (prevGap < ThresholdBeforeCupSalad)
                         yield return new Issue(GetTemplate("SpinnerBefore"), beatmap,
-                                Timestamp.Get(lastObject, hitObject), ThresholdBeforeCupSalad, timeBetweenPreviousObjectAndSpinner)
+                                Timestamp.Get(prev, spinner), ThresholdBeforeCupSalad, prevGap)
                             .ForDifficulties(Difficulty.Easy, Difficulty.Normal);
 
-                    if (timeBetweenPreviousObjectAndSpinner < ThresholdBeforePlatterRain)
+                    if (prevGap < ThresholdBeforePlatterRain)
                         yield return new Issue(GetTemplate("SpinnerBefore"), beatmap,
-                                Timestamp.Get(lastObject, hitObject), ThresholdBeforePlatterRain, timeBetweenPreviousObjectAndSpinner)
+                                Timestamp.Get(prev, spinner), ThresholdBeforePlatterRain, prevGap)
                             .ForDifficulties(Difficulty.Hard, Difficulty.Insane);
 
-                    if (timeBetweenPreviousObjectAndSpinner < ThresholdBeforeOverdose)
+                    if (prevGap < ThresholdBeforeOverdose)
                         yield return new Issue(GetTemplate("SpinnerBefore"), beatmap, 
-                                Timestamp.Get(lastObject, hitObject), ThresholdBeforeOverdose, timeBetweenPreviousObjectAndSpinner)
+                                Timestamp.Get(prev, spinner), ThresholdBeforeOverdose, prevGap)
                             .ForDifficulties(Difficulty.Expert, Difficulty.Ultra);
                 }
-                
-                // Specify the last object so we can use it to determine the 'after' gap if needed.
-                lastObject = hitObject;
             }
         }
     }
