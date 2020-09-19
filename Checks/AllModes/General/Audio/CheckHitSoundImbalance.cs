@@ -93,8 +93,8 @@ namespace MapsetChecks.Checks.General.Audio
                 Exception exception = null;
                 try
                 {
-                    channels = Audio.GetChannels(hsPath);
-                    peaks    = Audio.GetPeaks(hsPath);
+                    channels = AudioBASS.GetChannels(hsPath);
+                    peaks    = AudioBASS.GetPeaks(hsPath);
                 }
                 catch (Exception ex)
                     { exception = ex; }

@@ -83,7 +83,7 @@ namespace MapsetChecks.checks.general.audio
             ManagedBass.ChannelType actualFormat = 0;
             Exception exception = null;
             try
-                { actualFormat = Audio.GetFormat(audioPath); }
+                { actualFormat = AudioBASS.GetFormat(audioPath); }
             catch (Exception ex)
                 { exception = ex; }
 
@@ -94,15 +94,15 @@ namespace MapsetChecks.checks.general.audio
             else if ((ManagedBass.ChannelType.MP3 & actualFormat) != ManagedBass.ChannelType.MP3 &&
                      (ManagedBass.ChannelType.OGG & actualFormat) != ManagedBass.ChannelType.OGG)
                 yield return new Issue(GetTemplate("Incorrect Format"), null,
-                    audioName, Audio.EnumToString(actualFormat));
+                    audioName, AudioBASS.EnumToString(actualFormat));
 
             else if (!audioName.ToLower().EndsWith(".mp3") && (ManagedBass.ChannelType.MP3 & actualFormat) == ManagedBass.ChannelType.MP3)
                 yield return new Issue(GetTemplate("Incorrect Extension"), null,
-                    audioName, Audio.EnumToString(actualFormat), ".mp3");
+                    audioName, AudioBASS.EnumToString(actualFormat), ".mp3");
 
             else if (!audioName.ToLower().EndsWith(".ogg") && (ManagedBass.ChannelType.OGG & actualFormat) == ManagedBass.ChannelType.OGG)
                 yield return new Issue(GetTemplate("Incorrect Extension"), null,
-                    audioName, Audio.EnumToString(actualFormat), ".ogg");
+                    audioName, AudioBASS.EnumToString(actualFormat), ".ogg");
         }
     }
 }

@@ -96,7 +96,7 @@ namespace MapsetChecks.Checks.General.Audio
                     ManagedBass.ChannelType actualFormat = 0;
                     Exception exception = null;
                     try
-                        { actualFormat = Audio.GetFormat(fullPath); }
+                        { actualFormat = AudioBASS.GetFormat(fullPath); }
                     catch (Exception ex)
                         { exception = ex; }
 
@@ -141,11 +141,11 @@ namespace MapsetChecks.Checks.General.Audio
                             (ManagedBass.ChannelType.OGG & actualFormat) == 0)
                         {
                             yield return new Issue(GetTemplate("Unexpected Format"), null,
-                                hitSoundFile, Audio.EnumToString(actualFormat));
+                                hitSoundFile, AudioBASS.EnumToString(actualFormat));
                         }
                         else if (!hitSoundFile.ToLower().EndsWith(".wav") && !hitSoundFile.ToLower().EndsWith(".ogg"))
                             yield return new Issue(GetTemplate("Incorrect Extension"), null,
-                                hitSoundFile, Audio.EnumToString(actualFormat));
+                                hitSoundFile, AudioBASS.EnumToString(actualFormat));
 
                     }
                 }

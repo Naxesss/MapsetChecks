@@ -81,7 +81,7 @@ namespace MapsetChecks.Checks.General.Audio
             foreach (string hitSoundFile in beatmapSet.hitSoundFiles)
             {
                 string hitSoundPath = Path.Combine(beatmapSet.songPath, hitSoundFile);
-                ManagedBass.ChannelType hitSoundFormat = Audio.GetFormat(hitSoundPath);
+                ManagedBass.ChannelType hitSoundFormat = AudioBASS.GetFormat(hitSoundPath);
                 if ((hitSoundFormat & ManagedBass.ChannelType.OGG) != 0 &&
                     (hitSoundFormat & ManagedBass.ChannelType.MP3) != 0)
                     continue;
@@ -94,7 +94,7 @@ namespace MapsetChecks.Checks.General.Audio
         public IEnumerable<Issue> GetIssue(BeatmapSet beatmapSet, string audioPath, bool isHitSound = false)
         {
             // `Audio.GetBitrate` has a < 0.1 kbps error margin, so we should round this.
-            double bitrate = Math.Round(Audio.GetBitrate(audioPath));
+            double bitrate = Math.Round(AudioBASS.GetBitrate(audioPath));
             // Hit sounds only need to follow the lower limit for quality requirements, as Wave
             // (which is the most used hit sound format currently) is otherwise uncompressed anyway.
             if (bitrate >= 128 && (bitrate <= 192 || isHitSound))

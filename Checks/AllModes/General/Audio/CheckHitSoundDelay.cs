@@ -92,7 +92,7 @@ namespace MapsetChecks.Checks.General.Audio
                 List<float[]> peaks = null;
                 Exception exception = null;
                 try
-                    { peaks = Audio.GetPeaks(hsPath); }
+                    { peaks = AudioBASS.GetPeaks(hsPath); }
                 catch (Exception ex)
                     { exception = ex; }
 
