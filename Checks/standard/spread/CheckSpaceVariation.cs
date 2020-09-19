@@ -111,7 +111,7 @@ namespace MapsetChecks.Checks.Standard.Spread
 
             foreach (HitObject hitObject in beatmap.hitObjects)
             {
-                nextObject = beatmap.GetNextHitObject(hitObject.time);
+                nextObject = hitObject.Next();
 
                 // Ignore spinners, since they have no clear start or end.
                 if (hitObject is Spinner || nextObject is Spinner || nextObject == null)
@@ -168,7 +168,7 @@ namespace MapsetChecks.Checks.Standard.Spread
                         else
                         {
                             HitObject prevObject = observedDistances[index].hitObject;
-                            HitObject prevNextObject = beatmap.GetNextHitObject(prevObject.time);
+                            HitObject prevNextObject = prevObject.Next();
 
                             yield return new Issue(GetTemplate("Distance"), beatmap,
                                 Timestamp.Get(hitObject, nextObject),

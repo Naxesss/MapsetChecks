@@ -124,7 +124,7 @@ namespace MapsetChecks.Checks.Standard.Spread
 
         private IEnumerable<Issue> GetRecoveryIssues(Beatmap beatmap, Spinner spinner)
         {
-            HitObject nextObject = beatmap.GetNextHitObject(spinner.time);
+            HitObject nextObject = spinner.Next();
 
             // Do not check time between two spinners since all you'd need to do is keep spinning.
             if (nextObject != null && !(nextObject is Spinner))
