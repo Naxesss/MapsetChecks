@@ -13,12 +13,9 @@ namespace MapsetChecks.checks.Catch.compose
     [Check]
     public class CheckSpinnerGap : BeatmapCheck
     {
-        // Allowed spinner gaps in milliseconds.
-        private const int ThresholdBeforeCupSalad       = 250; // Shortest acceptable gap is 1/1 at 240 BPM.
-        private const int ThresholdBeforePlatterRain    = 125; // Shortest acceptable gap is 1/2 at 240 BPM.
-        private const int ThresholdBeforeOverdose       = 62;  // Shortest acceptable gap is 1/4 at 240 BPM.
-        private const int ThresholdAfterCupSaladPlatter = 250;
-        private const int ThresholdAfterRainOverdose    = 125;
+        // Allowed spinner gaps in milliseconds.          Cup  Salad  Platter  Rain  Overdose, Overdose+
+        private static readonly int[] ThresholdBefore = { 250, 250,   125,     125,  62,       62        };
+        private static readonly int[] ThresholdAfter  = { 250, 250,   250,     125,  125,      125       };
 
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
         {
@@ -72,15 +69,11 @@ namespace MapsetChecks.checks.Catch.compose
                 {
                     double nextGap = next.time - spinner.endTime;
 
-                    if (nextGap < ThresholdAfterCupSaladPlatter)
-                        yield return new Issue(GetTemplate("SpinnerAfter"), beatmap,
-                                Timestamp.Get(spinner, next), ThresholdAfterCupSaladPlatter, nextGap)
-                            .ForDifficulties(Difficulty.Easy, Difficulty.Normal, Difficulty.Hard);
-
-                    if (nextGap < ThresholdAfterRainOverdose)
-                        yield return new Issue(GetTemplate("SpinnerAfter"), beatmap,
-                                Timestamp.Get(spinner, next), ThresholdAfterRainOverdose, nextGap)
-                            .ForDifficulties(Difficulty.Insane, Difficulty.Expert, Difficulty.Ultra);
+                    for (int diffIndex = 0; diffIndex < (int)Difficulty.Ultra; ++diffIndex)
+                        if (nextGap < ThresholdAfter[diffIndex])
+                            yield return new Issue(GetTemplate("SpinnerAfter"), beatmap,
+                                    Timestamp.Get(spinner, next), ThresholdAfter[diffIndex], nextGap)
+                                .ForDifficulties((Difficulty)diffIndex);
                 }
 
                 // Check the gap before the spinner.
@@ -88,20 +81,11 @@ namespace MapsetChecks.checks.Catch.compose
                 {
                     double prevGap = spinner.time - prev.GetEndTime();
 
-                    if (prevGap < ThresholdBeforeCupSalad)
-                        yield return new Issue(GetTemplate("SpinnerBefore"), beatmap,
-                                Timestamp.Get(prev, spinner), ThresholdBeforeCupSalad, prevGap)
-                            .ForDifficulties(Difficulty.Easy, Difficulty.Normal);
-
-                    if (prevGap < ThresholdBeforePlatterRain)
-                        yield return new Issue(GetTemplate("SpinnerBefore"), beatmap,
-                                Timestamp.Get(prev, spinner), ThresholdBeforePlatterRain, prevGap)
-                            .ForDifficulties(Difficulty.Hard, Difficulty.Insane);
-
-                    if (prevGap < ThresholdBeforeOverdose)
-                        yield return new Issue(GetTemplate("SpinnerBefore"), beatmap, 
-                                Timestamp.Get(prev, spinner), ThresholdBeforeOverdose, prevGap)
-                            .ForDifficulties(Difficulty.Expert, Difficulty.Ultra);
+                    for (int diffIndex = 0; diffIndex < (int)Difficulty.Ultra; ++diffIndex)
+                        if (prevGap < ThresholdBefore[diffIndex])
+                            yield return new Issue(GetTemplate("SpinnerBefore"), beatmap,
+                                    Timestamp.Get(prev, spinner), ThresholdBefore[diffIndex], prevGap)
+                                .ForDifficulties((Difficulty)diffIndex);
                 }
             }
         }
