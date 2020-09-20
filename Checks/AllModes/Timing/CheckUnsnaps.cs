@@ -56,7 +56,8 @@ namespace MapsetChecks.Checks.Timing
                         "{0} {1} unsnapped by {2} ms.",
                         "timestamp - ", "object", "unsnap")
                     .WithCause(
-                        "A hit object is snapped at least 2 ms too early or late for either of the 1/12 or 1/16 beat snap divisors.") },
+                        "A hit object is snapped at least 2 ms too early or late for either of the 1/5, " +
+                        "1/7, 1/9, 1/12, or 1/16 beat snap divisors.") },
 
                 { "Minor",
                     new IssueTemplate(Issue.Level.Minor,

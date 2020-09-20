@@ -185,9 +185,6 @@ namespace MapsetChecks.Checks.Timing
             {
                 double precentage = divisorGroup.count / (double)divisorsTotal;
 
-                if (divisorGroup.divisor < 6)
-                    continue;
-
                 if (divisorGroup.count <= countWarning) countWarningDivisors.Add(divisorGroup.divisor);
                 else if (divisorGroup.count <= countMinor) countMinorDivisors.Add(divisorGroup.divisor);
 
@@ -313,7 +310,7 @@ namespace MapsetChecks.Checks.Timing
                     inconsistentPlaces.Add(new Tuple<double, double, Beatmap>(inconsistency, otherTime, otherBeatmap));
         }
 
-        private readonly int[] divisors = new int[] { 1, 2, 3, 4, 6, 8, 12, 16 };
+        private readonly int[] divisors = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 16 };
 
         /// <summary> Gets a time offset from a given divisor which may be confused with it. Larger for smaller divisors.
         /// So the offset for a 1/1 would be larger than for a 1/6, for example. If two times are supplied, the largest divisor is used. </summary>
