@@ -92,7 +92,7 @@ namespace MapsetChecks.Checks.Timing
                         !otherLine.uninherited && line.uninherited))
                     continue;
 
-                TimingLine nextLine = beatmap.GetNextTimingLine(line.offset);
+                TimingLine nextLine = line.Next(skipConcurrent: true);
                 if (nextLine == null || nextLine.kiai)
                     continue;
 

@@ -265,7 +265,7 @@ namespace MapsetChecks.Checks.Timing
         /// Only counts the start of objects. </summary>
         private bool SectionContainsObject<T>(Beatmap beatmap, TimingLine line) where T : HitObject
         {
-            TimingLine nextLine = beatmap.GetNextTimingLine(line.offset);
+            TimingLine nextLine = line.Next(skipConcurrent: true);
             double nextSectionEnd = nextLine?.offset ?? beatmap.GetPlayTime();
             double objectTimeBeforeEnd = beatmap.GetPrevHitObject<T>(nextSectionEnd)?.time ?? 0;
 

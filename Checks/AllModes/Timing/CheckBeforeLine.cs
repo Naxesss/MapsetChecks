@@ -99,7 +99,7 @@ namespace MapsetChecks.checks.timing
             double unsnap = beatmap.GetPracticalUnsnap(time);
 
             TimingLine curLine = beatmap.GetTimingLine(time);
-            TimingLine nextLine = beatmap.GetNextTimingLine(time);
+            TimingLine nextLine = curLine.Next(skipConcurrent: true);
 
             if (nextLine != null)
             {
