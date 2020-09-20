@@ -67,7 +67,7 @@ namespace MapsetChecks.Checks.Standard.Spread
                         "{0} Failed stack, objects are {1} px apart, which is basically a perfect stack.",
                         "timestamp - ", "gap")
                     .WithCause(
-                        "Same as the other check, except applies to non-stacked objects within 2 px of one another.") },
+                        "Same as the other check, except applies to non-stacked objects within 1/14th of a circle radius of one another.") },
 
                 { "Warning",
                     new IssueTemplate(Issue.Level.Warning,
@@ -115,9 +115,9 @@ namespace MapsetChecks.Checks.Standard.Spread
                         }
                         else
                         {
-                            // Unstacked objects within 2 px of one another are considered failed stacks.
+                            // Unstacked objects within 1/14th of the circle radius of one another are considered failed stacks.
                             double distance = (hitObject.Position - otherHitObject.Position).Length();
-                            if (distance > 2)
+                            if (distance > beatmap.difficultySettings.GetCircleRadius() / 14) // TODO TEST THIS
                                 continue;
 
                             yield return new Issue(GetTemplate("Problem Failed Stack"), beatmap,
