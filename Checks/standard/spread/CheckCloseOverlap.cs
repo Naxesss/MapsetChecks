@@ -79,39 +79,35 @@ namespace MapsetChecks.checks.standard.spread
 
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            for (int i = 0; i < beatmap.hitObjects.Count - 1; ++i)
+            foreach (HitObject hitObject in beatmap.hitObjects)
             {
-                HitObject hitObject     = beatmap.hitObjects[i];
-                HitObject nextHitObject = beatmap.hitObjects[i + 1];
+                if (!(hitObject.Next() is HitObject nextObject))
+                    continue;
 
                 // Slider ends do not need to overlap, same with spinners, spinners should be ignored overall.
-                if (!(hitObject is Circle) ||
-                    nextHitObject is Spinner ||
-                    nextHitObject.time - hitObject.time >= warningThreshold)
-                {
+                if (!(hitObject is Circle) || nextObject is Spinner)
                     continue;
-                }
 
-                double distance =
-                    Math.Sqrt(
-                        Math.Pow(hitObject.Position.X - nextHitObject.Position.X, 2) +
-                        Math.Pow(hitObject.Position.Y - nextHitObject.Position.Y, 2));
+                if (nextObject.time - hitObject.time >= WarningThreshold)
+                    continue;
 
-                // If the distance is larger or equal to two radiuses, then they're not overlapping.
+                double distance = (nextObject.Position - hitObject.Position).Length();
+
+                // If the distance is larger or equal to the diameter of a circle, then they're not overlapping.
                 float radius = beatmap.difficultySettings.GetCircleRadius();
                 if (distance < radius * 2)
                     continue;
 
-                if (nextHitObject.time - hitObject.time < problemThreshold)
+                if (nextObject.time - hitObject.time < ProblemThreshold)
                     yield return new Issue(GetTemplate("Problem"), beatmap,
-                        Timestamp.Get(hitObject, nextHitObject),
-                        $"{nextHitObject.time - hitObject.time:0.##}",
-                        problemThreshold);
+                        Timestamp.Get(hitObject, nextObject),
+                        $"{nextObject.time - hitObject.time:0.##}",
+                        ProblemThreshold);
 
                 else
                     yield return new Issue(GetTemplate("Warning"), beatmap,
-                        Timestamp.Get(hitObject, nextHitObject),
-                        $"{nextHitObject.time - hitObject.time:0.##}");
+                        Timestamp.Get(hitObject, nextObject),
+                        $"{nextObject.time - hitObject.time:0.##}");
             }
         }
     }
