@@ -15,18 +15,13 @@ using System.Numerics;
 namespace MapsetChecks.checks.standard.spread
 {
     [Check]
-    public class CheckCloseOverlap : BeatmapCheck
+    public class CheckCloseOverlap : BeatmapSetCheck
     {
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
         {
             Modes = new Beatmap.Mode[]
             {
                 Beatmap.Mode.Standard
-            },
-            Difficulties = new Beatmap.Difficulty[]
-            {
-                Beatmap.Difficulty.Easy,
-                Beatmap.Difficulty.Normal
             },
             Category = "Spread",
             Message = "Objects close in time not overlapping.",
@@ -37,7 +32,7 @@ namespace MapsetChecks.checks.standard.spread
                 {
                     "Purpose",
                     @"
-                    Ensuring that objects close in time are indiciated as such in easy and normal difficulties.
+                    Ensuring that objects close in time are indiciated as such in easy and lowest normal difficulties.
                     <image>
                         https://i.imgur.com/rnIi6Pj.png
                         Right image is harder to distinguish time distance in, despite spacings still clearly being different.
@@ -77,37 +72,51 @@ namespace MapsetChecks.checks.standard.spread
         private const double ProblemThreshold = 125; // Shortest acceptable gap is 1/2 in 240 BPM, 125 ms.
         private const double WarningThreshold = 188; // Shortest gap before warning is 1/2 in 160 BPM, 188 ms.
 
-        public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
+        public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            foreach (HitObject hitObject in beatmap.hitObjects)
+            Beatmap.Difficulty skipAfterDifficulty = Beatmap.Difficulty.Normal;
+            foreach (Beatmap beatmap in beatmapSet.beatmaps)
             {
-                if (!(hitObject.Next() is HitObject nextObject))
-                    continue;
+                // Beatmaps are sorted by interpreted difficulty.
+                if (beatmap.GetDifficulty(considerName: true) > skipAfterDifficulty)
+                    break;
 
-                // Slider ends do not need to overlap, same with spinners, spinners should be ignored overall.
-                if (!(hitObject is Circle) || nextObject is Spinner)
-                    continue;
+                // This check only applies to easy/lowest diff normals, so if we find an easy, normals cannot not be lowest diff.
+                if (beatmap.GetDifficulty(considerName: true) == Beatmap.Difficulty.Easy)
+                    skipAfterDifficulty = Beatmap.Difficulty.Easy;
 
-                if (nextObject.time - hitObject.time >= WarningThreshold)
-                    continue;
+                foreach (HitObject hitObject in beatmap.hitObjects)
+                {
+                    if (!(hitObject.Next() is HitObject nextObject))
+                        continue;
 
-                double distance = (nextObject.Position - hitObject.Position).Length();
+                    // Slider ends do not need to overlap, same with spinners, spinners should be ignored overall.
+                    if (!(hitObject is Circle) || nextObject is Spinner)
+                        continue;
 
-                // If the distance is larger or equal to the diameter of a circle, then they're not overlapping.
-                float radius = beatmap.difficultySettings.GetCircleRadius();
-                if (distance < radius * 2)
-                    continue;
+                    if (nextObject.time - hitObject.time >= WarningThreshold)
+                        continue;
 
-                if (nextObject.time - hitObject.time < ProblemThreshold)
-                    yield return new Issue(GetTemplate("Problem"), beatmap,
-                        Timestamp.Get(hitObject, nextObject),
-                        $"{nextObject.time - hitObject.time:0.##}",
-                        ProblemThreshold);
+                    double distance = (nextObject.Position - hitObject.Position).Length();
 
-                else
-                    yield return new Issue(GetTemplate("Warning"), beatmap,
-                        Timestamp.Get(hitObject, nextObject),
-                        $"{nextObject.time - hitObject.time:0.##}");
+                    // If the distance is larger or equal to the diameter of a circle, then they're not overlapping.
+                    float radius = beatmap.difficultySettings.GetCircleRadius();
+                    if (distance < radius * 2)
+                        continue;
+
+                    if (nextObject.time - hitObject.time < ProblemThreshold)
+                        yield return new Issue(GetTemplate("Problem"), beatmap,
+                                Timestamp.Get(hitObject, nextObject),
+                                $"{nextObject.time - hitObject.time:0.##}",
+                                ProblemThreshold)
+                            .ForDifficulties(Beatmap.Difficulty.Easy, Beatmap.Difficulty.Normal);
+
+                    else
+                        yield return new Issue(GetTemplate("Warning"), beatmap,
+                                Timestamp.Get(hitObject, nextObject),
+                                $"{nextObject.time - hitObject.time:0.##}")
+                            .ForDifficulties(Beatmap.Difficulty.Easy, Beatmap.Difficulty.Normal);
+                }
             }
         }
     }
