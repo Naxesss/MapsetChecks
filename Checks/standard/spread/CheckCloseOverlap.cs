@@ -74,11 +74,11 @@ namespace MapsetChecks.checks.standard.spread
             };
         }
 
+        private const double ProblemThreshold = 125; // Shortest acceptable gap is 1/2 in 240 BPM, 125 ms.
+        private const double WarningThreshold = 188; // Shortest gap before warning is 1/2 in 160 BPM, 188 ms.
+
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            double problemThreshold = 125; // Shortest acceptable gap is 1/2 in 240 BPM, 125 ms.
-            double warningThreshold = 188; // Shortest gap before warning is 1/2 in 160 BPM, 188 ms.
-
             for (int i = 0; i < beatmap.hitObjects.Count - 1; ++i)
             {
                 HitObject hitObject     = beatmap.hitObjects[i];
