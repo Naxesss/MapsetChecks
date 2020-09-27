@@ -73,8 +73,8 @@ namespace MapsetChecks.Checks.Standard.Compose
 
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            int closeThreshold    = 15;
-            int tooCloseThreshold = 4;
+            double closeThreshold    = beatmap.difficultySettings.GetCircleRadius() / 1.75;
+            double tooCloseThreshold = beatmap.difficultySettings.GetCircleRadius() / 3;
 
             // Represents the duration the reverse arrow is fully opaque.
             double opaqueTime = beatmap.difficultySettings.GetPreemptTime();
