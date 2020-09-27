@@ -46,7 +46,6 @@ namespace MapsetChecks.checks.general.metadata
             new string[] { "Anime" },
             new string[] { "Rock" },
             new string[] { "Pop" },
-            new string[] { "Other" },
             new string[] { "Novelty" },
             new string[] { "Hip", "Hop" },
             new string[] { "Electronic" },
