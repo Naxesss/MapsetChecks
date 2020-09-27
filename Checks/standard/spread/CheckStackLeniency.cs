@@ -117,7 +117,7 @@ namespace MapsetChecks.Checks.Standard.Spread
                         {
                             // Unstacked objects within 1/14th of the circle radius of one another are considered failed stacks.
                             double distance = (hitObject.Position - otherHitObject.Position).Length();
-                            if (distance > beatmap.difficultySettings.GetCircleRadius() / 14) // TODO TEST THIS
+                            if (distance > beatmap.difficultySettings.GetCircleRadius() / 14)
                                 continue;
 
                             yield return new Issue(GetTemplate("Problem Failed Stack"), beatmap,
