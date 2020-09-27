@@ -33,29 +33,29 @@ namespace MapsetChecks.checks.settings
                     "Reasoning",
                     @"
                     Settings having more than 1 decimal place is currently unrankable for, what is probably, two reasons:
-                    <li>
-                        <ul>
+                    <ul>
+                        <li>
                             The precision for anything greater than 1 place matters too little to be worth increasing the amount of 
                             digits in the song selection screen/website.
-                        </ul>
-                        <ul>
+                        </li>
+                        <li>
                             Searching for e.g. AR=9.25 will not find maps with AR 9.25. However, searching for AR=9.2 will.
-                        </ul>
-                    </li>
+                        </li>
+                    </ul>
                     <image>
                         https://i.imgur.com/ySldNaU.png
                         More than 1 decimal place compared to 1 decimal place.
                     </image>
 
                     The circle size setting in mania determines the key count, and is limited between 4 and 9.
-                    <li>
-                        <ul>
+                    <ul>
+                        <li>
                             3K or fewer leaves little room for patterning, making 2 maps of the same difficulty and song almost identical.
-                        </ul>
-                        <ul>
+                        </li>
+                        <li>
                             10K is currently only possible using co-op, which automatically makes any score unranked.
-                        </ul>
-                    </li>"
+                        </li>
+                    </ul>"
                 }
             }
         };
