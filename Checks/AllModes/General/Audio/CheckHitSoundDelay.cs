@@ -40,6 +40,30 @@ namespace MapsetChecks.Checks.General.Audio
                     By having delayed hit sounds, the feedback the player receives would be misleading them into 
                     thinking they clicked later than they actually did, which contradicts the purpose of having hit 
                     sounds in the first place."
+                },
+                {
+                    "Exceptions",
+                    @"
+                    <ul>
+                        <li>
+                            Cymbals/bell-like sounds (often finish/whistle respectively) usually have a small wind-up before their peak. 
+                            This is often acceptable to keep, as it would sound wrong without.
+                            <image-right>
+                                https://i.imgur.com/4iggPGV.png
+                                A bell hit sound whose peak is delayed by ~21 ms, which was considered fine 
+                                due to the nature of the sound requiring a wind-up.
+                            </image>
+                        </li>
+                        <li>
+                            The default `normal-hitfinish.wav` has a delay of ~6 ms, but is used by the game itself,
+                            so copying this and using as a custom sample is acceptable.
+                            <image-right>
+                                https://i.imgur.com/W9yJiV6.png
+                                A spectrogram of the default `normal-hitfinish.wav`.
+                            </image>
+                        </li>
+                    </ul>
+                    "
                 }
             }
         };
