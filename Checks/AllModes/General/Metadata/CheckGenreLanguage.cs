@@ -67,7 +67,35 @@ namespace MapsetChecks.checks.general.metadata
             new string[] { "Swedish" },
             new string[] { "Russian" },
             new string[] { "Polish" },
-            new string[] { "Instrumental" }
+            new string[] { "Instrumental" },
+
+            // Following are not web languages, but if we find these in the tags,
+            // web would need to be "Other" anyway, so no point in warning.
+            new string[] { "Conlang" },
+            new string[] { "Hindi" },
+            new string[] { "Arabic" },
+            new string[] { "Portugese" },
+            new string[] { "Turkish" },
+            new string[] { "Vietnamese" },
+            new string[] { "Persian" },
+            new string[] { "Indonesian" },
+            new string[] { "Ukrainian" },
+            new string[] { "Romanian" },
+            new string[] { "Dutch" },
+            new string[] { "Thai" },
+            new string[] { "Greek" },
+            new string[] { "Somali" },
+            new string[] { "Malay" },
+            new string[] { "Hungarian" },
+            new string[] { "Czech" },
+            new string[] { "Norwegian" },
+            new string[] { "Finnish" },
+            new string[] { "Danish" },
+            new string[] { "Latvia" },
+            new string[] { "Lithuanian" },
+            new string[] { "Estonian" },
+            new string[] { "Punjabi" },
+            new string[] { "Bengali" }
         };
 
         private string ToCause(string[][] tagCombinations)
