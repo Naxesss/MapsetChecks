@@ -41,7 +41,7 @@ namespace MapsetChecks.Checks.Standard.Spread
                     @"
                     With two objects being spaced way further than previous objects of the same snapping, it can be extremely
                     difficult to expect, much less play.
-                    
+                    <br><br>
                     When combined with incorrect snappings (which abnormal spacing is often a cause of), this can really throw
                     players off to the point where the map is pretty much considered unplayable.
                     "
