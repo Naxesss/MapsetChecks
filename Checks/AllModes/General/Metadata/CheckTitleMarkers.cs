@@ -17,7 +17,7 @@ namespace MapsetChecks.Checks.General.Metadata
         public override CheckMetadata GetMetadata() => new CheckMetadata()
         {
             Category = "Metadata",
-            Message = "Incorrect format of (TV Size) / (Game Ver.) / (Short Ver.) / (Sped Up Ver.) in title.",
+            Message = "Incorrect format of (TV Size) / (Game Ver.) / (Short Ver.) / (Cut Ver.) / (Sped Up Ver.) in title.",
             Author = "Naxess",
 
             Documentation = new Dictionary<string, string>()
@@ -67,6 +67,13 @@ namespace MapsetChecks.Checks.General.Metadata
                     .WithCause(
                         "The format of \"(Short Ver.)\" in either the romanized or unicode title is incorrect.") },
 
+                { "Cut Ver",
+                    new IssueTemplate(Issue.Level.Problem,
+                        "{0} title field; \"{1}\" incorrect format of \"(Cut Ver.)\".",
+                        "Romanized/unicode", "field")
+                    .WithCause(
+                        "The format of \"(Cut Ver.)\" in either the romanized or unicode title is incorrect.") },
+
                 { "Sped Up Ver",
                     new IssueTemplate(Issue.Level.Problem,
                         "{0} title field; \"{1}\" incorrect format of \"(Sped Up Ver.)\".",
@@ -93,10 +100,16 @@ namespace MapsetChecks.Checks.General.Metadata
             foreach (Issue issue in GetIssuesFromRegex(beatmap, gameVerRegex, gameVerExactRegex, "Game Ver"))
                 yield return issue;
             
-            Regex shortVerRegex = new Regex(@"(?i)((short|cut).(size|ver))");
+            Regex shortVerRegex = new Regex(@"(?i)(short.(size|ver))");
             Regex shortVerExactRegex = new Regex(@"\(Short Ver\.\)");
 
             foreach (Issue issue in GetIssuesFromRegex(beatmap, shortVerRegex, shortVerExactRegex, "Short Ver"))
+                yield return issue;
+
+            Regex cutVerRegex = new Regex(@"(?i)(cut.(size|ver))");
+            Regex cutVerExactRegex = new Regex(@"\(Cut Ver\.\)");
+
+            foreach (Issue issue in GetIssuesFromRegex(beatmap, cutVerRegex, cutVerExactRegex, "Cut Ver"))
                 yield return issue;
 
             Regex spedVerRegex = new Regex(@"(?i)(sped|speed) ?up ver");
