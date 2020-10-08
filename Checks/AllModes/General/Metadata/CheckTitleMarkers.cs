@@ -69,17 +69,17 @@ namespace MapsetChecks.Checks.General.Metadata
             Beatmap beatmap = beatmapSet.beatmaps[0];
             
             // Matches any string containing some form of TV Size but not exactly "(TV Size)".
-            Regex tvSizeRegex = new Regex(@"(?i)(tv.(size|ver))");
+            Regex tvSizeRegex = new Regex(@"(?i)(tv (size|ver))");
             Regex tvSizeExactRegex = new Regex(@"\(TV Size\)");
             foreach (Issue issue in GetIssuesFromRegex(beatmap, tvSizeRegex, tvSizeExactRegex, "(TV Size)"))
                 yield return issue;
             
-            Regex gameVerRegex = new Regex(@"(?i)(game.(size|ver))");
+            Regex gameVerRegex = new Regex(@"(?i)(game (size|ver))");
             Regex gameVerExactRegex = new Regex(@"\(Game Ver\.\)");
             foreach (Issue issue in GetIssuesFromRegex(beatmap, gameVerRegex, gameVerExactRegex, "(Game Ver.)"))
                 yield return issue;
             
-            Regex shortVerRegex = new Regex(@"(?i)(short.(size|ver))");
+            Regex shortVerRegex = new Regex(@"(?i)(short (size|ver))");
             Regex shortVerExactRegex = new Regex(@"\(Short Ver\.\)");
             foreach (Issue issue in GetIssuesFromRegex(beatmap, shortVerRegex, shortVerExactRegex, "(Short Ver.)"))
                 yield return issue;
