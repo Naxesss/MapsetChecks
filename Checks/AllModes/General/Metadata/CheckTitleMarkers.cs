@@ -46,40 +46,21 @@ namespace MapsetChecks.Checks.General.Metadata
         {
             return new Dictionary<string, IssueTemplate>()
             {
-                { "TV Size",
+                { "Problem",
                     new IssueTemplate(Issue.Level.Problem,
-                        "{0} title field; \"{1}\" incorrect format of \"(TV Size)\".",
-                        "Romanized/unicode", "field")
+                        "{0} title field; \"{1}\" incorrect format of \"{2}\".",
+                        "Romanized/unicode", "field", "title marker")
                     .WithCause(
-                        "The format of \"(TV Size)\" in either the romanized or unicode title is incorrect.") },
-
-                { "Game Ver",
-                    new IssueTemplate(Issue.Level.Problem,
-                        "{0} title field; \"{1}\" incorrect format of \"(Game Ver.)\".",
-                        "Romanized/unicode", "field")
-                    .WithCause(
-                        "The format of \"(Game Ver.)\" in either the romanized or unicode title is incorrect.") },
-
-                { "Short Ver",
-                    new IssueTemplate(Issue.Level.Problem,
-                        "{0} title field; \"{1}\" incorrect format of \"(Short Ver.)\".",
-                        "Romanized/unicode", "field")
-                    .WithCause(
-                        "The format of \"(Short Ver.)\" in either the romanized or unicode title is incorrect.") },
-
-                { "Cut Ver",
-                    new IssueTemplate(Issue.Level.Problem,
-                        "{0} title field; \"{1}\" incorrect format of \"(Cut Ver.)\".",
-                        "Romanized/unicode", "field")
-                    .WithCause(
-                        "The format of \"(Cut Ver.)\" in either the romanized or unicode title is incorrect.") },
-
-                { "Sped Up Ver",
-                    new IssueTemplate(Issue.Level.Problem,
-                        "{0} title field; \"{1}\" incorrect format of \"(Sped Up Ver.)\".",
-                        "Romanized/unicode", "field")
-                    .WithCause(
-                        "The format of \"(Sped Up Ver.)\" in either the romanized or unicode title is incorrect.") }
+                        @"The format of a title marker, in either the romanized or unicode title, is incorrect.
+                        The following are detected formats:
+                        <ul>
+                            <li>(TV Size)</li>
+                            <li>(Game Ver.)</li>
+                            <li>(Short Ver.)</li>
+                            <li>(Cut Ver.)</li>
+                            <li>(Sped Up Ver.)</li>
+                        </ul>
+                        ") },
             };
         }
 
@@ -90,43 +71,40 @@ namespace MapsetChecks.Checks.General.Metadata
             // Matches any string containing some form of TV Size but not exactly "(TV Size)".
             Regex tvSizeRegex = new Regex(@"(?i)(tv.(size|ver))");
             Regex tvSizeExactRegex = new Regex(@"\(TV Size\)");
-
-            foreach (Issue issue in GetIssuesFromRegex(beatmap, tvSizeRegex, tvSizeExactRegex, "TV Size"))
+            foreach (Issue issue in GetIssuesFromRegex(beatmap, tvSizeRegex, tvSizeExactRegex, "(TV Size)"))
                 yield return issue;
             
             Regex gameVerRegex = new Regex(@"(?i)(game.(size|ver))");
             Regex gameVerExactRegex = new Regex(@"\(Game Ver\.\)");
-
-            foreach (Issue issue in GetIssuesFromRegex(beatmap, gameVerRegex, gameVerExactRegex, "Game Ver"))
+            foreach (Issue issue in GetIssuesFromRegex(beatmap, gameVerRegex, gameVerExactRegex, "(Game Ver.)"))
                 yield return issue;
             
             Regex shortVerRegex = new Regex(@"(?i)(short.(size|ver))");
             Regex shortVerExactRegex = new Regex(@"\(Short Ver\.\)");
-
-            foreach (Issue issue in GetIssuesFromRegex(beatmap, shortVerRegex, shortVerExactRegex, "Short Ver"))
+            foreach (Issue issue in GetIssuesFromRegex(beatmap, shortVerRegex, shortVerExactRegex, "(Short Ver.)"))
                 yield return issue;
 
-            Regex cutVerRegex = new Regex(@"(?i)(cut.(size|ver))");
+            // "(?<!& )" ensures we don't match "(Sped Up & Cut Ver.)", which we handle separately.
+            Regex cutVerRegex = new Regex(@"(?i)(?<!& )(cut (size|ver))");
             Regex cutVerExactRegex = new Regex(@"\(Cut Ver\.\)");
-
-            foreach (Issue issue in GetIssuesFromRegex(beatmap, cutVerRegex, cutVerExactRegex, "Cut Ver"))
+            foreach (Issue issue in GetIssuesFromRegex(beatmap, cutVerRegex, cutVerExactRegex, "(Cut Ver.)"))
                 yield return issue;
 
-            Regex spedVerRegex = new Regex(@"(?i)(sped|speed) ?up ver");
+            Regex spedVerRegex = new Regex(@"(?i)(?<!& )(sped|speed) ?up ver");
             Regex spedVerExactRegex = new Regex(@"\(Sped Up Ver\.\)");
+            foreach (Issue issue in GetIssuesFromRegex(beatmap, spedVerRegex, spedVerExactRegex, "(Sped Up Ver.)"))
 
-            foreach (Issue issue in GetIssuesFromRegex(beatmap, spedVerRegex, spedVerExactRegex, "Sped Up Ver"))
                 yield return issue;
         }
 
         /// <summary> Returns issues wherever the romanized or unicode title contains the regular regex but not the exact regex. </summary>
-        private IEnumerable<Issue> GetIssuesFromRegex(Beatmap beatmap, Regex regex, Regex exactRegex, string templateName)
+        private IEnumerable<Issue> GetIssuesFromRegex(Beatmap beatmap, Regex regex, Regex exactRegex, string correctFormat)
         {
             if (regex.IsMatch(beatmap.metadataSettings.title) &&
                 !exactRegex.IsMatch(beatmap.metadataSettings.title))
             {
-                yield return new Issue(GetTemplate(templateName), null,
-                    "Romanized", beatmap.metadataSettings.title);
+                yield return new Issue(GetTemplate("Problem"), null,
+                    "Romanized", beatmap.metadataSettings.title, correctFormat);
             }
 
             // Unicode fields do not exist in file version 9.
@@ -134,8 +112,8 @@ namespace MapsetChecks.Checks.General.Metadata
                 && regex.IsMatch(beatmap.metadataSettings.titleUnicode) &&
                 !exactRegex.IsMatch(beatmap.metadataSettings.titleUnicode))
             {
-                yield return new Issue(GetTemplate(templateName), null,
-                    "Unicode", beatmap.metadataSettings.titleUnicode);
+                yield return new Issue(GetTemplate("Problem"), null,
+                    "Unicode", beatmap.metadataSettings.titleUnicode, correctFormat);
             }
         }
     }
