@@ -17,7 +17,7 @@ namespace MapsetChecks.Checks.General.Metadata
         public override CheckMetadata GetMetadata() => new CheckMetadata()
         {
             Category = "Metadata",
-            Message = "Incorrect format of (TV Size) / (Game Ver.) / (Short Ver.) / (Cut Ver.) / (Sped Up Ver.) in title.",
+            Message = "Incorrect format of (TV Size) / (Game Ver.) / (Short Ver.) / (Cut Ver.) / (Sped Up Ver.) / etc in title.",
             Author = "Naxess",
 
             Documentation = new Dictionary<string, string>()
@@ -59,6 +59,9 @@ namespace MapsetChecks.Checks.General.Metadata
                             <li>(Short Ver.)</li>
                             <li>(Cut Ver.)</li>
                             <li>(Sped Up Ver.)</li>
+                            <li>(Nightcore Mix)</li>
+                            <li>(Sped Up & Cut Ver.)</li>
+                            <li>(Nightcore & Cut Ver.)</li>
                         </ul>
                         ") },
             };
@@ -93,7 +96,23 @@ namespace MapsetChecks.Checks.General.Metadata
             Regex spedVerRegex = new Regex(@"(?i)(?<!& )(sped|speed) ?up ver");
             Regex spedVerExactRegex = new Regex(@"\(Sped Up Ver\.\)");
             foreach (Issue issue in GetIssuesFromRegex(beatmap, spedVerRegex, spedVerExactRegex, "(Sped Up Ver.)"))
+                yield return issue;
 
+            Regex nightcoreRegex = new Regex(@"(?i)(?<!& )(nightcore|night core) (ver|mix)");
+            Regex nightcoreExactRegex = new Regex(@"\(Nightcore Mix\)");
+            foreach (Issue issue in GetIssuesFromRegex(beatmap, nightcoreRegex, nightcoreExactRegex, "(Nightcore Mix)"))
+                yield return issue;
+
+            // Combinations of Sped Up / Nightcore & Cut Ver.
+
+            Regex spedUpCutVerRegex = new Regex(@"(?i)(sped|speed) ?up (ver)? ?& cut (size|ver)");
+            Regex spedUpCutVerExactRegex = new Regex(@"\(Sped Up & Cut Ver\.\)");
+            foreach (Issue issue in GetIssuesFromRegex(beatmap, spedUpCutVerRegex, spedUpCutVerExactRegex, "(Sped Up & Cut Ver.)"))
+                yield return issue;
+
+            Regex nightcoreCutVerRegex = new Regex(@"(?i)(nightcore|night core) (ver|mix)? ?& cut (size|ver)");
+            Regex nightcoreCutVerExactRegex = new Regex(@"\(Nightcore & Cut Ver\.\)");
+            foreach (Issue issue in GetIssuesFromRegex(beatmap, nightcoreCutVerRegex, nightcoreCutVerExactRegex, "(Nightcore & Cut Ver.)"))
                 yield return issue;
         }
 
