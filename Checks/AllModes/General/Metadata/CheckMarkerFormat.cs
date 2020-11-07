@@ -77,22 +77,22 @@ namespace MapsetChecks.Checks.General.Metadata
         }
 
         /// <summary> Applies a predicate to all artist and title metadata fields. Yields an issue wherever the predicate is true. </summary>
-        private IEnumerable<Issue> GetFormattingIssues(MetadataSettings settings, Func<string, bool> Func)
+        private IEnumerable<Issue> GetFormattingIssues(MetadataSettings settings, Func<string, bool> FieldPredicate)
         {
-            if (Func(settings.artist))
+            if (FieldPredicate(settings.artist))
                 yield return new Issue(GetTemplate("Wrong Format"), null,
                     "Romanized", "artist", settings.artist);
 
             // Unicode fields do not exist in file version 9.
-            if (settings.artistUnicode != null && Func(settings.artistUnicode))
+            if (settings.artistUnicode != null && FieldPredicate(settings.artistUnicode))
                 yield return new Issue(GetTemplate("Wrong Format"), null,
                     "Unicode", "artist", settings.artistUnicode);
 
-            if (Func(settings.title))
+            if (FieldPredicate(settings.title))
                 yield return new Issue(GetTemplate("Wrong Format"), null,
                     "Romanized", "title", settings.title);
 
-            if (settings.titleUnicode != null && Func(settings.titleUnicode))
+            if (settings.titleUnicode != null && FieldPredicate(settings.titleUnicode))
                 yield return new Issue(GetTemplate("Wrong Format"), null,
                     "Unicode", "title", settings.titleUnicode);
         }
