@@ -50,15 +50,15 @@ namespace MapsetChecks.Checks.Settings
             {
                 { "Problem",
                     new IssueTemplate(Issue.Level.Problem,
-                        "Inconsistent {0}, see {1}.",
-                        "setting", "difficulty")
+                        "Inconsistent {0} \"{1}\", see {2} \"{3}\".",
+                        "setting", "value", "difficulty", "value")
                     .WithCause(
                         "The beatmapset id is inconsistent between any two difficulties in the set, regardless of mode.") },
 
                 { "Warning",
                     new IssueTemplate(Issue.Level.Warning,
-                        "Inconsistent {0}, see {1}.",
-                        "setting", "difficulty")
+                        "Inconsistent {0} \"{1}\", see {2} \"{3}\".",
+                        "setting", "value", "difficulty", "value")
                     .WithCause(
                         @"Compares settings and presence of elements within the same mode. Includes the following:
                         <ul>
@@ -80,101 +80,160 @@ namespace MapsetChecks.Checks.Settings
 
                 { "Minor",
                     new IssueTemplate(Issue.Level.Minor,
-                        "Inconsistent {0}, see {1}.",
-                        "setting", "difficulty")
+                        "Inconsistent {0} \"{1}\", see {2} \"{3}\".",
+                        "setting", "value", "difficulty", "value")
                     .WithCause(
                         "Same as the warning, but only checks for slider ticks.") }
             };
         }
+
+        private static readonly Func<Beatmap, Beatmap, BeatmapSet, bool> countdownSettingCondition =
+            (beatmap, otherBeatmap, beatmapSet) =>
+                beatmap.generalSettings.mode == otherBeatmap.generalSettings.mode &&
+                // Countdown has no effect in taiko or mania.
+                beatmap.generalSettings.mode != Beatmap.Mode.Taiko &&
+                beatmap.generalSettings.mode != Beatmap.Mode.Mania;
+
+        private static readonly Func<Beatmap, Beatmap, BeatmapSet, bool> storyboardCondition =
+            (beatmap, otherBeatmap, beatmapSet) =>
+                beatmap.HasDifficultySpecificStoryboard() &&
+                otherBeatmap.HasDifficultySpecificStoryboard() ||
+                beatmapSet.osb != null;
+
+        struct InconsistencyTemplate
+        {
+            public readonly string template;
+            public readonly string name;
+            public readonly Func<Beatmap, Object> Value;
+            public readonly Func<Beatmap, Beatmap, BeatmapSet, bool> Condition;
+
+            public InconsistencyTemplate(string template,
+                                         string name,
+                                         Func<Beatmap, Object> Value,
+                                         Func<Beatmap, Beatmap, BeatmapSet, bool> Condition = null)
+            {
+                this.template = template;
+                this.name = name;
+                this.Value = Value;
+                this.Condition = Condition;
+            }
+        }
+
+        private static readonly List<InconsistencyTemplate> inconsistencyTemplates = new List<InconsistencyTemplate>()
+        {
+            new InconsistencyTemplate(
+                template: "Problem",
+                name:     "beatmapset id",
+                Value:    beatmap => beatmap.metadataSettings.beatmapSetId
+            ),
+            new InconsistencyTemplate(
+                template:  "Warning",
+                name:      "countdown speed",
+                Value:     beatmap => beatmap.generalSettings.countdown,
+                Condition: (beatmap, otherBeatmap, beatmapSet) =>
+                    countdownSettingCondition(beatmap, otherBeatmap, beatmapSet) &&
+                    // CountdownStartBeat < 0 means no countdown.
+                    beatmap.GetCountdownStartBeat() >= 0 &&
+                    otherBeatmap.GetCountdownStartBeat() >= 0
+            ),
+            new InconsistencyTemplate(
+                template:  "Warning",
+                name:      "countdown offset",
+                Value:     beatmap => beatmap.generalSettings.countdownBeatOffset,
+                Condition: (beatmap, otherBeatmap, beatmapSet) =>
+                    countdownSettingCondition(beatmap, otherBeatmap, beatmapSet) &&
+                    beatmap.GetCountdownStartBeat() >= 0 &&
+                    otherBeatmap.GetCountdownStartBeat() >= 0
+            ),
+            new InconsistencyTemplate(
+                template:  "Warning",
+                name:      "countdown",
+                Value:     beatmap => beatmap.generalSettings.countdown,
+                Condition: (beatmap, otherBeatmap, beatmapSet) =>
+                    countdownSettingCondition(beatmap, otherBeatmap, beatmapSet) &&
+                    // One map has countdown, the other not.
+                    (beatmap.GetCountdownStartBeat() >= 0) !=
+                    (otherBeatmap.GetCountdownStartBeat() >= 0)
+            ),
+            new InconsistencyTemplate(
+                template:  "Warning",
+                name:      "letterbox",
+                Value:     beatmap => beatmap.generalSettings.letterbox,
+                Condition: (beatmap, otherBeatmap, beatmapSet) =>
+                    beatmap.generalSettings.mode == otherBeatmap.generalSettings.mode &&
+                    beatmap.breaks.Count > 0 && otherBeatmap.breaks.Count > 0
+            ),
+            new InconsistencyTemplate(
+                template:  "Warning",
+                name:      "widescreen support",
+                Value:     beatmap => beatmap.generalSettings.widescreenSupport,
+                Condition: storyboardCondition
+            ),
+            new InconsistencyTemplate(
+                template:  "Warning",
+                name:      "storyboard in front of combo fire",
+                Value:     beatmap => beatmap.generalSettings.storyInFrontOfFire,
+                Condition: storyboardCondition
+            ),
+            new InconsistencyTemplate(
+                template:  "Warning",
+                name:      "usage of skin sprites in storyboard",
+                Value:     beatmap => beatmap.generalSettings.useSkinSprites,
+                Condition: storyboardCondition
+            ),
+            new InconsistencyTemplate(
+                template:  "Warning",
+                name:      "difficulty-specific storyboard presence",
+                Value:     beatmap => beatmap.HasDifficultySpecificStoryboard()
+            ),
+            new InconsistencyTemplate(
+                template:  "Warning",
+                name:      "epilepsy warning",
+                Value:     beatmap => beatmap.generalSettings.epilepsyWarning,
+                Condition: (beatmap, otherBeatmap, beatmapSet) =>
+                    storyboardCondition(beatmap, otherBeatmap, beatmapSet) ||
+                    beatmap.videos.Count > 0 && otherBeatmap.videos.Count > 0
+            ),
+            new InconsistencyTemplate(
+                template:  "Warning",
+                name:      "audio lead-in",
+                Value:     beatmap => beatmap.generalSettings.audioLeadIn
+            ),
+            new InconsistencyTemplate(
+                template:  "Warning",
+                name:      "skin preference",
+                Value:     beatmap => beatmap.generalSettings.skinPreference
+            ),
+            new InconsistencyTemplate(
+                template:  "Warning",
+                name:      "slider tick rate",
+                Value:     beatmap => beatmap.difficultySettings.sliderTickRate
+            )
+        };
         
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
             foreach (Beatmap beatmap in beatmapSet.beatmaps)
-            {
                 foreach (Beatmap otherBeatmap in beatmapSet.beatmaps)
-                {
-                    if (beatmap.metadataSettings.beatmapSetId != otherBeatmap.metadataSettings.beatmapSetId)
-                        yield return new Issue(GetTemplate("Problem"), beatmap,
-                            "beatmapset id", otherBeatmap);
+                    foreach (InconsistencyTemplate inconsistency in inconsistencyTemplates)
+                        // `GetInconsistency` returns either 1 or 0 issues, so this becomes O(n^2*m),
+                        // where n is amount of beatmaps and m is amount of inconsistencies checked.
+                        foreach (Issue issue in GetInconsistency(beatmap, otherBeatmap, beatmapSet, inconsistency))
+                            yield return issue;
+        }
 
-                
-                    if (beatmap.generalSettings.mode == otherBeatmap.generalSettings.mode)
-                    {
-                        // Countdown has no effect in taiko or mania.
-                        if (beatmap.generalSettings.mode != Beatmap.Mode.Taiko && beatmap.generalSettings.mode != Beatmap.Mode.Mania)
-                        {
-                            if (beatmap.GetCountdownStartBeat() >= 0 && otherBeatmap.GetCountdownStartBeat() >= 0)
-                            {
-                                if (beatmap.generalSettings.countdown != otherBeatmap.generalSettings.countdown)
-                                    yield return new Issue(GetTemplate("Warning"), beatmap,
-                                        "countdown speed", otherBeatmap);
-
-                                if (beatmap.generalSettings.countdownBeatOffset != otherBeatmap.generalSettings.countdownBeatOffset)
-                                    yield return new Issue(GetTemplate("Warning"), beatmap,
-                                        "countdown offset", otherBeatmap);
-                            }
-                            else if (beatmap.GetCountdownStartBeat() >= 0 || otherBeatmap.GetCountdownStartBeat() >= 0)
-                            {
-                                if (beatmap.generalSettings.countdown > 0 || otherBeatmap.generalSettings.countdown > 0)
-                                    yield return new Issue(GetTemplate("Warning"), beatmap,
-                                        "countdown", otherBeatmap);
-                            }
-                        }
-
-                        if (beatmap.breaks.Count > 0 && otherBeatmap.breaks.Count > 0)
-                        {
-                            if (beatmap.generalSettings.letterbox != otherBeatmap.generalSettings.letterbox)
-                                yield return new Issue(GetTemplate("Warning"), beatmap,
-                                    "letterbox", otherBeatmap);
-                        }
-                    }
-
-                    // Widescreen support does nothing without a storyboard.
-                    if (beatmap.HasDifficultySpecificStoryboard() &&
-                        otherBeatmap.HasDifficultySpecificStoryboard() ||
-                        beatmapSet.osb != null)
-                    {
-                        if (beatmap.generalSettings.widescreenSupport != otherBeatmap.generalSettings.widescreenSupport)
-                            yield return new Issue(GetTemplate("Warning"), beatmap,
-                                "widescreen support", otherBeatmap);
-
-                        if (beatmap.generalSettings.storyInFrontOfFire != otherBeatmap.generalSettings.storyInFrontOfFire)
-                            yield return new Issue(GetTemplate("Warning"), beatmap,
-                                "storyboard in front of combo fire", otherBeatmap);
-
-                        if (beatmap.generalSettings.useSkinSprites != otherBeatmap.generalSettings.useSkinSprites)
-                            yield return new Issue(GetTemplate("Warning"), beatmap,
-                                "usage of skin sprites in storyboard", otherBeatmap);
-                    }
-
-                    // Only warn on the difficulty with the storyboard.
-                    if (beatmap.HasDifficultySpecificStoryboard() && !otherBeatmap.HasDifficultySpecificStoryboard())
-                        yield return new Issue(GetTemplate("Warning"), beatmap,
-                            "difficulty-specific storyboard presence", otherBeatmap);
-
-                    // Epilepsy warning requires either a storyboard or video to show.
-                    if (beatmap.HasDifficultySpecificStoryboard() &&
-                        otherBeatmap.HasDifficultySpecificStoryboard() ||
-                        beatmapSet.osb != null ||
-                        beatmap.videos.Count > 0 && otherBeatmap.videos.Count > 0)
-                    {
-                        if (beatmap.generalSettings.epilepsyWarning != otherBeatmap.generalSettings.epilepsyWarning)
-                            yield return new Issue(GetTemplate("Warning"), beatmap,
-                                "epilepsy warning", otherBeatmap);
-                    }
-
-                    if (beatmap.generalSettings.audioLeadIn != otherBeatmap.generalSettings.audioLeadIn)
-                        yield return new Issue(GetTemplate("Warning"), beatmap,
-                            "audio lead-in", otherBeatmap);
-
-                    if (beatmap.generalSettings.skinPreference != otherBeatmap.generalSettings.skinPreference)
-                        yield return new Issue(GetTemplate("Warning"), beatmap,
-                            "skin preference", otherBeatmap);
-
-                    if (beatmap.difficultySettings.sliderTickRate != otherBeatmap.difficultySettings.sliderTickRate)
-                        yield return new Issue(GetTemplate("Minor"), beatmap,
-                            "slider tick rate", otherBeatmap);
-                }
+        private IEnumerable<Issue> GetInconsistency(Beatmap               beatmap,
+                                                    Beatmap               otherBeatmap,
+                                                    BeatmapSet            beatmapSet,
+                                                    InconsistencyTemplate inconsistency)
+        {
+            if (inconsistency.Condition == null || inconsistency.Condition(beatmap, otherBeatmap, beatmapSet))
+            {
+                string value = inconsistency.Value(beatmap).ToString();
+                string otherValue = inconsistency.Value(otherBeatmap).ToString();
+                if (value != otherValue)
+                    yield return new Issue(GetTemplate(inconsistency.template), beatmap,
+                        inconsistency.name, value, otherBeatmap, otherValue);
             }
         }
     }
