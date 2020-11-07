@@ -41,7 +41,7 @@ namespace MapsetChecks.Checks.General.Metadata
                 }
             }
         };
-        
+
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
             return new Dictionary<string, IssueTemplate>()
@@ -70,69 +70,109 @@ namespace MapsetChecks.Checks.General.Metadata
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
             Beatmap beatmap = beatmapSet.beatmaps[0];
-            
-            // Matches any string containing some form of TV Size but not exactly "(TV Size)".
-            Regex tvSizeRegex = new Regex(@"(?i)(tv (size|ver))");
-            Regex tvSizeExactRegex = new Regex(@"\(TV Size\)");
-            foreach (Issue issue in GetIssuesFromRegex(beatmap, tvSizeRegex, tvSizeExactRegex, "(TV Size)"))
-                yield return issue;
-            
-            Regex gameVerRegex = new Regex(@"(?i)(game (size|ver))");
-            Regex gameVerExactRegex = new Regex(@"\(Game Ver\.\)");
-            foreach (Issue issue in GetIssuesFromRegex(beatmap, gameVerRegex, gameVerExactRegex, "(Game Ver.)"))
-                yield return issue;
-            
-            Regex shortVerRegex = new Regex(@"(?i)(short (size|ver))");
-            Regex shortVerExactRegex = new Regex(@"\(Short Ver\.\)");
-            foreach (Issue issue in GetIssuesFromRegex(beatmap, shortVerRegex, shortVerExactRegex, "(Short Ver.)"))
+
+            foreach (Issue issue in GetMarkerFormatIssues(beatmap))
                 yield return issue;
 
-            // "(?<!& )" ensures we don't match "(Sped Up & Cut Ver.)", which we handle separately.
-            Regex cutVerRegex = new Regex(@"(?i)(?<!& )(cut (size|ver))");
-            Regex cutVerExactRegex = new Regex(@"\(Cut Ver\.\)");
-            foreach (Issue issue in GetIssuesFromRegex(beatmap, cutVerRegex, cutVerExactRegex, "(Cut Ver.)"))
-                yield return issue;
-
-            Regex spedVerRegex = new Regex(@"(?i)(?<!& )(sped|speed) ?up ver");
-            Regex spedVerExactRegex = new Regex(@"\(Sped Up Ver\.\)");
-            foreach (Issue issue in GetIssuesFromRegex(beatmap, spedVerRegex, spedVerExactRegex, "(Sped Up Ver.)"))
-                yield return issue;
-
-            Regex nightcoreRegex = new Regex(@"(?i)(?<!& )(nightcore|night core) (ver|mix)");
-            Regex nightcoreExactRegex = new Regex(@"\(Nightcore Mix\)");
-            foreach (Issue issue in GetIssuesFromRegex(beatmap, nightcoreRegex, nightcoreExactRegex, "(Nightcore Mix)"))
-                yield return issue;
-
-            // Combinations of Sped Up / Nightcore & Cut Ver.
-
-            Regex spedUpCutVerRegex = new Regex(@"(?i)(sped|speed) ?up (ver)? ?& cut (size|ver)");
-            Regex spedUpCutVerExactRegex = new Regex(@"\(Sped Up & Cut Ver\.\)");
-            foreach (Issue issue in GetIssuesFromRegex(beatmap, spedUpCutVerRegex, spedUpCutVerExactRegex, "(Sped Up & Cut Ver.)"))
-                yield return issue;
-
-            Regex nightcoreCutVerRegex = new Regex(@"(?i)(nightcore|night core) (ver|mix)? ?& cut (size|ver)");
-            Regex nightcoreCutVerExactRegex = new Regex(@"\(Nightcore & Cut Ver\.\)");
-            foreach (Issue issue in GetIssuesFromRegex(beatmap, nightcoreCutVerRegex, nightcoreCutVerExactRegex, "(Nightcore & Cut Ver.)"))
                 yield return issue;
         }
 
-        /// <summary> Returns issues wherever the romanized or unicode title contains the regular regex but not the exact regex. </summary>
-        private IEnumerable<Issue> GetIssuesFromRegex(Beatmap beatmap, Regex regex, Regex exactRegex, string correctFormat)
+        private class Marker
         {
-            if (regex.IsMatch(beatmap.metadataSettings.title) &&
-                !exactRegex.IsMatch(beatmap.metadataSettings.title))
-            {
-                yield return new Issue(GetTemplate("Problem"), null,
-                    "Romanized", beatmap.metadataSettings.title, correctFormat);
-            }
+            private Marker(string value) { Value = value; }
+            public string Value { get; private set; }
 
-            // Unicode fields do not exist in file version 9.
-            if (beatmap.metadataSettings.titleUnicode != null
-                && regex.IsMatch(beatmap.metadataSettings.titleUnicode) &&
-                !exactRegex.IsMatch(beatmap.metadataSettings.titleUnicode))
+            public static Marker TV_SIZE           { get { return new Marker("(TV Size)"); } }
+            public static Marker GAME_VER          { get { return new Marker("(Game Ver.)"); } }
+            public static Marker SHORT_VER         { get { return new Marker("(Short Ver.)"); } }
+            public static Marker CUT_VER           { get { return new Marker("(Cut Ver.)"); } }
+            public static Marker SPED_UP_VER       { get { return new Marker("(Sped Up Ver.)"); } }
+            public static Marker NIGHTCORE_MIX     { get { return new Marker("(Nightcore Mix)"); } }
+            public static Marker SPED_UP_CUT_VER   { get { return new Marker("(Sped Up & Cut Ver.)"); } }
+            public static Marker NIGHTCORE_CUT_VER { get { return new Marker("(Nightcore & Cut Ver.)"); } }
+        }
+
+        struct MarkerFormat
+        {
+            public readonly Marker marker;
+            public readonly Regex incorrectFormatRegex;
+
+            public MarkerFormat(Marker marker, Regex incorrectFormatRegex)
             {
-                yield return new Issue(GetTemplate("Problem"), null,
-                    "Unicode", beatmap.metadataSettings.titleUnicode, correctFormat);
+                this.marker = marker;
+                this.incorrectFormatRegex = incorrectFormatRegex;
+            }
+        }
+
+        private static readonly List<MarkerFormat> MarkerFormats = new List<MarkerFormat>()
+        {
+            new MarkerFormat(Marker.TV_SIZE,           new Regex(@"(?i)(tv (size|ver))")),
+            new MarkerFormat(Marker.GAME_VER,          new Regex(@"(?i)(game (size|ver))")),
+            new MarkerFormat(Marker.SHORT_VER,         new Regex(@"(?i)(short (size|ver))")),
+            new MarkerFormat(Marker.CUT_VER,           new Regex(@"(?i)(?<!& )(cut (size|ver))")),
+            new MarkerFormat(Marker.SPED_UP_VER,       new Regex(@"(?i)(?<!& )(sped|speed) ?up ver")),
+            new MarkerFormat(Marker.NIGHTCORE_MIX,     new Regex(@"(?i)(?<!& )(nightcore|night core) (ver|mix)")),
+            new MarkerFormat(Marker.SPED_UP_CUT_VER,   new Regex(@"(?i)(sped|speed) ?up (ver)? ?& cut (size|ver)")),
+            new MarkerFormat(Marker.NIGHTCORE_CUT_VER, new Regex(@"(?i)(nightcore|night core) (ver|mix)? ?& cut (size|ver)")),
+        };
+
+        private IEnumerable<Issue> GetMarkerFormatIssues(Beatmap beatmap)
+        {
+            foreach (MarkerFormat markerFormat in MarkerFormats)
+            {
+                // Matches any string containing some form of the marker but not exactly it.
+                foreach (Issue issue in GetIssuesFromRegex(beatmap, markerFormat))
+                    yield return issue;
+            }
+        }
+
+        struct TitleType
+        {
+            public readonly string type;
+            public readonly Func<Beatmap, string> Get;
+
+            public TitleType(string type, Func<Beatmap, string> Get)
+            {
+                this.type = type;
+                this.Get = Get;
+            }
+        }
+
+        private static readonly List<TitleType> TitleTypes = new List<TitleType>()
+        {
+            new TitleType("romanized", beatmap => beatmap.metadataSettings.title),
+            new TitleType("unicode",   beatmap => beatmap.metadataSettings.titleUnicode)
+        };
+
+        private string Capitalize(string str) =>
+            str.First().ToString().ToUpper() + str.Substring(1);
+
+        /// <summary> Returns issues wherever the romanized or unicode title matches the regex but not the exact format. </summary>
+        private IEnumerable<Issue> GetIssuesFromRegex(Beatmap beatmap, MarkerFormat markerFormat)
+        {
+            foreach (TitleType titleType in TitleTypes)
+            {
+                string title = titleType.Get(beatmap);
+                string correctFormat = markerFormat.marker.Value;
+                Regex approxRegex = markerFormat.incorrectFormatRegex;
+                Regex exactRegex  = new Regex(Regex.Escape(correctFormat));
+
+                // Unicode fields do not exist in file version 9, hence null check.
+                if (title != null && approxRegex.IsMatch(title) && !exactRegex.IsMatch(title))
+                    yield return new Issue(GetTemplate("Problem"), null,
+                        Capitalize(titleType.type), title, correctFormat);
+            }
+        }
+
+        struct SubstitutionPair
+        {
+            public readonly Marker original;
+            public readonly Marker substitution;
+
+            public SubstitutionPair(Marker original, Marker substitution)
+            {
+                this.original = original;
+                this.substitution = substitution;
             }
         }
     }
