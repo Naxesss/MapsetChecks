@@ -64,6 +64,14 @@ namespace MapsetChecks.Checks.General.Metadata
                             <li>(Nightcore & Cut Ver.)</li>
                         </ul>
                         ") },
+
+                { "Warning Nightcore",
+                    new IssueTemplate(Issue.Level.Warning,
+                        "\"{0}\" in tags, consider \"{1}\" instead of \"{2}\" in {3} title.",
+                        "nightcore", "(Nightcore Mix)", "(Sped Up Ver.)", "romanized/unicode")
+                    .WithCause(
+                        "The romanized/unicode title contains \"(Sped Up Ver.)\" or equivalent, " +
+                        "when the tags contain \"nightcore\".") }
             };
         }
 
@@ -74,6 +82,7 @@ namespace MapsetChecks.Checks.General.Metadata
             foreach (Issue issue in GetMarkerFormatIssues(beatmap))
                 yield return issue;
 
+            foreach (Issue issue in GetNightcoreIssues(beatmap))
                 yield return issue;
         }
 
@@ -174,6 +183,25 @@ namespace MapsetChecks.Checks.General.Metadata
                 this.original = original;
                 this.substitution = substitution;
             }
+        }
+
+        private IEnumerable<Issue> GetNightcoreIssues(Beatmap beatmap)
+        {
+            string nightcoreTag = beatmap.metadataSettings.GetCoveringTag("nightcore");
+            if (nightcoreTag == null)
+                yield break;
+
+            List<SubstitutionPair> substitutionPairs = new List<SubstitutionPair>()
+            {
+                new SubstitutionPair(Marker.SPED_UP_VER,     Marker.NIGHTCORE_MIX),
+                new SubstitutionPair(Marker.SPED_UP_CUT_VER, Marker.NIGHTCORE_CUT_VER)
+            };
+
+            foreach (SubstitutionPair pair in substitutionPairs)
+                foreach (TitleType titleType in TitleTypes)
+                    if (titleType.Get(beatmap).Contains(pair.original.Value))
+                        yield return new Issue(GetTemplate("Warning Nightcore"), null,
+                            nightcoreTag, pair.original.Value, pair.substitution.Value, titleType.type);
         }
     }
 }
