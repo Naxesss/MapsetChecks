@@ -66,11 +66,11 @@ namespace MapsetChecks.Checks.General.Metadata
                     // If e.g. "Naxess' Insane", group 1 is "Naxes" and group 2 is the remaining "s".
                     possessor += match.Groups[2].Value;
 
-                if (beatmap.metadataSettings.tags.ToLower().Contains(possessor.ToLower()))
+                if (beatmap.metadataSettings.IsCoveredByTags(possessor))
                     continue;
 
                 yield return new Issue(GetTemplate("Warning"), null,
-                    beatmap.metadataSettings.version, possessor);
+                    beatmap.metadataSettings.version, possessor.ToLower().Replace(" ", "_"));
             }
         }
     }
