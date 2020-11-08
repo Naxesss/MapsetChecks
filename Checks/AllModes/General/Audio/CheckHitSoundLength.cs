@@ -86,7 +86,7 @@ namespace MapsetChecks.Checks.General.Audio
                 }
                 else
                     yield return new Issue(GetTemplate("Unable to check"), null,
-                        hsFile, Common.AsExceptionDiv(exception));
+                        hsFile, Common.ExceptionTag(exception));
             }
         }
     }

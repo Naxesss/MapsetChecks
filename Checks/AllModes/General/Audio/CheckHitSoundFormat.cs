@@ -103,7 +103,7 @@ namespace MapsetChecks.Checks.General.Audio
                     if (exception != null)
                     {
                         yield return new Issue(GetTemplate("Exception"), null,
-                            hitSoundFile, Common.AsExceptionDiv(exception));
+                            hitSoundFile, Common.ExceptionTag(exception));
                         continue;
                     }
 

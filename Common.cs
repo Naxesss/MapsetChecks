@@ -15,21 +15,17 @@ namespace MapsetChecks
         public const string CHECK_MANUALLY_MESSAGE = ", so you'll need to check that manually.";
         public const string FILE_EXCEPTION_MESSAGE = "\"{0}\" couldn't be checked, so you'll need to do that manually.{1}";
 
-        public static string AsExceptionDiv(Exception exception)
+        public static string ExceptionTag(Exception exception)
         {
             return $@"
-                <div
-                    class=""exception-shortcut detail-shortcut shows-info""
-                    data-tooltip=""Show exception info""
-                    data-shown-info=""
-                        <div class=&quot;exception-message&quot;>
-                            &quot;{exception.Message.Replace("\"", "&quot;").Replace("\n", "<br />")}&quot;
-                        </div>
-                        <div class=&quot;paste-separator&quot;></div>
-                        <div class=&quot;exception-trace&quot;>
-                            {exception.StackTrace.Replace("\"", "&quot;").Replace("\n", "<br />")}
-                        </div>"">
-                </div>";
+                <exception>
+                    <message>
+                        {exception.Message}
+                    </message>
+                    <stacktrace>
+                        {exception.StackTrace}
+                    </stacktrace>
+                </exception>";
         }
 
         public static IEnumerable<Issue> GetInconsistencies(
@@ -175,7 +171,7 @@ namespace MapsetChecks
                             catch (Exception exception)
                             {
                                 errorTemplate = "Exception";
-                                arguments.Add(AsExceptionDiv(exception));
+                                arguments.Add(ExceptionTag(exception));
                             }
                         }
                         else

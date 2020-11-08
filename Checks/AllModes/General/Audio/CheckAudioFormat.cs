@@ -89,7 +89,7 @@ namespace MapsetChecks.checks.general.audio
 
             if (exception != null)
                 yield return new Issue(GetTemplate("Exception"), null,
-                    audioName, Common.AsExceptionDiv(exception));
+                    audioName, Common.ExceptionTag(exception));
 
             else if ((ManagedBass.ChannelType.MP3 & actualFormat) != ManagedBass.ChannelType.MP3 &&
                      (ManagedBass.ChannelType.OGG & actualFormat) != ManagedBass.ChannelType.OGG)

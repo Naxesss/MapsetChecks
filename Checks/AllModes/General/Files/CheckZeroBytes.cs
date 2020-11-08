@@ -77,7 +77,7 @@ namespace MapsetChecks.Checks.General.Files
                 {
                     errorIssue = new Issue(GetTemplate("Exception"), null,
                         PathStatic.RelativePath(filePath, beatmapSet.songPath),
-                        Common.AsExceptionDiv(exception));
+                        Common.ExceptionTag(exception));
                 }
 
                 if (errorIssue != null)

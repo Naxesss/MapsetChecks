@@ -100,7 +100,7 @@ namespace MapsetChecks.Checks.General.Audio
                 if (exception != null)
                 {
                     yield return new Issue(GetTemplate("Unable to check"), null,
-                        PathStatic.RelativePath(audioPath, beatmap.songPath), Common.AsExceptionDiv(exception));
+                        PathStatic.RelativePath(audioPath, beatmap.songPath), Common.ExceptionTag(exception));
                     continue;
                 }
 
