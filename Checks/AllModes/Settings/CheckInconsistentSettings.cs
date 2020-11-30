@@ -124,7 +124,10 @@ namespace MapsetChecks.Checks.Settings
             new InconsistencyTemplate(
                 template: "Problem",
                 name:     "beatmapset id",
-                Value:    beatmap => beatmap.metadataSettings.beatmapSetId
+                Value:    beatmap =>
+                    beatmap.metadataSettings.beatmapSetId != null
+                        ? beatmap.metadataSettings.beatmapSetId.ToString()
+                        : "-1"  // Beatmapset IDs are set to -1 for unsubmitted mapsets.
             ),
             new InconsistencyTemplate(
                 template:  "Warning",
