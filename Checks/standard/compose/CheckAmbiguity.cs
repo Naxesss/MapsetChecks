@@ -89,9 +89,9 @@ namespace MapsetChecks.checks.standard.compose
                     continue;
 
                 Vector2 tailPosition = slider.GetPathPosition(slider.time + slider.GetCurveDuration());
-                float headTailDistance = Vector2.Distance(slider.Position, tailPosition);
+                float curveEdgesDistance = Vector2.Distance(slider.Position, tailPosition);
 
-                if (headTailDistance <= 5)
+                if (curveEdgesDistance <= 5 && CouldSliderBreak(slider))
                     yield return new Issue(GetTemplate("Warning"), beatmap,
                         Timestamp.Get(hitObject));
 
@@ -146,6 +146,22 @@ namespace MapsetChecks.checks.standard.compose
                     prevAnchorPosition = anchorPosition;
                 }
             }
+        }
+
+        private bool CouldSliderBreak(Slider slider) =>
+            MaxDistanceFromHead(slider) - slider.beatmap.difficultySettings.GetCircleRadius() * 2 > 0;
+
+        private float MaxDistanceFromHead(Slider slider)
+        {
+            float maxDistance = 0;
+            foreach (double tickTime in slider.GetSliderTickTimes())
+            {
+                Vector2 tickPosition = slider.GetPathPosition(tickTime);
+                float distance = (tickPosition - slider.Position).Length();
+                if (maxDistance < distance)
+                    maxDistance = distance;
+            }
+            return maxDistance;
         }
     }
 }
