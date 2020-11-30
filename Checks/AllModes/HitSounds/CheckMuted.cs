@@ -35,7 +35,10 @@ namespace MapsetChecks.Checks.HitSounds
                     @"
                     All active hit objects (i.e. circles, slider heads, and starts of hold notes) should provide some feedback 
                     so that players can hear if they're clicking too early or late. By reducing the volume to the point where 
-                    it is difficult to hear over the song, hit sounds cease to function as proper feedback."
+                    it is difficult to hear over the song, hit sounds cease to function as proper feedback.
+
+                    Reverses are generally always done on sound cues, and assuming that's the case, it wouldn't make much sense 
+                    being silent."
                 }
             }
         };
@@ -58,10 +61,17 @@ namespace MapsetChecks.Checks.HitSounds
                     .WithCause(
                         "An active hit object is at 20% or lower volume.") },
 
+                { "Passive Reverse",
+                    new IssueTemplate(Issue.Level.Warning,
+                        "{0} {1}% volume {2}, ensure there is no distinct sound here in the song.",
+                        "timestamp - ", "percent", "reverse")
+                    .WithCause(
+                        "A slider reverse is at 10% or lower volume.") },
+
                 { "Passive",
                     new IssueTemplate(Issue.Level.Minor,
                         "{0} {1}% volume {2}, ensure there is no distinct sound here in the song.",
-                        "timestamp - ", "percent", "tick/reverse/tail")
+                        "timestamp - ", "percent", "tick/tail")
                     .WithCause(
                         "A passive hit object is at 10% or lower volume.") }
             };
@@ -82,35 +92,75 @@ namespace MapsetChecks.Checks.HitSounds
                         hitObject.volume.GetValueOrDefault() :
                         GetTimingLine(beatmap, ref lineIndex, hitObject.time).volume;
 
-                // < 5% is interpreted as 5%
-                if (volume < 5)
-                    volume = 5;
-                    
-                if (volume <= 10)
-                    yield return new Issue(GetTemplate("Warning Volume"), beatmap,
-                        Timestamp.Get(hitObject), volume, hitObject.GetPartName(hitObject.time).ToLower());
-
-                else if (volume <= 20)
-                    yield return new Issue(GetTemplate("Minor Volume"), beatmap,
-                        Timestamp.Get(hitObject), volume, hitObject.GetPartName(hitObject.time).ToLower());
+                foreach (Issue issue in GetIssue(hitObject, hitObject.time, volume, isActive: true))
+                    yield return issue;
 
                 if (!(hitObject is Slider slider))
                     continue;
 
-                for (int edgeIndex = 0; edgeIndex < slider.edgeAmount; ++edgeIndex)
+                for (int edgeIndex = 1; edgeIndex <= slider.edgeAmount; ++edgeIndex)
                 {
                     double time = Timestamp.Round(slider.time + slider.GetCurveDuration() * edgeIndex);
-
-                    if (edgeIndex == slider.edgeAmount - 1)
+                    bool isReverse = edgeIndex < slider.edgeAmount;
+                    if (!isReverse)
+                        // Necessary to get the exact slider end time, as opposed to a decimal value.
                         time = slider.endTime;
 
                     volume = GetTimingLine(beatmap, ref lineIndex, hitObject.time).volume;
-                    if (volume <= 10)
-                        yield return new Issue(GetTemplate("Passive"), beatmap,
-                            Timestamp.Get(time), volume, hitObject.GetPartName(time).ToLower());
+                    foreach (Issue issue in GetIssue(hitObject, time, volume, isActive: isReverse))
+                        yield return issue;
+                }
+
+                foreach (double tickTime in slider.GetSliderTickTimes())
+                {
+                    volume = GetTimingLine(beatmap, ref lineIndex, tickTime).volume;
+                    foreach (Issue issue in GetIssue(hitObject, tickTime, volume, isActive: false))
+                        yield return issue;
                 }
             }
         }
+
+        private IEnumerable<Issue> GetIssue(HitObject hitObject, double time, float volume, bool isActive = false)
+        {
+            volume = GetActualVolume(volume);
+            if (volume > 20)
+                // Volumes greater than 20% are usually audible.
+                yield break;
+
+            bool   isHead    = time == hitObject.time;
+            string timestamp = isHead ? Timestamp.Get(hitObject) : Timestamp.Get(time);
+            string partName  = hitObject.GetPartName(time).ToLower().Replace("body", "tick");
+            if (isActive)
+            {
+                if (isHead)
+                {
+                    if (volume <= 10)
+                        yield return new Issue(GetTemplate("Warning Volume"), hitObject.beatmap,
+                            timestamp, volume, partName);
+                    else
+                        yield return new Issue(GetTemplate("Minor Volume"), hitObject.beatmap,
+                            timestamp, volume, partName);
+                }
+                else
+                {
+                    // Must be a slider reverse, mappers rarely map these to nothing.
+                    if (volume <= 10)
+                        yield return new Issue(GetTemplate("Passive Reverse"), hitObject.beatmap,
+                            timestamp, volume, partName);
+                }
+            }
+            else if (volume <= 10)
+            {
+                // Must be a slider tail or similar, these are often silenced intentionally.
+                yield return new Issue(GetTemplate("Passive"), hitObject.beatmap,
+                    timestamp, volume, partName);
+            }
+        }
+
+        /// <summary> Returns the volume that can be heard in-game, given the timing line or object
+        /// code volume from the code. Volumes less than 5% are interpreted as 5%. </summary>
+        /// <param name="volume"> The volume according to the object/timing line code, in percent (i.e. 20 is 20%). </param>
+        private float GetActualVolume(float volume) => volume < 5 ? 5 : volume;
 
         /// <summary> Gets the timing line in effect at the given time continuing at the index given.
         /// This is more performant than <see cref="Beatmap.GetTimingLine(double, bool)"/> due to not
