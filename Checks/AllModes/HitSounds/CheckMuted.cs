@@ -106,7 +106,7 @@ namespace MapsetChecks.Checks.HitSounds
                         // Necessary to get the exact slider end time, as opposed to a decimal value.
                         time = slider.endTime;
 
-                    volume = GetTimingLine(beatmap, ref lineIndex, hitObject.time).volume;
+                    volume = GetTimingLine(beatmap, ref lineIndex, time).volume;
                     foreach (Issue issue in GetIssue(hitObject, time, volume, isActive: isReverse))
                         yield return issue;
                 }
