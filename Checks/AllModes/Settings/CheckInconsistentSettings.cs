@@ -210,7 +210,9 @@ namespace MapsetChecks.Checks.Settings
             new InconsistencyTemplate(
                 template:  "Warning",
                 name:      "slider tick rate",
-                Value:     beatmap => beatmap.difficultySettings.sliderTickRate
+                Value:     beatmap => beatmap.difficultySettings.sliderTickRate,
+                Condition: (beatmap, otherBeatmap, beatmapSet) =>
+                    beatmap.generalSettings.mode == otherBeatmap.generalSettings.mode
             )
         };
         
