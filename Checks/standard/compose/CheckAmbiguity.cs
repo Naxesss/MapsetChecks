@@ -23,7 +23,7 @@ namespace MapsetChecks.checks.standard.compose
                 Beatmap.Mode.Standard
             },
             Category = "Compose",
-            Message = "Perfectly overlapping combination of tail, head or red anchors.",
+            Message = "Ambiguous slider intersection.",
             Author = "Naxess",
 
             Documentation = new Dictionary<string, string>()
@@ -66,10 +66,10 @@ namespace MapsetChecks.checks.standard.compose
             {
                 { "Warning",
                     new IssueTemplate(Issue.Level.Warning,
-                        "{0} Tail and head are almost perfectly overlapping.",
+                        "{0} Slider edges are almost perfectly overlapping.",
                         "timestamp - ")
                     .WithCause(
-                        "The head and tail of a slider are 5 px or less apart.") },
+                        "The edges of a slider curve are 5 px or less apart, and a slider tick is 2 circle radii from the head.") },
 
                 { "Anchor",
                     new IssueTemplate(Issue.Level.Warning,
