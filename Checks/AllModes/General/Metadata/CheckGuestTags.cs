@@ -12,7 +12,7 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
     public class CheckGuestTags : GeneralCheck
     {
         // Matches on a mappers name which can contain any character, number, comma or ampersand.
-        private readonly Regex mapperRegex = new Regex(@"^([a-z0-9&, ]+)(s)'|'s", RegexOptions.IgnoreCase);
+        private readonly Regex mapperRegex = new Regex(@"^([a-z0-9&, ]+)(?:(s)'|'s)", RegexOptions.IgnoreCase);
 
         // Matches on all used split characters for a collab with the used whitespaces
         private readonly Regex collabSplitCharRegex = new Regex(@" & |, ");
