@@ -1,20 +1,22 @@
-﻿using MapsetParser.objects;
-using MapsetVerifierFramework;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using MapsetParser.objects;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 
-namespace MapsetChecks.Checks.General.Metadata
+namespace MapsetChecks.Checks.AllModes.General.Metadata
 {
     [Check]
     public class CheckGuestTags : GeneralCheck
     {
+        // Matches on a mappers name which can contain any character, number, comma or ampersand.
+        private readonly Regex mapperRegex = new Regex(@"^([a-z0-9&, ]+)(s)'|'s", RegexOptions.IgnoreCase);
+
+        // Matches on all used split characters for a collab with the used whitespaces
+        private readonly Regex collabSplitCharRegex = new Regex(@" & |, ");
+
         public override CheckMetadata GetMetadata() => new CheckMetadata()
         {
             Category = "Metadata",
@@ -53,24 +55,41 @@ namespace MapsetChecks.Checks.General.Metadata
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            Regex regex = new Regex(@"(.+)(?:'s|(s)')", RegexOptions.IgnoreCase);
             foreach (Beatmap beatmap in beatmapSet.beatmaps)
             {
-                Match match = regex.Match(beatmap.metadataSettings.version);
-                if (match == null)
-                    continue;
+                Match match = mapperRegex.Match(beatmap.metadataSettings.version);
 
                 // e.g. "Alphabet" in "Alphabet's Normal"
                 string possessor = match.Groups[1].Value;
-                if (match.Groups.Count > 2)
+
+                if (match.Groups.Count == 2)
                     // If e.g. "Naxess' Insane", group 1 is "Naxes" and group 2 is the remaining "s".
                     possessor += match.Groups[2].Value;
 
-                if (beatmap.metadataSettings.IsCoveredByTags(possessor))
-                    continue;
+                // Check if this difficulty contains a collab split character
+                if (collabSplitCharRegex.IsMatch(possessor))
+                {
+                    string[] collabPossessors = collabSplitCharRegex.Split(possessor);
 
-                yield return new Issue(GetTemplate("Warning"), null,
-                    beatmap.metadataSettings.version, possessor.ToLower().Replace(" ", "_"));
+                    foreach (string collabPossessor in collabPossessors)
+                    {
+                        // Checking the tags is not needed when one of the collab participants is the mapset creator
+                        if (beatmap.metadataSettings.creator == collabPossessor 
+                            || beatmap.metadataSettings.IsCoveredByTags(collabPossessor))
+                            continue;
+
+                        yield return new Issue(GetTemplate("Warning"), null,
+                            beatmap.metadataSettings.version, collabPossessor.ToLower().Replace(" ", "_"));
+                    }
+                }
+                else
+                {
+                    if (beatmap.metadataSettings.IsCoveredByTags(possessor))
+                        continue;
+
+                    yield return new Issue(GetTemplate("Warning"), null,
+                        beatmap.metadataSettings.version, possessor.ToLower().Replace(" ", "_"));
+                }
             }
         }
     }
