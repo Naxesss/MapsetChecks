@@ -62,7 +62,7 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
                 // e.g. "Alphabet" in "Alphabet's Normal"
                 string possessor = match.Groups[1].Value;
 
-                if (match.Groups.Count == 2)
+                if (match.Groups.Count > 2)
                     // If e.g. "Naxess' Insane", group 1 is "Naxes" and group 2 is the remaining "s".
                     possessor += match.Groups[2].Value;
 
