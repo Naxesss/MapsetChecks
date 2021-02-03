@@ -12,7 +12,7 @@ using System.Globalization;
 using System.Linq;
 using System.Numerics;
 
-namespace MapsetChecks.Checks.Standard.Settings
+namespace MapsetChecks.Checks.AllModes.Settings
 {
     [Check]
     public class CheckLuminosity : BeatmapCheck
@@ -21,7 +21,10 @@ namespace MapsetChecks.Checks.Standard.Settings
         {
             Modes = new Beatmap.Mode[]
             {
-                Beatmap.Mode.Standard
+                // Does not apply to taiko, due to always using red/blue.
+                // Does not apply to mania, due to not having combo colours (based on column instead).
+                Beatmap.Mode.Standard,
+                Beatmap.Mode.Catch
             },
             Category = "Settings",
             Message = "Too dark or bright combo colours or slider borders.",

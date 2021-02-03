@@ -12,7 +12,7 @@ using System.Globalization;
 using System.Linq;
 using System.Numerics;
 
-namespace MapsetChecks.checks.standard.settings
+namespace MapsetChecks.Checks.AllModes.Settings
 {
     [Check]
     public class CheckDefaultColours : BeatmapCheck
@@ -21,7 +21,10 @@ namespace MapsetChecks.checks.standard.settings
         {
             Modes = new Beatmap.Mode[]
             {
-                Beatmap.Mode.Standard
+                // Does not apply to taiko, due to always using red/blue.
+                // Does not apply to mania, due to not having combo colours (based on column instead).
+                Beatmap.Mode.Standard,
+                Beatmap.Mode.Catch
             },
             Category = "Settings",
             Message = "Default combo colours without forced skin.",
