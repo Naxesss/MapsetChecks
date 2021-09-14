@@ -59,7 +59,7 @@ namespace MapsetChecks.Checks.Timing
 
                 { "Conflicting",
                     new IssueTemplate(Issue.Level.Minor,
-                        "{0} Conflicing line settings. Green: {1}. Red: {2}. {3}.",
+                        "{0} Conflicting line settings. Green: {1}. Red: {2}. {3}.",
                         "timestamp - ", "green setting(s)", "red setting(s)", "precedence")
                     .WithCause(
                         "An inherited and uninherited timing line exists at the same point in time and have different settings.") }
