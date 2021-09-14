@@ -47,13 +47,10 @@ namespace MapsetChecks.checks.settings
                         More than 1 decimal place compared to 1 decimal place.
                     </image>
 
-                    The circle size setting in mania determines the key count, and is limited between 4 and 9.
+                    The circle size setting in mania determines the key count, and is limited between 4 and 10.
                     <ul>
                         <li>
                             3K or fewer leaves little room for patterning, making 2 maps of the same difficulty and song almost identical.
-                        </li>
-                        <li>
-                            10K is currently only possible using co-op, which automatically makes any score unranked.
                         </li>
                     </ul>"
                 }
@@ -69,7 +66,7 @@ namespace MapsetChecks.checks.settings
                         "Key count {0} is less than {1} or greater than {2}.",
                         "setting", "min", "max")
                     .WithCause(
-                        "The circle size settings is less than 4 or greater than 9. Only applies to mania.") },
+                        "The circle size settings is less than 4 or greater than 10. Only applies to mania.") },
 
                 { "Decimals",
                     new IssueTemplate(Issue.Level.Problem,
@@ -96,7 +93,7 @@ namespace MapsetChecks.checks.settings
             // Circle size does nothing in taiko.
             if (beatmap.generalSettings.mode == Beatmap.Mode.Mania)
             {
-                issue = GetIssue(beatmap.difficultySettings.circleSize, "Circle Size", beatmap, minSetting: 4, maxSetting: 9);
+                issue = GetIssue(beatmap.difficultySettings.circleSize, "Circle Size", beatmap, minSetting: 4, maxSetting: 10);
                 if (issue != null)
                     yield return issue;
             }
