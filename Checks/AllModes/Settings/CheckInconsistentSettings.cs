@@ -208,7 +208,7 @@ namespace MapsetChecks.Checks.Settings
                 Value:     beatmap => beatmap.generalSettings.skinPreference
             ),
             new InconsistencyTemplate(
-                template:  "Warning",
+                template:  "Minor",
                 name:      "slider tick rate",
                 Value:     beatmap => beatmap.difficultySettings.sliderTickRate,
                 Condition: (beatmap, otherBeatmap, beatmapSet) =>
