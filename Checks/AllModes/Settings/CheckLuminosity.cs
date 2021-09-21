@@ -61,7 +61,7 @@ namespace MapsetChecks.Checks.AllModes.Settings
                     This check uses the <a href=""http://alienryderflex.com/hsp.html"">HSP colour system</a> to better approximate 
                     the way humans perceive luminosity in colours, as opposed to the HSL system where green is regarded the same 
                     luminosity as deep blue, see image.
-                    <image-center>
+                    <image>
                         https://i.imgur.com/CjPhf0b.png
                         The HSP colour system compared to the in-game HSL system.
                     </image>"
