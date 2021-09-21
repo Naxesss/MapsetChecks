@@ -68,7 +68,14 @@ namespace MapsetChecks.Checks.General.Audio
                         "Average audio bitrate for \"{0}\", {1} kbps, is really low.",
                         "path", "bitrate")
                     .WithCause(
-                        "Same as the other check, except only applies to hit sounds using the lower threshold.") }
+                        "Same as the other check, except only applies to hit sounds using the lower threshold.") },
+
+                { "Exception",
+                    new IssueTemplate(Issue.Level.Error,
+                        Common.FILE_EXCEPTION_MESSAGE,
+                        "path", "exception info")
+                    .WithCause(
+                        "A file which was attempted to be checked could not be opened.") }
             };
         }
 
@@ -81,7 +88,26 @@ namespace MapsetChecks.Checks.General.Audio
             foreach (string hitSoundFile in beatmapSet.hitSoundFiles)
             {
                 string hitSoundPath = Path.Combine(beatmapSet.songPath, hitSoundFile);
-                ManagedBass.ChannelType hitSoundFormat = AudioBASS.GetFormat(hitSoundPath);
+
+                ManagedBass.ChannelType hitSoundFormat = 0;
+                Issue errorIssue = null;
+                try
+                {
+                    hitSoundFormat = AudioBASS.GetFormat(hitSoundPath);
+                }
+                catch (Exception exception)
+                {
+                    errorIssue = new Issue(GetTemplate("Exception"), null,
+                        PathStatic.RelativePath(hitSoundPath, beatmapSet.songPath),
+                        Common.ExceptionTag(exception));
+                }
+
+                if (errorIssue != null)
+                {
+                    yield return errorIssue;
+                    continue;
+                }
+
                 if ((hitSoundFormat & ManagedBass.ChannelType.OGG) != 0 &&
                     (hitSoundFormat & ManagedBass.ChannelType.MP3) != 0)
                     continue;
