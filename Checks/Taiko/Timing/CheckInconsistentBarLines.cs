@@ -68,6 +68,10 @@ namespace MapsetChecks.Checks.Timing
                         beatmap.timingLines.OfType<UninheritedLine>().FirstOrDefault(
                             otherLine => Timestamp.Round(otherLine.offset) == Timestamp.Round(line.offset));
 
+                    if (respectiveLine == null)
+                        // Inconsistent lines, which is the responsibility of another check, so we skip this case.
+                        continue;
+
                     double offset = Timestamp.Round(line.offset);
 
                     if (line.omitsBarLine != respectiveLine.omitsBarLine)
