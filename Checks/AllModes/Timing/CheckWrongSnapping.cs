@@ -1,18 +1,16 @@
-﻿using MapsetParser.objects;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using MapsetParser.objects;
 using MapsetParser.objects.timinglines;
 using MapsetParser.statics;
-using MapsetVerifierFramework;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace MapsetChecks.Checks.Timing
+namespace MapsetChecks.Checks.AllModes.Timing
 {
     [Check]
     public class CheckWrongSnapping : BeatmapSetCheck

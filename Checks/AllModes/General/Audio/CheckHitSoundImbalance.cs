@@ -1,15 +1,14 @@
-﻿using MapsetParser.objects;
-using MapsetParser.statics;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using MapsetParser.objects;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
 using MapsetVerifierFramework.objects.resources;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
-namespace MapsetChecks.Checks.General.Audio
+namespace MapsetChecks.Checks.AllModes.General.Audio
 {
     [Check]
     public class CheckHitSoundImbalance : GeneralCheck

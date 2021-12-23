@@ -1,16 +1,12 @@
-﻿using MapsetParser.objects;
+﻿using System.Collections.Generic;
+using System.Linq;
+using MapsetParser.objects;
 using MapsetParser.statics;
-using MapsetVerifierFramework;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
 
-namespace MapsetChecks.Checks.General.Audio
+namespace MapsetChecks.Checks.AllModes.General.Audio
 {
     [Check]
     public class CheckMultipleAudio : GeneralCheck

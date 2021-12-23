@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Numerics;
 
-namespace MapsetChecks.checks.standard.compose
+namespace MapsetChecks.Checks.Standard.Compose
 {
     [Check]
     public class CheckAmbiguity : BeatmapCheck

@@ -1,17 +1,12 @@
-﻿using MapsetParser.objects;
-using MapsetParser.objects.hitobjects;
-using MapsetParser.objects.timinglines;
+﻿using System.Collections.Generic;
+using System.Linq;
+using MapsetParser.objects;
 using MapsetParser.statics;
-using MapsetVerifierFramework;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 
-namespace MapsetChecks.checks.spread
+namespace MapsetChecks.Checks.AllModes.Spread
 {
     [Check]
     public class CheckLowestDiff : BeatmapSetCheck

@@ -1,13 +1,13 @@
-﻿using MapsetParser.objects;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using MapsetParser.objects;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using MapsetVerifierFramework.objects.resources;
 
-namespace MapsetChecks.Checks.General.Audio
+namespace MapsetChecks.Checks.AllModes.General.Audio
 {
     [Check]
     public class CheckHitSoundLength : GeneralCheck

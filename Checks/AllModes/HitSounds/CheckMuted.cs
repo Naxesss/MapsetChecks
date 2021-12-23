@@ -1,18 +1,12 @@
-﻿using MapsetParser.objects;
-using MapsetParser.objects.events;
+﻿using System.Collections.Generic;
+using MapsetParser.objects;
 using MapsetParser.objects.hitobjects;
 using MapsetParser.statics;
-using MapsetVerifierFramework;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
 
-namespace MapsetChecks.Checks.HitSounds
+namespace MapsetChecks.Checks.AllModes.HitSounds
 {
     [Check]
     public class CheckMuted : BeatmapCheck

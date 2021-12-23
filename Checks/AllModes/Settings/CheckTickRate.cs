@@ -1,17 +1,11 @@
-﻿using MapsetParser.objects;
-using MapsetParser.objects.events;
-using MapsetParser.objects.hitobjects;
-using MapsetVerifierFramework;
+﻿using System;
+using System.Collections.Generic;
+using MapsetParser.objects;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
 
-namespace MapsetChecks.Checks.Settings
+namespace MapsetChecks.Checks.AllModes.Settings
 {
     [Check]
     public class CheckTickRate : BeatmapCheck

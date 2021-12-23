@@ -1,16 +1,14 @@
-﻿using MapsetParser.objects;
+﻿using System;
+using System.Collections.Generic;
+using MapsetParser.objects;
 using MapsetParser.objects.hitobjects;
 using MapsetParser.objects.timinglines;
 using MapsetParser.statics;
-using MapsetVerifierFramework;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
 
-namespace MapsetChecks.checks.timing
+namespace MapsetChecks.Checks.AllModes.Timing
 {
     [Check]
     public class CheckBeforeLine : BeatmapCheck

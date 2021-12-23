@@ -1,15 +1,13 @@
-﻿using MapsetParser.objects;
-using MapsetVerifierFramework;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using MapsetParser.objects;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
 
-namespace MapsetChecks.Checks.General.Files
+namespace MapsetChecks.Checks.AllModes.General.Files
 {
     [Check]
     public class CheckUpdateValidity : GeneralCheck

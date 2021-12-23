@@ -1,17 +1,16 @@
-﻿using MapsetParser.objects;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using MapsetParser.objects;
 using MapsetParser.objects.hitobjects;
 using MapsetParser.statics;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
 using MapsetVerifierFramework.objects.resources;
-using NAudio.Wave;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
-namespace MapsetChecks.Checks.General.Audio
+namespace MapsetChecks.Checks.AllModes.General.Audio
 {
     [Check]
     public class CheckHitSoundFormat : GeneralCheck
