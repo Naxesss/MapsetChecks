@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using MapsetParser.objects;
 using MapsetParser.objects.hitobjects;
+using MapsetParser.statics;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
@@ -80,8 +81,8 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
 
                 { "Delay",
                     new IssueTemplate(Issue.Level.Warning,
-                        "\"{0}\" has a delay of ~{2} ms, of which {1} ms is complete silence.",
-                        "path", "pure delay", "delay")
+                        "\"{0}\" has a delay of ~{2} ms, of which {1} ms is complete silence. (Active at e.g. {3} in {4}.)",
+                        "path", "pure delay", "delay", "timestamp", "difficulty")
                     .WithCause(
                         "A hit sound file used on an active hit object has very low volume for ~5 ms or more.") },
 
@@ -105,9 +106,9 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
         {
             foreach (string hsFile in beatmapSet.hitSoundFiles)
             {
-                // Only hit sounds on active hit objects need to be delay-free.
-                bool isActive = IsActive(beatmapSet, hsFile);
-                if (!isActive)
+                HitObject hitObjectActiveAt = GetHitObjectActiveAt(beatmapSet, hsFile);
+                if (hitObjectActiveAt == null)
+                    // Hit sound is never active, so delay does not matter.
                     continue;
 
                 string hsPath = Path.Combine(beatmapSet.songPath, hsFile);
@@ -125,46 +126,47 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
 
                 if (exception == null)
                 {
-                    // Ignore muted files since they don't have anything to be delayed.
-                    if (peaks?.Count > 0 && peaks.Sum(peak => peak.Sum()) > 0)
+                    if (!(peaks?.Count > 0) || !(peaks.Sum(peak => peak.Sum()) > 0))
+                        // Muted files don't have anything to be delayed, hence ignore.
+                        continue;
+                    
+                    double maxStrength = peaks.Select(value => Math.Abs(value.Sum())).Max();
+
+                    int delay = 0;
+                    int pureDelay = 0;
+                    double strength = 0;
+                    while (delay + pureDelay < peaks.Count)
                     {
-                        double maxStrength = peaks.Select(value => Math.Abs(value.Sum())).Max();
+                        strength += Math.Abs(peaks[delay].Sum());
 
-                        int delay = 0;
-                        int pureDelay = 0;
-                        double strength = 0;
-                        while (delay + pureDelay < peaks.Count)
+                        if (strength >= maxStrength / 2)
+                            break;
+
+                        strength *= 0.95;
+
+                        // The delay added by MP3 encoding still has very slight volume where it's basically silent.
+                        if (strength < 0.001)
                         {
-                            strength += Math.Abs(peaks[delay].Sum());
-
-                            if (strength >= maxStrength / 2)
-                                break;
-
-                            strength *= 0.95;
-
-                            // The delay added by MP3 encoding still has very slight volume where it's basically silent.
-                            if (strength < 0.001)
-                            {
-                                strength = 0;
-                                ++pureDelay;
-                                ++delay;
-                            }
-                            else
-                                ++delay;
+                            strength = 0;
+                            ++pureDelay;
+                            ++delay;
                         }
-
-                        if (pureDelay >= 5)
-                            yield return new Issue(GetTemplate("Pure Delay"), null,
-                                hsFile, $"{pureDelay:0.##}");
-
-                        else if (delay + pureDelay >= 5)
-                            yield return new Issue(GetTemplate("Delay"), null,
-                                hsFile, $"{pureDelay:0.##}", $"{delay:0.##}");
-
-                        else if (delay + pureDelay >= 1)
-                            yield return new Issue(GetTemplate("Minor Delay"), null,
-                                hsFile, $"{pureDelay:0.##}", $"{delay:0.##}");
+                        else
+                            ++delay;
                     }
+
+                    if (pureDelay >= 5)
+                        yield return new Issue(GetTemplate("Pure Delay"), null,
+                            hsFile, $"{pureDelay:0.##}");
+
+                    else if (delay + pureDelay >= 5)
+                        yield return new Issue(GetTemplate("Delay"), null,
+                            hsFile, $"{pureDelay:0.##}", $"{delay:0.##}",
+                            Timestamp.Get(hitObjectActiveAt), hitObjectActiveAt.beatmap);
+
+                    else if (delay + pureDelay >= 1)
+                        yield return new Issue(GetTemplate("Minor Delay"), null,
+                            hsFile, $"{pureDelay:0.##}", $"{delay:0.##}");
                 }
                 else
                     yield return new Issue(GetTemplate("Unable to check"), null,
@@ -172,27 +174,27 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
             }
         }
 
-        public bool IsActive(BeatmapSet beatmapSet, string hitSoundFile)
+        private static HitObject GetHitObjectActiveAt(BeatmapSet beatmapSet, string hitSoundFile)
         {
-            foreach (Beatmap beatmap in beatmapSet.beatmaps)
+            foreach (var beatmap in beatmapSet.beatmaps)
             {
-                foreach (HitObject hitObject in beatmap.hitObjects)
+                foreach (var hitObject in beatmap.hitObjects)
                 {
                     if (hitObject is Spinner)
                         continue;
 
-                    // Only the hit sound edge at which the object is clicked is considered active.
+                    // Only the edge at which the object is clicked is considered active.
                     if (hitObject.usedHitSamples.Any(sample =>
                         sample.time.AlmostEqual(hitObject.time) &&
                         sample.hitSource == HitSample.HitSource.Edge &&
                         sample.SameFileName(hitSoundFile)))
                     {
-                        return true;
+                        return hitObject;
                     }
                 }
             }
 
-            return false;
+            return null;
         }
     }
 }
