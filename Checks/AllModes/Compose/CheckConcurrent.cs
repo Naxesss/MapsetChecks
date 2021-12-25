@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using MapsetParser.objects;
+using MapsetParser.objects.hitobjects;
 using MapsetParser.statics;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
@@ -87,7 +88,8 @@ namespace MapsetChecks.Checks.AllModes.Compose
                         yield return new Issue(GetTemplate("Concurrent Objects"), beatmap,
                             Timestamp.Get(hitObject, otherHitObject), ObjectsAsString(hitObject, otherHitObject));
 
-                    else if (msApart <= 10)
+                    // Spinners can be 1 ms or further apart from the previous end time, but not at the same milisecond.
+                    else if (msApart <= 10 && !(otherHitObject is Spinner))
                         yield return new Issue(GetTemplate("Almost Concurrent Objects"), beatmap,
                             Timestamp.Get(hitObject, otherHitObject), msApart);
 

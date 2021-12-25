@@ -84,6 +84,10 @@ namespace MapsetChecks.Checks.AllModes.Timing
         /// <summary> Returns issues wherever the given time value is unsnapped. </summary>
         private IEnumerable<Issue> GetUnsnapIssue(string type, double time, Beatmap beatmap)
         {
+            if (type.ToLower().Contains("spinner"))
+                // Spinners do not need to be snapped.
+                yield break;
+            
             double? unsnapIssue = beatmap.GetUnsnapIssue(time);
             double unsnap = beatmap.GetPracticalUnsnap(time);
 
