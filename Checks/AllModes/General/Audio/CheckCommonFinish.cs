@@ -71,7 +71,7 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
                     continue;
                 }
 
-                Common.CollectHitSoundFrequency(beatmapSet, hsFile, scoreThreshold: 6,
+                Common.CollectHitSoundFrequency(beatmapSet, hsFile, scoreThreshold: 9,
                     out string mostFrequentTimestamp, out Dictionary<Beatmap, int> uses);
 
                 if (mostFrequentTimestamp != null)
@@ -80,7 +80,7 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
                 else
                 {
                     Beatmap mapCommonlyUsedIn =
-                        Common.GetBeatmapCommonlyUsedIn(beatmapSet, uses, commonUsageThreshold: 2000);
+                        Common.GetBeatmapCommonlyUsedIn(beatmapSet, uses, commonUsageThreshold: 3000);
 
                     if (mapCommonlyUsedIn != null)
                         yield return new Issue(GetTemplate("Warning Common"), null,
