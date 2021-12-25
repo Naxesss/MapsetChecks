@@ -1,5 +1,8 @@
+﻿// ReSharper disable once EmptyNamespace
 namespace MapsetChecks.Checks.AllModes.General.Resources
 {
+    // TODO: Figure out why this is commented. If I were to guess, it's because the resolution of elements depend on
+    //       their scale in gameplay, which would cause both false positives and negatives.
     /*[Check]
     public class CheckSkinResolution : GeneralCheck
     {
