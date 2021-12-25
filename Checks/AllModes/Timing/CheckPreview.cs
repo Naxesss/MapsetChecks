@@ -9,13 +9,13 @@ namespace MapsetChecks.Checks.AllModes.Timing
     [Check]
     public class CheckPreview : BeatmapSetCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Category = "Timing",
             Message = "Inconsistent or unset preview time.",
             Author = "Naxess",
             
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -38,7 +38,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Not Set",
                     new IssueTemplate(Issue.Level.Problem,

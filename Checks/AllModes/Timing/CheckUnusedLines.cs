@@ -14,13 +14,13 @@ namespace MapsetChecks.Checks.AllModes.Timing
     [Check]
     public class CheckUnusedLines : BeatmapCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Category = "Timing",
             Message = "Unused timing lines.",
             Author = "Naxess",
             
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -43,7 +43,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Problem",
                     new IssueTemplate(Issue.Level.Problem,

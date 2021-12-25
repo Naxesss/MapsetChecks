@@ -12,13 +12,13 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
     [Check]
     public class CheckTitleMarkers : GeneralCheck
     {
-        public override CheckMetadata GetMetadata() => new CheckMetadata()
+        public override CheckMetadata GetMetadata() => new CheckMetadata
         {
             Category = "Metadata",
             Message = "Incorrect format of (TV Size) / (Game Ver.) / (Short Ver.) / (Cut Ver.) / (Sped Up Ver.) / etc in title.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -42,7 +42,7 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
 
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Problem",
                     new IssueTemplate(Issue.Level.Problem,

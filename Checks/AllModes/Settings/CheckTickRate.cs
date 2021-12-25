@@ -10,13 +10,13 @@ namespace MapsetChecks.Checks.AllModes.Settings
     [Check]
     public class CheckTickRate : BeatmapCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Category = "Settings",
             Message = "Slider tick rates not aligning with any common beat snap divisor.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -38,7 +38,7 @@ namespace MapsetChecks.Checks.AllModes.Settings
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Tick Rate",
                     new IssueTemplate(Issue.Level.Problem,

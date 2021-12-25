@@ -10,13 +10,13 @@ namespace MapsetChecks.Checks.AllModes.Settings
     [Check]
     public class CheckDiffSettings : BeatmapCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Category = "Settings",
             Message = "Abnormal difficulty settings.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -53,7 +53,7 @@ namespace MapsetChecks.Checks.AllModes.Settings
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "CS Mania",
                     new IssueTemplate(Issue.Level.Problem,

@@ -15,13 +15,13 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
     [Check]
     public class CheckHitSoundFormat : GeneralCheck
     {
-        public override CheckMetadata GetMetadata() => new CheckMetadata()
+        public override CheckMetadata GetMetadata() => new CheckMetadata
         {
             Category = "Audio",
             Message = "Incorrect hit sound format.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -52,7 +52,7 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "mp3",
                     new IssueTemplate(Issue.Level.Problem,

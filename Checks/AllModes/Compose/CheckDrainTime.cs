@@ -10,13 +10,13 @@ namespace MapsetChecks.Checks.AllModes.Compose
     [Check]
     public class CheckDrainTime : BeatmapCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Category = "Compose",
             Message = "Too short drain time.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -38,7 +38,7 @@ namespace MapsetChecks.Checks.AllModes.Compose
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Problem",
                     new IssueTemplate(Issue.Level.Problem,

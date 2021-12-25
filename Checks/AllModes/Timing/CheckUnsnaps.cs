@@ -11,13 +11,13 @@ namespace MapsetChecks.Checks.AllModes.Timing
     [Check]
     public class CheckUnsnaps : BeatmapCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Category = "Timing",
             Message = "Unsnapped hit objects.",
             Author = "Naxess",
             
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -47,7 +47,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Problem",
                     new IssueTemplate(Issue.Level.Problem,

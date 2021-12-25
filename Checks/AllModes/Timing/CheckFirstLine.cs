@@ -10,13 +10,13 @@ namespace MapsetChecks.Checks.AllModes.Timing
     [Check]
     public class CheckFirstLine : BeatmapCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Category = "Timing",
             Message = "First line toggles kiai or is inherited.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -46,7 +46,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Inherited",
                     new IssueTemplate(Issue.Level.Problem,

@@ -14,7 +14,7 @@ namespace MapsetChecks.Checks.AllModes.HitSounds
     [Check]
     public class CheckHitSounds : BeatmapCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Modes = new Beatmap.Mode[]
             {
@@ -26,7 +26,7 @@ namespace MapsetChecks.Checks.AllModes.HitSounds
             Message = "Long periods without hit sounding.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -59,7 +59,7 @@ namespace MapsetChecks.Checks.AllModes.HitSounds
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "No Hit Sounds",
                     new IssueTemplate(Issue.Level.Problem,

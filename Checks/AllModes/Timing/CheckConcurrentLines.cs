@@ -11,13 +11,13 @@ namespace MapsetChecks.Checks.AllModes.Timing
     [Check]
     public class CheckConcurrentLines : BeatmapCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Category = "Timing",
             Message = "Concurrent or conflicting timing lines.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -44,7 +44,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Concurrent",
                     new IssueTemplate(Issue.Level.Problem,

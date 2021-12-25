@@ -12,7 +12,7 @@ namespace MapsetChecks.Checks.Taiko.Timing
     [Check]
     public class CheckInconsistentBarLines : BeatmapSetCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Modes = new Beatmap.Mode[]
             {
@@ -22,7 +22,7 @@ namespace MapsetChecks.Checks.Taiko.Timing
             Message = "Inconsistent omitted bar lines.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -41,7 +41,7 @@ namespace MapsetChecks.Checks.Taiko.Timing
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Inconsistent",
                     new IssueTemplate(Issue.Level.Problem,

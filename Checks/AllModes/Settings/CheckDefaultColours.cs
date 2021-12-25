@@ -17,7 +17,7 @@ namespace MapsetChecks.Checks.AllModes.Settings
     [Check]
     public class CheckDefaultColours : BeatmapCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Modes = new Beatmap.Mode[]
             {
@@ -30,7 +30,7 @@ namespace MapsetChecks.Checks.AllModes.Settings
             Message = "Default combo colours without forced skin.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -58,7 +58,7 @@ namespace MapsetChecks.Checks.AllModes.Settings
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Default",
                     new IssueTemplate(Issue.Level.Problem,

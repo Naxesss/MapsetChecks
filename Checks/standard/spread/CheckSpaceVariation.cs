@@ -17,7 +17,7 @@ namespace MapsetChecks.Checks.Standard.Spread
     [Check]
     public class CheckSpaceVariation : BeatmapCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Modes = new Beatmap.Mode[]
             {
@@ -32,7 +32,7 @@ namespace MapsetChecks.Checks.Standard.Spread
             Message = "Object too close or far away from previous.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -56,7 +56,7 @@ namespace MapsetChecks.Checks.Standard.Spread
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Distance",
                     new IssueTemplate(Issue.Level.Warning,

@@ -11,7 +11,7 @@ namespace MapsetChecks.Checks.AllModes.Events
     [Check]
     public class CheckStoryHitSounds : BeatmapSetCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Modes = new Beatmap.Mode[]
             {
@@ -23,7 +23,7 @@ namespace MapsetChecks.Checks.AllModes.Events
             Message = "Storyboarded hit sounds.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -48,7 +48,7 @@ namespace MapsetChecks.Checks.AllModes.Events
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Storyboarded Hit Sound",
                     new IssueTemplate(Issue.Level.Warning,

@@ -9,7 +9,7 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
     [Check]
     public class CheckCommonFinish : GeneralCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Modes = new Beatmap.Mode[]
             {
@@ -22,7 +22,7 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
             Message = "Frequent finish hit sounds.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -41,7 +41,7 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
 
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Warning Common",
                     new IssueTemplate(Issue.Level.Warning,

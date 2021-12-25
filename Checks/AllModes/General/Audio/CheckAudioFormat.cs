@@ -11,13 +11,13 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
     [Check]
     public class CheckAudioFormat : GeneralCheck
     {
-        public override CheckMetadata GetMetadata() => new CheckMetadata()
+        public override CheckMetadata GetMetadata() => new CheckMetadata
         {
             Category = "Audio",
             Message = "Incorrect audio format.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",

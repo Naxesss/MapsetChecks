@@ -11,13 +11,13 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
     [Check]
     public class CheckGenreLanguage : GeneralCheck
     {
-        public override CheckMetadata GetMetadata() => new CheckMetadata()
+        public override CheckMetadata GetMetadata() => new CheckMetadata
         {
             Category = "Metadata",
             Message = "Missing genre/language in tags.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -105,7 +105,7 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
 
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Genre",
                     new IssueTemplate(Issue.Level.Warning,

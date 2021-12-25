@@ -16,13 +16,13 @@ namespace MapsetChecks.checks.general.resources
     [Check]
     public class CheckSpriteResolution : GeneralCheck
     {
-        public override CheckMetadata GetMetadata() => new CheckMetadata()
+        public override CheckMetadata GetMetadata() => new CheckMetadata
         {
             Category = "Resources",
             Message = "Too high sprite resolution.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -40,7 +40,7 @@ namespace MapsetChecks.checks.general.resources
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Resolution",
                     new IssueTemplate(Issue.Level.Problem,

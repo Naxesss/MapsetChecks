@@ -16,13 +16,13 @@ namespace MapsetChecks.checks.general.resources
     [Check]
     public class CheckMultipleVideo : GeneralCheck
     {
-        public override CheckMetadata GetMetadata() => new CheckMetadata()
+        public override CheckMetadata GetMetadata() => new CheckMetadata
         {
             Category = "Resources",
             Message = "Inconsistent video usage.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -46,7 +46,7 @@ namespace MapsetChecks.checks.general.resources
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Same Mode",
                     new IssueTemplate(Issue.Level.Warning,

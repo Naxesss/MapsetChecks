@@ -17,7 +17,7 @@ namespace MapsetChecks.Checks.Standard.Spread
     [Check]
     public class CheckStackLeniency : BeatmapCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Modes = new Beatmap.Mode[]
             {
@@ -34,7 +34,7 @@ namespace MapsetChecks.Checks.Standard.Spread
             Message = "Perfect stacks too close in time.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -53,7 +53,7 @@ namespace MapsetChecks.Checks.Standard.Spread
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Problem",
                     new IssueTemplate(Issue.Level.Problem,

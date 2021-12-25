@@ -11,13 +11,13 @@ namespace MapsetChecks.Checks.AllModes.HitSounds
     [Check]
     public class CheckMuted : BeatmapCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Category = "Hit Sounds",
             Message = "Low volume hit sounding.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -39,7 +39,7 @@ namespace MapsetChecks.Checks.AllModes.HitSounds
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Warning Volume",
                     new IssueTemplate(Issue.Level.Warning,

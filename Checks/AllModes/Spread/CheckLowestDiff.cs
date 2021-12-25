@@ -11,13 +11,13 @@ namespace MapsetChecks.Checks.AllModes.Spread
     [Check]
     public class CheckLowestDiff : BeatmapSetCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Category = "Spread",
             Message = "Lowest difficulty too difficult for the given drain/play time(s).",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -46,7 +46,7 @@ namespace MapsetChecks.Checks.AllModes.Spread
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Problem",
                     new IssueTemplate(Issue.Level.Problem,

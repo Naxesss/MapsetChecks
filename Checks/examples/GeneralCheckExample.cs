@@ -13,12 +13,12 @@ namespace MapsetChecks.Checks.Examples
     public class GeneralCheckExample : GeneralCheck
     {
         /// <summary> Determines which modes the check shows for, in which category the check appears, the message for the check, etc. </summary>
-        public override CheckMetadata GetMetadata() => new CheckMetadata()
+        public override CheckMetadata GetMetadata() => new CheckMetadata
         {
             Category = "Example",
             Message = "Difficulty names are present in the beatmap.",
             Author = "Naxess",
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 { "Purpose", "Show an example of a custom general check." },
                 { "Reasoning", "Examples teach through practice." }
@@ -28,7 +28,7 @@ namespace MapsetChecks.Checks.Examples
         /// <summary> Returns a dictionary of issue templates, which determine how each sub-issue is formatted, the issue level, etc. </summary>
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 {
                     "DiffName",

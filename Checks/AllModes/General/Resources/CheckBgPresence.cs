@@ -16,13 +16,13 @@ namespace MapsetChecks.checks.general.resources
     [Check]
     public class CheckBgPresence : GeneralCheck
     {
-        public override CheckMetadata GetMetadata() => new CheckMetadata()
+        public override CheckMetadata GetMetadata() => new CheckMetadata
         {
             Category = "Resources",
             Message = "Missing background.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -43,7 +43,7 @@ namespace MapsetChecks.checks.general.resources
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "All",
                     new IssueTemplate(Issue.Level.Problem,

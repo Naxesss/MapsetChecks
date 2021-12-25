@@ -12,13 +12,13 @@ namespace MapsetChecks.Checks.AllModes.Compose
     [Check]
     public class CheckInvisibleSlider : BeatmapCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Category = "Compose",
             Message = "Invisible sliders.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -41,7 +41,7 @@ namespace MapsetChecks.Checks.AllModes.Compose
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Zero Nodes",
                     new IssueTemplate(Issue.Level.Problem,

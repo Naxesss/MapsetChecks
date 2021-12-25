@@ -12,13 +12,13 @@ namespace MapsetChecks.Checks.AllModes.General.Files
     [Check]
     public class CheckZeroBytes : GeneralCheck
     {
-        public override CheckMetadata GetMetadata() => new CheckMetadata()
+        public override CheckMetadata GetMetadata() => new CheckMetadata
         {
             Category = "Files",
             Message = "0-byte files.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -42,7 +42,7 @@ namespace MapsetChecks.Checks.AllModes.General.Files
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "0-byte",
                     new IssueTemplate(Issue.Level.Problem,

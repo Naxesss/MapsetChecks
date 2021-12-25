@@ -13,7 +13,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
     [Check]
     public class CheckBeforeLine : BeatmapCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             // Mania doesn't have this issue since SV affects scroll speed rather than properties of objects.
             Modes = new Beatmap.Mode[]
@@ -27,7 +27,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
             Message = "Hit object is unaffected by a line very close to it.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -51,7 +51,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Before",
                     new IssueTemplate(Issue.Level.Warning,

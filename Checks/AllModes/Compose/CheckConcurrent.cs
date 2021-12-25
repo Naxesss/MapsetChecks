@@ -11,13 +11,13 @@ namespace MapsetChecks.Checks.AllModes.Compose
     [Check]
     public class CheckConcurrent : BeatmapCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Category = "Compose",
             Message = "Concurrent hit objects.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -46,7 +46,7 @@ namespace MapsetChecks.Checks.AllModes.Compose
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Concurrent Objects",
                     new IssueTemplate(Issue.Level.Problem,

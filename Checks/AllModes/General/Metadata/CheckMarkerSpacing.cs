@@ -13,13 +13,13 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
     [Check]
     public class CheckMarkerSpacing : GeneralCheck
     {
-        public override CheckMetadata GetMetadata() => new CheckMetadata()
+        public override CheckMetadata GetMetadata() => new CheckMetadata
         {
             Category = "Metadata",
             Message = "Incorrect marker spacing.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -44,7 +44,7 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Problem",
                     new IssueTemplate(Issue.Level.Problem,

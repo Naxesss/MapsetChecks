@@ -12,13 +12,13 @@ namespace MapsetChecks.Checks.AllModes.Compose
     [Check]
     public class CheckAbnormalNodes : BeatmapCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Category = "Compose",
             Message = "Abnormal amount of slider nodes.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -40,7 +40,7 @@ namespace MapsetChecks.Checks.AllModes.Compose
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Abnormal",
                     new IssueTemplate(Issue.Level.Warning,

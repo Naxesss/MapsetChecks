@@ -17,7 +17,7 @@ namespace MapsetChecks.checks.Catch.compose
         private static readonly int[] ThresholdBefore = { 250, 250,   125,     125,  62,       62        };
         private static readonly int[] ThresholdAfter  = { 250, 250,   250,     125,  125,      125       };
 
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Modes = new[] { Mode.Catch },
             Category = "Compose",

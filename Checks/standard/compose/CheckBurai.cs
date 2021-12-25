@@ -17,7 +17,7 @@ namespace MapsetChecks.Checks.Standard.Compose
     [Check]
     public class CheckBurai : BeatmapCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Modes = new Beatmap.Mode[]
             {
@@ -27,7 +27,7 @@ namespace MapsetChecks.Checks.Standard.Compose
             Message = "Burai slider.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -65,7 +65,7 @@ namespace MapsetChecks.Checks.Standard.Compose
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Definitely",
                     new IssueTemplate(Issue.Level.Warning,

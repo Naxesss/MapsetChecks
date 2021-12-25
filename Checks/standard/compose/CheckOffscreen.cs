@@ -26,7 +26,7 @@ namespace MapsetChecks.Checks.Standard.Compose
             Message = "Offscreen hit objects.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -60,7 +60,7 @@ namespace MapsetChecks.Checks.Standard.Compose
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Offscreen",
                     new IssueTemplate(Issue.Level.Problem,

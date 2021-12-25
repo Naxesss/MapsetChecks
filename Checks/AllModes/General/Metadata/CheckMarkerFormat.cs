@@ -12,13 +12,13 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
     [Check]
     public class CheckMarkerFormat : GeneralCheck
     {
-        public override CheckMetadata GetMetadata() => new CheckMetadata()
+        public override CheckMetadata GetMetadata() => new CheckMetadata
         {
             Category = "Metadata",
             Message = "Incorrect marker format.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -42,7 +42,7 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Wrong Format",
                     new IssueTemplate(Issue.Level.Problem,

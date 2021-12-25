@@ -11,13 +11,13 @@ namespace MapsetChecks.Checks.AllModes.Events
     [Check]
     public class CheckBreaks : BeatmapCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             Category = "Events",
             Message = "Breaks only achievable through .osu editing.",
             Author = "Naxess",
 
-            Documentation = new Dictionary<string, string>()
+            Documentation = new Dictionary<string, string>
             {
                 {
                     "Purpose",
@@ -41,7 +41,7 @@ namespace MapsetChecks.Checks.AllModes.Events
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Too early or late",
                     new IssueTemplate(Issue.Level.Problem,
