@@ -78,8 +78,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
                 yield break;
             }
 
-            TimingLine line = beatmap.timingLines[0];
-
+            var line = beatmap.timingLines[0];
             if (!line.uninherited)
                 yield return new Issue(GetTemplate("Inherited"), beatmap, Timestamp.Get(line.offset));
             else if (line.kiai)

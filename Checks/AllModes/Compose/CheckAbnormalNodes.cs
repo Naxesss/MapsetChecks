@@ -53,7 +53,7 @@ namespace MapsetChecks.Checks.AllModes.Compose
 
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (HitObject hitObject in beatmap.hitObjects)
+            foreach (var hitObject in beatmap.hitObjects)
                 if (hitObject is Slider slider && slider.nodePositions.Count > 10 * Math.Sqrt(slider.pixelLength))
                     yield return new Issue(GetTemplate("Abnormal"), beatmap,
                         Timestamp.Get(slider), slider.nodePositions.Count);

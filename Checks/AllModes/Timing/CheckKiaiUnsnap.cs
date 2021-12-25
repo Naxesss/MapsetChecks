@@ -65,7 +65,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
 
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (TimingLine line in beatmap.timingLines.Where(line => line.kiai))
+            foreach (var line in beatmap.timingLines.Where(line => line.kiai))
             {
                 // If we're inside of kiai, a new line with kiai won't cause kiai to start again.
                 if (beatmap.GetTimingLine(line.offset - 1).kiai)

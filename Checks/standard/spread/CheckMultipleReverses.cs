@@ -72,7 +72,7 @@ namespace MapsetChecks.Checks.Standard.Spread
             double problemThreshold = 60000 / 240d;
             double warningThreshold  = 60000 / 180d;
 
-            foreach (Slider slider in beatmap.hitObjects.OfType<Slider>())
+            foreach (var slider in beatmap.hitObjects.OfType<Slider>())
             {
                 if (slider.edgeAmount <= 2)
                     continue;

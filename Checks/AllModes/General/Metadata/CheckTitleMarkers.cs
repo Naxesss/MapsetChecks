@@ -125,10 +125,10 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
 
         private IEnumerable<Issue> GetMarkerFormatIssues(Beatmap beatmap)
         {
-            foreach (MarkerFormat markerFormat in MarkerFormats)
+            foreach (var markerFormat in MarkerFormats)
             {
                 // Matches any string containing some form of the marker but not exactly it.
-                foreach (Issue issue in GetIssuesFromRegex(beatmap, markerFormat))
+                foreach (var issue in GetIssuesFromRegex(beatmap, markerFormat))
                     yield return issue;
             }
         }
@@ -157,7 +157,7 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
         /// <summary> Returns issues wherever the romanized or unicode title matches the regex but not the exact format. </summary>
         private IEnumerable<Issue> GetIssuesFromRegex(Beatmap beatmap, MarkerFormat markerFormat)
         {
-            foreach (TitleType titleType in TitleTypes)
+            foreach (var titleType in TitleTypes)
             {
                 string title = titleType.Get(beatmap);
                 string correctFormat = markerFormat.marker.Value;
@@ -189,14 +189,14 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
             if (nightcoreTag == null)
                 yield break;
 
-            List<SubstitutionPair> substitutionPairs = new List<SubstitutionPair>()
+            var substitutionPairs = new List<SubstitutionPair>
             {
                 new SubstitutionPair(Marker.SPED_UP_VER,     Marker.NIGHTCORE_MIX),
                 new SubstitutionPair(Marker.SPED_UP_CUT_VER, Marker.NIGHTCORE_CUT_VER)
             };
 
-            foreach (SubstitutionPair pair in substitutionPairs)
-                foreach (TitleType titleType in TitleTypes)
+            foreach (var pair in substitutionPairs)
+                foreach (var titleType in TitleTypes)
                     if (titleType.Get(beatmap).Contains(pair.original.Value))
                         yield return new Issue(GetTemplate("Warning Nightcore"), null,
                             nightcoreTag, pair.original.Value, pair.substitution.Value, titleType.type);

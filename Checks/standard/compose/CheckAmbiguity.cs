@@ -79,7 +79,7 @@ namespace MapsetChecks.Checks.Standard.Compose
 
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (HitObject hitObject in beatmap.hitObjects)
+            foreach (var hitObject in beatmap.hitObjects)
             {
                 if (!(hitObject is Slider slider))
                     continue;
@@ -91,7 +91,7 @@ namespace MapsetChecks.Checks.Standard.Compose
                     yield return new Issue(GetTemplate("Warning"), beatmap,
                         Timestamp.Get(hitObject));
 
-                List<Vector2> anchorPositions = slider.redAnchorPositions;
+                var anchorPositions = slider.redAnchorPositions;
                 if (slider.curveType == Slider.CurveType.Linear)
                     anchorPositions = slider.nodePositions;
 
@@ -103,14 +103,14 @@ namespace MapsetChecks.Checks.Standard.Compose
                     continue;
                 }
                 
-                Vector2 prevAnchorPosition = anchorPositions[0];
+                var prevAnchorPosition = anchorPositions[0];
                 double curDistance = 0;
                 double totalDistance = 0;
 
                 for (int i = 1; i < anchorPositions.Count; ++i)
                     totalDistance += Vector2.Distance(anchorPositions[i - 1], anchorPositions[i]);
 
-                foreach(Vector2 anchorPosition in anchorPositions)
+                foreach(var anchorPosition in anchorPositions)
                 {
                     float prevAnchorDistance = Vector2.Distance(anchorPosition, prevAnchorPosition);
                     curDistance += prevAnchorDistance;

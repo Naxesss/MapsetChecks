@@ -73,8 +73,8 @@ namespace MapsetChecks.Checks.AllModes.Compose
             {
                 for (int j = i + 1; j < hitObjectCount; ++j)
                 {
-                    HitObject hitObject = beatmap.hitObjects[i];
-                    HitObject otherHitObject = beatmap.hitObjects[j];
+                    var hitObject = beatmap.hitObjects[i];
+                    var otherHitObject = beatmap.hitObjects[j];
 
                     if (beatmap.generalSettings.mode == Beatmap.Mode.Mania &&
                         hitObject.Position.X.AlmostEqual(otherHitObject.Position.X))

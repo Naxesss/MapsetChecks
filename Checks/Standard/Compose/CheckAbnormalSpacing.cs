@@ -104,7 +104,7 @@ namespace MapsetChecks.Checks.Standard.Compose
             double deltaTime;
             double distance;
 
-            foreach (HitObject hitObject in beatmap.hitObjects)
+            foreach (var hitObject in beatmap.hitObjects)
             {
                 HitObject nextObject = hitObject.Next();
 
@@ -130,7 +130,7 @@ namespace MapsetChecks.Checks.Standard.Compose
                             // Count the distances of sliders separately, as these have leniency unlike circles.
                             observedDistance.hitObject is Slider == hitObject is Slider);
 
-                ObservedDistance observedDistance = new ObservedDistance(deltaTime, distance, hitObject);
+                var observedDistance = new ObservedDistance(deltaTime, distance, hitObject);
                 observedDistances.Add(observedDistance);
 
                 if (!sameSnappedDistances.Any() ||

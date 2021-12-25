@@ -65,9 +65,9 @@ namespace MapsetChecks.Checks.AllModes.Spread
             double insaneThreshold = (4 * 60 + 15) * 1000;
             double expertThreshold = (5 * 60) * 1000;
             
-            Beatmap lowestBeatmap = beatmapSet.beatmaps.First();
+            var lowestBeatmap = beatmapSet.beatmaps.First();
 
-            foreach (Beatmap beatmap in beatmapSet.beatmaps)
+            foreach (var beatmap in beatmapSet.beatmaps)
             {
                 double drainTime = beatmap.GetDrainTime();
                 double playTime  = beatmap.GetPlayTime();

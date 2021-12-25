@@ -63,7 +63,7 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
         {
             foreach (string hsFile in beatmapSet.hitSoundFiles)
             {
-                HitSample sample = new HitSample(hsFile);
+                var sample = new HitSample(hsFile);
                 if (sample.sampleset == Beatmap.Sampleset.Drum ||
                     sample.hitSound != HitObject.HitSound.Finish ||
                     sample.hitSource != HitSample.HitSource.Edge)

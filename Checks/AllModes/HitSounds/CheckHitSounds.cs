@@ -91,7 +91,7 @@ namespace MapsetChecks.Checks.AllModes.HitSounds
 
             Beatmap.Sampleset? prevSample = null;
 
-            List<Issue> issues = new List<Issue>();
+            var issues = new List<Issue>();
             
             void ApplyFeedbackUpdate(HitObject.HitSound hitSound, Beatmap.Sampleset sampleset, HitObject hitObject, double time)
             {
@@ -113,17 +113,17 @@ namespace MapsetChecks.Checks.AllModes.HitSounds
                     ++objectsPassed;
             }
 
-            foreach (HitObject hitObject in beatmap.hitObjects)
+            foreach (var hitObject in beatmap.hitObjects)
             {
                 while (true)
                 {
                     // Breaks and spinners don't really need to be hit sounded so we take that into account
                     // by looking for any between the current object and excluding their drain time if present.
-                    Break @break =
+                    var @break =
                         beatmap.breaks.FirstOrDefault(otherBreak =>
                             otherBreak.endTime > prevTime &&
                             otherBreak.endTime < hitObject.time);
-                    Spinner spinner =
+                    var spinner =
                         beatmap.hitObjects.OfType<Spinner>().FirstOrDefault(otherSpinner =>
                             otherSpinner.endTime > prevTime &&
                             otherSpinner.endTime < hitObject.time);

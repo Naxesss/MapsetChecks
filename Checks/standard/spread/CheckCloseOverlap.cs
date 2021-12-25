@@ -68,8 +68,8 @@ namespace MapsetChecks.Checks.Standard.Spread
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            Beatmap.Difficulty skipAfterDifficulty = Beatmap.Difficulty.Normal;
-            foreach (Beatmap beatmap in beatmapSet.beatmaps)
+            var skipAfterDifficulty = Beatmap.Difficulty.Normal;
+            foreach (var beatmap in beatmapSet.beatmaps)
             {
                 // Beatmaps are sorted by interpreted difficulty.
                 if (beatmap.GetDifficulty(considerName: true) > skipAfterDifficulty)
@@ -79,7 +79,7 @@ namespace MapsetChecks.Checks.Standard.Spread
                 if (beatmap.GetDifficulty(considerName: true) == Beatmap.Difficulty.Easy)
                     skipAfterDifficulty = Beatmap.Difficulty.Easy;
 
-                foreach (HitObject hitObject in beatmap.hitObjects)
+                foreach (var hitObject in beatmap.hitObjects)
                 {
                     if (!(hitObject.Next() is HitObject nextObject))
                         continue;

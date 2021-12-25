@@ -62,7 +62,7 @@ namespace MapsetChecks.Checks.Standard.Compose
 
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (HitObject hitObject in beatmap.hitObjects)
+            foreach (var hitObject in beatmap.hitObjects)
             {
                 if (!(hitObject is Spinner spinner))
                     continue;

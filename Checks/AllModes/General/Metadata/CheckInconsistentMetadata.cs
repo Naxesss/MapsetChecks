@@ -62,15 +62,15 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            Beatmap refBeatmap = beatmapSet.beatmaps[0];
+            var refBeatmap = beatmapSet.beatmaps[0];
             string refVersion = refBeatmap.metadataSettings.version;
-            MetadataSettings refSettings = refBeatmap.metadataSettings;
+            var refSettings = refBeatmap.metadataSettings;
 
-            foreach (Beatmap beatmap in beatmapSet.beatmaps)
+            foreach (var beatmap in beatmapSet.beatmaps)
             {
                 string curVersion = beatmap.metadataSettings.version;
 
-                List<Issue> issues = new List<Issue>();
+                var issues = new List<Issue>();
                 issues.AddRange(GetInconsistency("artist",         beatmap, refBeatmap, otherBeatmap => otherBeatmap.metadataSettings.artist));
                 issues.AddRange(GetInconsistency("unicode artist", beatmap, refBeatmap, otherBeatmap => otherBeatmap.metadataSettings.artistUnicode));
                 issues.AddRange(GetInconsistency("title",          beatmap, refBeatmap, otherBeatmap => otherBeatmap.metadataSettings.title));

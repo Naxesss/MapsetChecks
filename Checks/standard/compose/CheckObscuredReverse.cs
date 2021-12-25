@@ -76,7 +76,7 @@ namespace MapsetChecks.Checks.Standard.Compose
             // Represents the duration the reverse arrow is fully opaque.
             double opaqueTime = beatmap.difficultySettings.GetPreemptTime();
 
-            foreach (HitObject hitObject in beatmap.hitObjects)
+            foreach (var hitObject in beatmap.hitObjects)
             {
                 if (!(hitObject is Slider slider) || slider.edgeAmount <= 1)
                     continue;
@@ -84,15 +84,15 @@ namespace MapsetChecks.Checks.Standard.Compose
                 double reverseTime = slider.time + slider.GetCurveDuration();
                 Vector2 reversePosition = slider.GetPathPosition(reverseTime);
 
-                List<HitObject> selectedObjects = new List<HitObject>();
+                var selectedObjects = new List<HitObject>();
                 bool isSerious = false;
-                    
-                IEnumerable<HitObject> hitObjectsRightBeforeReverse =
+
+                var hitObjectsRightBeforeReverse =
                     beatmap.hitObjects.Where(otherHitObject =>
                         otherHitObject.GetEndTime() > reverseTime - opaqueTime &&
                         otherHitObject.GetEndTime() < reverseTime);
 
-                foreach (HitObject otherHitObject in hitObjectsRightBeforeReverse)
+                foreach (var otherHitObject in hitObjectsRightBeforeReverse)
                 {
                     // Spinners don't really obscure anything and are handled by recovery time anyway.
                     if (otherHitObject is Spinner)

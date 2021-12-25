@@ -101,7 +101,7 @@ namespace MapsetChecks.Checks.AllModes.General.Resources
                 tagFile =>
                 {
                     // Executes for each non-faulty background file used in one of the beatmaps in the set.
-                    List<Issue> issues = new List<Issue>();
+                    var issues = new List<Issue>();
                     if (tagFile.file.Properties.PhotoWidth > 2560 ||
                         tagFile.file.Properties.PhotoHeight > 1440)
                     {

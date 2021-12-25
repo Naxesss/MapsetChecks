@@ -80,7 +80,7 @@ namespace MapsetChecks.Checks.AllModes.Settings
 
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            Issue issue = GetIssue(beatmap.difficultySettings.hpDrain, "HP Drain Rate", beatmap);
+            var issue = GetIssue(beatmap.difficultySettings.hpDrain, "HP Drain Rate", beatmap);
             if (issue != null)
                 yield return issue;
 

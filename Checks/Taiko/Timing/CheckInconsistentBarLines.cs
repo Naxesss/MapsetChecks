@@ -54,13 +54,13 @@ namespace MapsetChecks.Checks.Taiko.Timing
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            IEnumerable<Beatmap> taikoBeatmaps = beatmapSet.beatmaps.Where(beatmap => beatmap.generalSettings.mode == Beatmap.Mode.Taiko);
-            Beatmap refBeatmap = taikoBeatmaps.First();
-            foreach (Beatmap beatmap in taikoBeatmaps)
+            var taikoBeatmaps = beatmapSet.beatmaps.Where(beatmap => beatmap.generalSettings.mode == Beatmap.Mode.Taiko).ToList();
+            var refBeatmap = taikoBeatmaps.First();
+            foreach (var beatmap in taikoBeatmaps)
             {
-                foreach (UninheritedLine line in refBeatmap.timingLines.OfType<UninheritedLine>())
+                foreach (var line in refBeatmap.timingLines.OfType<UninheritedLine>())
                 {
-                    UninheritedLine respectiveLine =
+                    var respectiveLine =
                         beatmap.timingLines.OfType<UninheritedLine>().FirstOrDefault(
                             otherLine => Timestamp.Round(otherLine.offset) == Timestamp.Round(line.offset));
 

@@ -57,17 +57,19 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
             if (beatmapSet.beatmaps.All(beatmap => beatmap.GetAudioFilePath() == null))
-                foreach (Beatmap beatmap in beatmapSet.beatmaps)
+                foreach (var beatmap in beatmapSet.beatmaps)
                     yield return new Issue(GetTemplate("Missing"), beatmap);
             else
             {
-                foreach (Issue issue in Common.GetInconsistencies(
-                        beatmapSet,
-                        beatmap =>
-                            beatmap.GetAudioFilePath() != null ?
-                                PathStatic.RelativePath(beatmap.GetAudioFilePath(), beatmap.songPath) :
-                                "None",
-                        GetTemplate("Multiple")))
+                IEnumerable<Issue> issues = Common.GetInconsistencies(
+                    beatmapSet,
+                    beatmap =>
+                        beatmap.GetAudioFilePath() != null
+                            ? PathStatic.RelativePath(beatmap.GetAudioFilePath(), beatmap.songPath)
+                            : "None",
+                    GetTemplate("Multiple"));
+                
+                foreach (var issue in issues)
                     yield return issue;
             }
         }

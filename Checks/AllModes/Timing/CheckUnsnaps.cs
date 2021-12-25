@@ -68,9 +68,9 @@ namespace MapsetChecks.Checks.AllModes.Timing
 
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (HitObject hitObject in beatmap.hitObjects)
+            foreach (var hitObject in beatmap.hitObjects)
                 foreach (double edgeTime in hitObject.GetEdgeTimes())
-                    foreach (Issue issue in GetUnsnapIssue(hitObject.GetPartName(edgeTime), edgeTime, beatmap))
+                    foreach (var issue in GetUnsnapIssue(hitObject.GetPartName(edgeTime), edgeTime, beatmap))
                         yield return issue;
         }
 

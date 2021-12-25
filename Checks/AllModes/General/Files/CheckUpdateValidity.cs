@@ -92,18 +92,17 @@ namespace MapsetChecks.Checks.AllModes.General.Files
                 if (!fileName.EndsWith(".osu"))
                     continue;
 
-                Beatmap beatmap = beatmapSet.beatmaps.First(otherBeatmap => otherBeatmap.mapPath == filePath);
+                var beatmap = beatmapSet.beatmaps.First(otherBeatmap => otherBeatmap.mapPath == filePath);
                 if (beatmap.GetOsuFileName().ToLower() != fileName.ToLower())
                     yield return new Issue(GetTemplate("Wrong Format"), null,
                         fileName, beatmap.GetOsuFileName());
 
                 // Updating .osu files larger than 1 mb will cause the update to stop at the 1 mb mark
-                FileInfo fileInfo = new FileInfo(beatmapSet.songFilePaths[i]);
-                double MB = fileInfo.Length / Math.Pow(1024, 2);
-
-                if (MB > 1)
+                var fileInfo = new FileInfo(songFilePath);
+                double mb = fileInfo.Length / Math.Pow(1024, 2);
+                if (mb > 1)
                     yield return new Issue(GetTemplate("File Size"), null,
-                        filePath, $"{MB:0.##}");
+                        filePath, $"{mb:0.##}");
             }
         }
     }

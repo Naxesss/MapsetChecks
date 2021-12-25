@@ -77,15 +77,15 @@ namespace MapsetChecks.Checks.Standard.Spread
 
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (HitObject hitObject in beatmap.hitObjects)
+            foreach (var hitObject in beatmap.hitObjects)
             {
                 if (!(hitObject is Spinner spinner))
                     continue;
 
-                foreach (Issue issue in GetLengthIssues(beatmap, spinner))
+                foreach (var issue in GetLengthIssues(beatmap, spinner))
                     yield return issue;
 
-                foreach (Issue issue in GetRecoveryIssues(beatmap, spinner))
+                foreach (var issue in GetRecoveryIssues(beatmap, spinner))
                     yield return issue;
             }
         }

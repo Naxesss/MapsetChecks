@@ -96,7 +96,7 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
 
         private static string ToCause(IEnumerable<string[]> tagCombinations)
         {
-            StringBuilder liStr = new StringBuilder();
+            var liStr = new StringBuilder();
             foreach (string[] combination in tagCombinations)
                 liStr.Append("<li>" + string.Join(" & ", combination.Select(_ => "\"" + _ + "\"")) + "</li>");
 
@@ -125,7 +125,7 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            Beatmap refBeatmap = beatmapSet.beatmaps.FirstOrDefault();
+            var refBeatmap = beatmapSet.beatmaps.FirstOrDefault();
             if (refBeatmap == null)
                 yield break;
 

@@ -75,7 +75,7 @@ namespace MapsetChecks.Checks.AllModes.HitSounds
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
             int lineIndex = 0;
-            foreach (HitObject hitObject in beatmap.hitObjects)
+            foreach (var hitObject in beatmap.hitObjects)
             {
                 if (!(hitObject is Circle || hitObject is Slider || hitObject is HoldNote))
                     continue;
@@ -87,7 +87,7 @@ namespace MapsetChecks.Checks.AllModes.HitSounds
                         hitObject.volume.GetValueOrDefault() :
                         GetTimingLine(beatmap, ref lineIndex, hitObject.time).volume;
 
-                foreach (Issue issue in GetIssue(hitObject, hitObject.time, volume, isActive: true))
+                foreach (var issue in GetIssue(hitObject, hitObject.time, volume, isActive: true))
                     yield return issue;
 
                 if (!(hitObject is Slider slider))
@@ -102,14 +102,14 @@ namespace MapsetChecks.Checks.AllModes.HitSounds
                         time = slider.endTime;
 
                     volume = GetTimingLine(beatmap, ref lineIndex, time).volume;
-                    foreach (Issue issue in GetIssue(hitObject, time, volume, isActive: isReverse))
+                    foreach (var issue in GetIssue(hitObject, time, volume, isActive: isReverse))
                         yield return issue;
                 }
 
                 foreach (double tickTime in slider.GetSliderTickTimes())
                 {
                     volume = GetTimingLine(beatmap, ref lineIndex, tickTime).volume;
-                    foreach (Issue issue in GetIssue(hitObject, tickTime, volume, isActive: false))
+                    foreach (var issue in GetIssue(hitObject, tickTime, volume, isActive: false))
                         yield return issue;
                 }
             }

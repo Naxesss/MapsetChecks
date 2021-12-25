@@ -76,12 +76,13 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
                 tagFile =>
                 {
                     // Executes for each non-faulty video file used in one of the beatmaps in the set.
-                    List<Issue> issues = new List<Issue>();
-                    if (
-                            tagFile.file.Properties.MediaTypes.HasFlag(TagLib.MediaTypes.Video) &&
-                            tagFile.file.Properties.AudioChannels > 0)
+                    var issues = new List<Issue>();
+                    if (tagFile.file.Properties.MediaTypes.HasFlag(TagLib.MediaTypes.Video) &&
+                        tagFile.file.Properties.AudioChannels > 0)
+                    {
                         issues.Add(new Issue(GetTemplate("Audio"), null,
                             tagFile.templateArgs[0]));
+                    }
 
                     return issues;
                 }))

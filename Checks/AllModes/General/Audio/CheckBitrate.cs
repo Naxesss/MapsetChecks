@@ -79,7 +79,7 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
             if (beatmapSet.GetAudioFilePath() != null)
-                foreach (Issue issue in GetIssue(beatmapSet, beatmapSet.GetAudioFilePath()))
+                foreach (var issue in GetIssue(beatmapSet, beatmapSet.GetAudioFilePath()))
                     yield return issue;
 
             foreach (string hitSoundFile in beatmapSet.hitSoundFiles)
@@ -111,7 +111,7 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
                     continue;
                 }
 
-                foreach (Issue issue in GetIssue(beatmapSet, hitSoundPath, true))
+                foreach (var issue in GetIssue(beatmapSet, hitSoundPath, true))
                     yield return issue;
             }
         }

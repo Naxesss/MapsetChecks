@@ -67,18 +67,18 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            foreach (Beatmap beatmap in beatmapSet.beatmaps)
+            foreach (var beatmap in beatmapSet.beatmaps)
             {
-                foreach (Issue issue in GetUnicodeIssues("Difficulty name", beatmap.metadataSettings.version, "Warning"))
+                foreach (var issue in GetUnicodeIssues("Difficulty name", beatmap.metadataSettings.version, "Warning"))
                     yield return issue;
 
-                foreach (Issue issue in GetUnicodeIssues("Romanized title", beatmap.metadataSettings.title))
+                foreach (var issue in GetUnicodeIssues("Romanized title", beatmap.metadataSettings.title))
                     yield return issue;
 
-                foreach (Issue issue in GetUnicodeIssues("Romanized artist", beatmap.metadataSettings.artist))
+                foreach (var issue in GetUnicodeIssues("Romanized artist", beatmap.metadataSettings.artist))
                     yield return issue;
 
-                foreach (Issue issue in GetUnicodeIssues("Creator", beatmap.metadataSettings.creator))
+                foreach (var issue in GetUnicodeIssues("Creator", beatmap.metadataSettings.creator))
                     yield return issue;
             }
         }

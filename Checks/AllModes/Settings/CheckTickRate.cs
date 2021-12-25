@@ -53,8 +53,7 @@ namespace MapsetChecks.Checks.AllModes.Settings
         
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            // can't be decimal unless it's 0.5, 1.333 or 1.5 since they have practical use
-            Issue issue = GetTickRateIssue(beatmap.difficultySettings.sliderTickRate, "slider tick rate", beatmap);
+            var issue = GetTickRateIssue(beatmap.difficultySettings.sliderTickRate, "slider tick rate", beatmap);
             if (issue != null)
                 yield return issue;
         }

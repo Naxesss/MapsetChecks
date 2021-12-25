@@ -84,7 +84,7 @@ namespace MapsetChecks.Checks.AllModes.General.Resources
                 tagFile =>
                 {
                     // Executes for each non-faulty sprite file used in one of the beatmaps in the set.
-                    List<Issue> issues = new List<Issue>();
+                    var issues = new List<Issue>();
                     if (tagFile.file.Properties.PhotoWidth * tagFile.file.Properties.PhotoHeight > 17000000)
                         issues.Add(new Issue(GetTemplate("Resolution"), null,
                             tagFile.templateArgs[0]));
@@ -102,7 +102,7 @@ namespace MapsetChecks.Checks.AllModes.General.Resources
                 GetTemplate,
                 tagFile =>
                 {
-                    List<Issue> issues = new List<Issue>();
+                    var issues = new List<Issue>();
                     if (tagFile.file.Properties.PhotoWidth * tagFile.file.Properties.PhotoHeight > 17000000)
                         issues.Add(new Issue(GetTemplate("Resolution Animation Frame"), null,
                             tagFile.templateArgs[0]));
@@ -120,7 +120,7 @@ namespace MapsetChecks.Checks.AllModes.General.Resources
                 GetTemplate,
                 tagFile =>
                 {
-                    List<Issue> issues = new List<Issue>();
+                    var issues = new List<Issue>();
                     if (tagFile.file.Properties.PhotoWidth * tagFile.file.Properties.PhotoHeight > 17000000)
                         issues.Add(new Issue(GetTemplate("Resolution"), null,
                             tagFile.templateArgs[0]));
@@ -137,7 +137,7 @@ namespace MapsetChecks.Checks.AllModes.General.Resources
                 GetTemplate,
                 tagFile =>
                 {
-                    List<Issue> issues = new List<Issue>();
+                    var issues = new List<Issue>();
                     if (tagFile.file.Properties.PhotoWidth * tagFile.file.Properties.PhotoHeight > 17000000)
                         issues.Add(new Issue(GetTemplate("Resolution Animation Frame"), null,
                             tagFile.templateArgs[0]));

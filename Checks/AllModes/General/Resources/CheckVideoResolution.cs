@@ -80,7 +80,7 @@ namespace MapsetChecks.Checks.AllModes.General.Resources
                 tagFile =>
                 {
                     // Executes for each non-faulty video file used in one of the beatmaps in the set.
-                    List<Issue> issues = new List<Issue>();
+                    var issues = new List<Issue>();
                     if (tagFile.file.Properties.VideoWidth > 1280 ||
                         tagFile.file.Properties.VideoHeight > 720)
                     {

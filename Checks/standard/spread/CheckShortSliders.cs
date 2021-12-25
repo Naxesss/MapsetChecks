@@ -62,7 +62,7 @@ namespace MapsetChecks.Checks.Standard.Spread
             // Shortest length before warning is 1/2 at 240 BPM, 125 ms.
             double timeThreshold = 125;
 
-            foreach (Slider slider in beatmap.hitObjects.OfType<Slider>())
+            foreach (var slider in beatmap.hitObjects.OfType<Slider>())
                 if (slider.endTime - slider.time < timeThreshold)
                     yield return new Issue(GetTemplate("Too Short"), beatmap,
                         Timestamp.Get(slider),

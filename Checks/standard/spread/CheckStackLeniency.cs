@@ -86,8 +86,8 @@ namespace MapsetChecks.Checks.Standard.Spread
                 {
                     for (int j = i + 1; j < hitObjectCount; ++j)
                     {
-                        HitObject hitObject = beatmap.hitObjects[i];
-                        HitObject otherHitObject = beatmap.hitObjects[j];
+                        var hitObject = beatmap.hitObjects[i];
+                        var otherHitObject = beatmap.hitObjects[j];
 
                         if (hitObject is Spinner || otherHitObject is Spinner)
                             break;

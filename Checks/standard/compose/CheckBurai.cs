@@ -83,7 +83,7 @@ namespace MapsetChecks.Checks.Standard.Compose
         
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (HitObject hitObject in beatmap.hitObjects)
+            foreach (var hitObject in beatmap.hitObjects)
             {
                 if (!(hitObject is Slider slider) || slider.curveType != Slider.CurveType.Bezier)
                     continue;
@@ -102,7 +102,7 @@ namespace MapsetChecks.Checks.Standard.Compose
                 double distance;
                 double maxDistance = 3;
                     
-                List<double> buraiScores = new List<double>();
+                var buraiScores = new List<double>();
 
                 for (int i = 1; i < slider.pathPxPositions.Count; ++i)
                 {
@@ -183,7 +183,7 @@ namespace MapsetChecks.Checks.Standard.Compose
             double score = 0;
 
             // Sort by highest impact and then each following is worth less.
-            List<double> sortedScores = buraiScores.OrderByDescending(num => num).ToList();
+            var sortedScores = buraiScores.OrderByDescending(num => num).ToList();
             for (int i = 0; i < sortedScores.Count; ++i)
                 score += sortedScores[i] * Math.Pow(0.9, i);
 

@@ -73,8 +73,8 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            Dictionary<string, List<AudioUsage>> audioUsage = new Dictionary<string, List<AudioUsage>>();
-            foreach (Beatmap beatmap in beatmapSet.beatmaps)
+            var audioUsage = new Dictionary<string, List<AudioUsage>>();
+            foreach (var beatmap in beatmapSet.beatmaps)
             {
                 bool hasVideo = beatmap.videos.Count > 0;
                 bool hasStoryboard =

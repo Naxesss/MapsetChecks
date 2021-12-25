@@ -62,7 +62,7 @@ namespace MapsetChecks.checks.Catch.compose
 
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (Spinner spinner in beatmap.hitObjects.OfType<Spinner>())
+            foreach (var spinner in beatmap.hitObjects.OfType<Spinner>())
             {
                 // Check the gap after the spinner.
                 if (spinner.Next() is HitObject next && !(next is Spinner))

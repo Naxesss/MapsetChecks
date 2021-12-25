@@ -211,9 +211,9 @@ namespace MapsetChecks.Checks.AllModes.Settings
         
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            foreach (Beatmap beatmap in beatmapSet.beatmaps)
-                foreach (Beatmap otherBeatmap in beatmapSet.beatmaps)
-                    foreach (InconsistencyTemplate inconsistency in inconsistencyTemplates)
+            foreach (var beatmap in beatmapSet.beatmaps)
+                foreach (var otherBeatmap in beatmapSet.beatmaps)
+                    foreach (var inconsistency in InconsistencyTemplates)
                         // `GetInconsistency` returns either 1 or 0 issues, so this becomes O(n^2*m),
                         // where n is amount of beatmaps and m is amount of inconsistencies checked.
                         foreach (Issue issue in GetInconsistency(beatmap, otherBeatmap, beatmapSet, inconsistency))

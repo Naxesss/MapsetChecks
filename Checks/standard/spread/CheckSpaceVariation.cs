@@ -105,7 +105,7 @@ namespace MapsetChecks.Checks.Standard.Spread
             double ratioLeniencyPercent = 0.2;
             double ratioLeniencyAbsolute = 0.1;
 
-            foreach (HitObject hitObject in beatmap.hitObjects)
+            foreach (var hitObject in beatmap.hitObjects)
             {
                 nextObject = hitObject.Next();
 

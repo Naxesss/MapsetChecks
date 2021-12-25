@@ -92,14 +92,14 @@ namespace MapsetChecks.Checks.Standard.Compose
 
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (HitObject hitObject in beatmap.hitObjects)
+            foreach (var hitObject in beatmap.hitObjects)
             {
                 string type = hitObject is Circle ? "Circle" : "Slider head";
                 if (!(hitObject is Circle) && !(hitObject is Slider))
                     continue;
 
                 float circleRadius = beatmap.difficultySettings.GetCircleRadius();
-                Vector2 stackedOffset = new Vector2(0, 0);
+                var stackedOffset = new Vector2(0, 0);
                 if (hitObject is Stackable stackable)
                     stackedOffset = stackable.Position - stackable.UnstackedPosition;
 
@@ -117,7 +117,7 @@ namespace MapsetChecks.Checks.Standard.Compose
                     // top, left : stackindex <= 0
                     // right     : stackindex >= 0
 
-                    Stackable stackableObject = hitObject as Stackable;
+                    var stackableObject = hitObject as Stackable;
 
                     bool goesOffscreenTopOrLeft =
                         (stackableObject.Position.Y - circleRadius < UPPER_LIMIT ||
@@ -165,7 +165,7 @@ namespace MapsetChecks.Checks.Standard.Compose
 
                     foreach (Vector2 pathPosition in slider.pathPxPositions)
                     {
-                        Vector2 exactPathPosition = pathPosition + stackedOffset;
+                        var exactPathPosition = pathPosition + stackedOffset;
                         if (GetOffscreenBy(exactPathPosition, beatmap, 2) <= 0 || slider.curveType == Slider.CurveType.Linear)
                             continue;
 

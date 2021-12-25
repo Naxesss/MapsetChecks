@@ -87,16 +87,16 @@ namespace MapsetChecks.Checks.AllModes.Timing
 
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (Issue issue in GetUninheritedLineIssues(beatmap))
+            foreach (var issue in GetUninheritedLineIssues(beatmap))
                 yield return issue;
 
-            foreach (Issue issue in GetInheritedLineIssues(beatmap))
+            foreach (var issue in GetInheritedLineIssues(beatmap))
                 yield return issue;
         }
 
         private IEnumerable<Issue> GetUninheritedLineIssues(Beatmap beatmap)
         {
-            List<TimingLine> lines = beatmap.timingLines.ToList();
+            var lines = beatmap.timingLines.ToList();
             for (int i = 1; i < lines.Count; ++i)
             {
                 if (!(lines[i] is UninheritedLine currentLine))
@@ -127,7 +127,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
                         continue;
                 }
 
-                List<string> notImmediatelyObvious = new List<string>();
+                var notImmediatelyObvious = new List<string>();
                 if (omittingBarline)   notImmediatelyObvious.Add("omitting first barline");
                 if (correctingBarline) notImmediatelyObvious.Add($"correcting the omitted barline at {Timestamp.Get(previousUninheritedLine.offset)}");
                 if (changesNCCymbals)  notImmediatelyObvious.Add("nightcore mod cymbals");
@@ -156,13 +156,13 @@ namespace MapsetChecks.Checks.AllModes.Timing
 
         private IEnumerable<Issue> GetInheritedLineIssues(Beatmap beatmap)
         {
-            List<TimingLine> lines = beatmap.timingLines.ToList();
+            var lines = beatmap.timingLines.ToList();
             for (int i = 1; i < lines.Count; ++i)
             {
                 if (!(lines[i] is InheritedLine currentLine))
                     continue;
                 
-                TimingLine previousLine = lines[i - 1];
+                var previousLine = lines[i - 1];
 
                 // Since "used" only includes false positives, this will only result in false negatives,
                 // hence the check will never say that a used line is unused.
@@ -264,7 +264,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
         /// Only counts the start of objects. </summary>
         private bool SectionContainsObject<T>(Beatmap beatmap, TimingLine line) where T : HitObject
         {
-            TimingLine nextLine = line.Next(skipConcurrent: true);
+            var nextLine = line.Next(skipConcurrent: true);
             double nextSectionEnd = nextLine?.offset ?? beatmap.GetPlayTime();
             double objectTimeBeforeEnd = beatmap.GetPrevHitObject<T>(nextSectionEnd)?.time ?? 0;
 

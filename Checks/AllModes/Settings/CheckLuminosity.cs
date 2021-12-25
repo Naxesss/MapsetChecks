@@ -125,9 +125,9 @@ namespace MapsetChecks.Checks.AllModes.Settings
                     yield return new Issue(GetTemplate("Warning Border"), beatmap);
             }
             
-            List<int> comboColoursInKiai = new List<int>();
-            List<double> comboColourTime = new List<double>();
-            foreach (HitObject hitObject in beatmap.hitObjects)
+            var comboColoursInKiai = new List<int>();
+            var comboColourTime = new List<double>();
+            foreach (var hitObject in beatmap.hitObjects)
             {
                 int combo = beatmap.GetComboColourIndex(hitObject.time);
                 

@@ -76,12 +76,12 @@ namespace MapsetChecks.Checks.AllModes.Timing
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            Beatmap refBeatmap = beatmapSet.beatmaps[0];
-            foreach (Beatmap beatmap in beatmapSet.beatmaps)
+            var refBeatmap = beatmapSet.beatmaps[0];
+            foreach (var beatmap in beatmapSet.beatmaps)
             {
-                foreach (UninheritedLine line in refBeatmap.timingLines.OfType<UninheritedLine>())
+                foreach (var line in refBeatmap.timingLines.OfType<UninheritedLine>())
                 {
-                    UninheritedLine respectiveLine =
+                    var respectiveLine =
                         beatmap.timingLines.OfType<UninheritedLine>().FirstOrDefault(
                             otherLine => Timestamp.Round(otherLine.offset) == Timestamp.Round(line.offset));
 
@@ -101,7 +101,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
                                 Timestamp.Get(offset), refBeatmap);
 
                         // Including decimal unsnaps
-                        UninheritedLine respectiveLineExact =
+                        var respectiveLineExact =
                             beatmap.timingLines.OfType<UninheritedLine>().FirstOrDefault(
                                 otherLine => otherLine.offset.AlmostEqual(line.offset));
 
@@ -112,9 +112,9 @@ namespace MapsetChecks.Checks.AllModes.Timing
                 }
                 
                 // Check the other way around as well, to make sure the reference map has all uninherited lines this map has.
-                foreach (UninheritedLine line in beatmap.timingLines.OfType<UninheritedLine>())
+                foreach (var line in beatmap.timingLines.OfType<UninheritedLine>())
                 {
-                    UninheritedLine respectiveLine =
+                    var respectiveLine =
                         refBeatmap.timingLines.OfType<UninheritedLine>().FirstOrDefault(
                             otherLine => Timestamp.Round(otherLine.offset) == Timestamp.Round(line.offset));
 
@@ -126,7 +126,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
                     else
                     {
                         // Including decimal unsnaps
-                        UninheritedLine respectiveLineExact =
+                        var respectiveLineExact =
                             refBeatmap.timingLines.OfType<UninheritedLine>().FirstOrDefault(
                                 otherLine => otherLine.offset.AlmostEqual(line.offset));
 

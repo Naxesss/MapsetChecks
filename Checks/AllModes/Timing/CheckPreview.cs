@@ -57,8 +57,8 @@ namespace MapsetChecks.Checks.AllModes.Timing
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            Beatmap refBeatmap = beatmapSet.beatmaps[0];
-            foreach (Beatmap beatmap in beatmapSet.beatmaps)
+            var refBeatmap = beatmapSet.beatmaps[0];
+            foreach (var beatmap in beatmapSet.beatmaps)
             {
                 if (beatmap.generalSettings.previewTime == -1)
                     yield return new Issue(GetTemplate("Not Set"), beatmap);

@@ -72,9 +72,9 @@ namespace MapsetChecks.Checks.AllModes.General.Resources
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            List<ModeVideoPair> modeVideoPairs = new List<ModeVideoPair>();
+            var modeVideoPairs = new List<ModeVideoPair>();
 
-            IEnumerable<Beatmap.Mode> modes = beatmapSet.beatmaps.Select(beatmap => beatmap.generalSettings.mode).Distinct();
+            var modes = beatmapSet.beatmaps.Select(beatmap => beatmap.generalSettings.mode).Distinct();
             foreach (Beatmap.Mode mode in modes)
             {
                 List<string> videoNames =
@@ -92,7 +92,7 @@ namespace MapsetChecks.Checks.AllModes.General.Resources
 
                 foreach (string videoName in videoNames)
                 {
-                    IEnumerable<Beatmap> suchBeatmaps =
+                    var suchBeatmaps =
                         beatmapSet.beatmaps
                             .Where(beatmap =>
                                 (beatmap.videos.FirstOrDefault()?.path ?? "None") == videoName ||

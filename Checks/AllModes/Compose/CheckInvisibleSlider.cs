@@ -61,7 +61,7 @@ namespace MapsetChecks.Checks.AllModes.Compose
 
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (Slider slider in beatmap.hitObjects.OfType<Slider>())
+            foreach (var slider in beatmap.hitObjects.OfType<Slider>())
                 if (slider.nodePositions.Count == 0)
                     yield return new Issue(GetTemplate("Zero Nodes"), beatmap,
                         Timestamp.Get(slider));
