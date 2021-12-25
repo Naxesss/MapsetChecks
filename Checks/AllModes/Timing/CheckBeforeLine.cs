@@ -80,10 +80,8 @@ namespace MapsetChecks.Checks.AllModes.Timing
                     hitObject is HoldNote ? "Hold note" :
                     "Spinner";
 
-                // SV in taiko and mania speed up all objects, whereas in catch and standard it only affects sliders
-                if (!(hitObject is Slider) &&
-                    beatmap.generalSettings.mode != Beatmap.Mode.Taiko &&
-                    beatmap.generalSettings.mode != Beatmap.Mode.Mania)
+                // SV in taiko and mania speed up all objects, whereas in catch and standard it only affects sliders.
+                if (!(hitObject is Slider) && !IsSVAffectingAR(beatmap))
                     continue;
 
                 foreach (Issue issue in GetIssue(type, hitObject.time, beatmap))
@@ -99,31 +97,38 @@ namespace MapsetChecks.Checks.AllModes.Timing
             TimingLine curLine = beatmap.GetTimingLine(time);
             TimingLine nextLine = curLine.Next(skipConcurrent: true);
 
-            if (nextLine != null)
+            if (nextLine == null)
+                yield break;
+            
+            double curEffectiveBPM = curLine.svMult * beatmap.GetTimingLine<UninheritedLine>(time).bpm;
+            double nextEffectiveBPM = nextLine.svMult * beatmap.GetTimingLine<UninheritedLine>(nextLine.offset).bpm;
+
+            double deltaEffectiveBPM = curEffectiveBPM - nextEffectiveBPM;
+
+            double timeDiff = nextLine.offset - time;
+            if (timeDiff > 0 && timeDiff <= 5 &&
+                Math.Abs(unsnap) <= 1 &&
+                Math.Abs(deltaEffectiveBPM) > 1)
             {
-                double curEffectiveBPM = curLine.svMult * beatmap.GetTimingLine<UninheritedLine>(time).bpm;
-                double nextEffectiveBPM = nextLine.svMult * beatmap.GetTimingLine<UninheritedLine>(nextLine.offset).bpm;
-
-                double deltaEffectiveBPM = curEffectiveBPM - nextEffectiveBPM;
-
-                double timeDiff = nextLine.offset - time;
-                if (timeDiff > 0 && timeDiff <= 5 &&
-                    Math.Abs(unsnap) <= 1 &&
-                    Math.Abs(deltaEffectiveBPM) > 1)
-                {
-                    yield return new Issue(GetTemplate("Before"), beatmap,
-                        Timestamp.Get(time), type, $"{timeDiff:0.##}");
-                }
-                
-                if (beatmap.generalSettings.mode == Beatmap.Mode.Taiko &&
-                    timeDiff < 0 && timeDiff >= -5 &&
-                    Math.Abs(unsnap) <= 1 &&
-                    Math.Abs(deltaEffectiveBPM) > 1)
-                {
-                    yield return new Issue(GetTemplate("After"), beatmap,
-                        Timestamp.Get(time), type, $"{timeDiff:0.##}");
-                }
+                yield return new Issue(GetTemplate("Before"), beatmap,
+                    Timestamp.Get(time), type, $"{timeDiff:0.##}");
             }
+            
+            // Modes where SV affects AR would be impacted even if the object was right after the line.
+            if (IsSVAffectingAR(beatmap) &&
+                timeDiff < 0 && timeDiff >= -5 &&
+                Math.Abs(unsnap) <= 1 &&
+                Math.Abs(deltaEffectiveBPM) > 1)
+            {
+                yield return new Issue(GetTemplate("After"), beatmap,
+                    Timestamp.Get(time), type, $"{timeDiff:0.##}");
+            }
+        }
+
+        private static bool IsSVAffectingAR(Beatmap beatmap)
+        {
+            return beatmap.generalSettings.mode == Beatmap.Mode.Taiko ||
+                   beatmap.generalSettings.mode == Beatmap.Mode.Mania;
         }
     }
 }
