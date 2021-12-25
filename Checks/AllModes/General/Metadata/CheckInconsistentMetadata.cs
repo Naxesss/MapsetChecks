@@ -98,10 +98,10 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
         }
         
         /// <summary> Returns issues where the metadata fields of the given beatmaps do not match. </summary>
-        private IEnumerable<Issue> GetInconsistency(string fieldName, Beatmap beatmap, Beatmap otherBeatmap, Func<Beatmap, string> MetadataField)
+        private IEnumerable<Issue> GetInconsistency(string fieldName, Beatmap beatmap, Beatmap otherBeatmap, Func<Beatmap, string> metadataField)
         {
-            string field      = MetadataField(beatmap);
-            string otherField = MetadataField(otherBeatmap);
+            string field      = metadataField(beatmap);
+            string otherField = metadataField(otherBeatmap);
 
             if ((field ?? "") != (otherField ?? ""))
                 yield return
