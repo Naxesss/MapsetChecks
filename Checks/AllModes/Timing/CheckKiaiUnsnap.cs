@@ -6,6 +6,7 @@ using MapsetParser.statics;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
+using MathNet.Numerics;
 
 namespace MapsetChecks.Checks.AllModes.Timing
 {
@@ -84,7 +85,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
                 
                 // Prevents duplicate issues occuring from both red and green line on same tick picking next line.
                 if (beatmap.timingLines.Any(
-                        otherLine => otherLine.offset == line.offset &&
+                        otherLine => otherLine.offset.AlmostEqual(line.offset) &&
                         !otherLine.uninherited && line.uninherited))
                     continue;
 

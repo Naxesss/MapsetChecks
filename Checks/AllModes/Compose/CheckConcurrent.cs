@@ -4,6 +4,7 @@ using MapsetParser.statics;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
+using MathNet.Numerics;
 
 namespace MapsetChecks.Checks.AllModes.Compose
 {
@@ -76,7 +77,7 @@ namespace MapsetChecks.Checks.AllModes.Compose
                     HitObject otherHitObject = beatmap.hitObjects[j];
 
                     if (beatmap.generalSettings.mode == Beatmap.Mode.Mania &&
-                        hitObject.Position.X != otherHitObject.Position.X)
+                        hitObject.Position.X.AlmostEqual(otherHitObject.Position.X))
                         continue;
 
                     // Only need to check forwards, as any previous object will already have looked behind this one.

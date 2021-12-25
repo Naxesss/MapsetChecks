@@ -5,6 +5,7 @@ using MapsetParser.statics;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
+using MathNet.Numerics;
 
 namespace MapsetChecks.Checks.AllModes.HitSounds
 {
@@ -121,7 +122,7 @@ namespace MapsetChecks.Checks.AllModes.HitSounds
                 // Volumes greater than 20% are usually audible.
                 yield break;
 
-            bool   isHead    = time == hitObject.time;
+            bool   isHead    = time.AlmostEqual(hitObject.time);
             string timestamp = isHead ? Timestamp.Get(hitObject) : Timestamp.Get(time);
             string partName  = hitObject.GetPartName(time).ToLower().Replace("body", "tick");
             if (isActive)

@@ -8,6 +8,7 @@ using MapsetParser.statics;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
+using MathNet.Numerics;
 
 namespace MapsetChecks.Checks.AllModes.Timing
 {
@@ -171,7 +172,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
                 // Avoids confusion in case the line actually does change something from the
                 // previous, but just doesn't apply to anything.
                 string changesDesc = "";
-                if (!UsesSV(beatmap, currentLine, previousLine) && currentLine.svMult != previousLine.svMult)
+                if (!UsesSV(beatmap, currentLine, previousLine) && !currentLine.svMult.AlmostEqual(previousLine.svMult))
                     changesDesc += "SV";
                 if (!UsesSamples(beatmap, currentLine, previousLine) && SamplesDiffer(currentLine, previousLine))
                     changesDesc += (changesDesc.Length > 0 ? " and " : "") + "sample settings";
@@ -188,7 +189,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
         {
             bool negligibleDownbeatOffset = GetBeatOffset(otherLine, line, otherLine.meter) <= 1;
             return
-                otherLine.bpm == line.bpm &&
+                otherLine.bpm.AlmostEqual(line.bpm) &&
                 otherLine.meter == line.meter &&
                 negligibleDownbeatOffset;
         }
@@ -246,7 +247,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
         private bool SamplesDiffer(TimingLine currentLine, TimingLine previousLine) =>
             currentLine.sampleset != previousLine.sampleset ||
             currentLine.customIndex != previousLine.customIndex ||
-            currentLine.volume != previousLine.volume;
+            !currentLine.volume.AlmostEqual(previousLine.volume);
 
         /// <summary> Returns whether this section is affected by SV changes. </summary>
         private bool UsesSV(Beatmap beatmap, TimingLine currentLine, TimingLine previousLine) =>

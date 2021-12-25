@@ -6,6 +6,7 @@ using MapsetParser.statics;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
+using MathNet.Numerics;
 
 namespace MapsetChecks.Checks.AllModes.Timing
 {
@@ -95,14 +96,14 @@ namespace MapsetChecks.Checks.AllModes.Timing
                             yield return new Issue(GetTemplate("Inconsistent Meter"), beatmap,
                                 Timestamp.Get(offset), refBeatmap);
 
-                        if (line.msPerBeat != respectiveLine.msPerBeat)
+                        if (!line.msPerBeat.AlmostEqual(respectiveLine.msPerBeat))
                             yield return new Issue(GetTemplate("Inconsistent BPM"), beatmap,
                                 Timestamp.Get(offset), refBeatmap);
 
                         // Including decimal unsnaps
                         UninheritedLine respectiveLineExact =
                             beatmap.timingLines.OfType<UninheritedLine>().FirstOrDefault(
-                                otherLine => otherLine.offset == line.offset);
+                                otherLine => otherLine.offset.AlmostEqual(line.offset));
 
                         if (respectiveLineExact == null)
                             yield return new Issue(GetTemplate("Missing Minor"), beatmap,
@@ -127,7 +128,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
                         // Including decimal unsnaps
                         UninheritedLine respectiveLineExact =
                             refBeatmap.timingLines.OfType<UninheritedLine>().FirstOrDefault(
-                                otherLine => otherLine.offset == line.offset);
+                                otherLine => otherLine.offset.AlmostEqual(line.offset));
 
                         if (respectiveLineExact == null)
                             yield return new Issue(GetTemplate("Missing Minor"), refBeatmap,

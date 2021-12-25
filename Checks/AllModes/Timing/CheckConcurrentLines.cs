@@ -5,6 +5,7 @@ using MapsetParser.statics;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
+using MathNet.Numerics;
 
 namespace MapsetChecks.Checks.AllModes.Timing
 {
@@ -67,7 +68,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
             // Since the list of timing lines is sorted by time we can just check the previous line.
             for (int i = 1; i < beatmap.timingLines.Count; ++i)
             {
-                if (beatmap.timingLines[i - 1].offset != beatmap.timingLines[i].offset)
+                if (!beatmap.timingLines[i - 1].offset.AlmostEqual(beatmap.timingLines[i].offset))
                     continue;
 
                 if (beatmap.timingLines[i - 1].uninherited == beatmap.timingLines[i].uninherited)
@@ -81,7 +82,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
                 }
                 else if (
                     beatmap.timingLines[i - 1].kiai != beatmap.timingLines[i].kiai ||
-                    beatmap.timingLines[i - 1].volume != beatmap.timingLines[i].volume ||
+                    !beatmap.timingLines[i - 1].volume.AlmostEqual(beatmap.timingLines[i].volume) ||
                     beatmap.timingLines[i - 1].sampleset != beatmap.timingLines[i].sampleset ||
                     beatmap.timingLines[i - 1].customIndex != beatmap.timingLines[i].customIndex)
                 {
@@ -111,7 +112,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
                         conflictingGreenSettings += (conflictingGreenSettings.Length > 0 ? ", " : "") + (greenLine.kiai ? "kiai" : "no kiai");
                         conflictingRedSettings   += (conflictingRedSettings.Length > 0   ? ", " : "") + (redLine.kiai   ? "kiai" : "no kiai");
                     }
-                    if (greenLine.volume != redLine.volume)
+                    if (!greenLine.volume.AlmostEqual(redLine.volume))
                     {
                         conflictingGreenSettings += (conflictingGreenSettings.Length > 0 ? ", " : "") + $"{greenLine.volume}% volume";
                         conflictingRedSettings   += (conflictingRedSettings.Length > 0   ? ", " : "") + $"{redLine.volume}% volume";

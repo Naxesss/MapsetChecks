@@ -4,6 +4,7 @@ using MapsetParser.objects;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
+using MathNet.Numerics;
 
 namespace MapsetChecks.Checks.AllModes.Settings
 {
@@ -64,11 +65,14 @@ namespace MapsetChecks.Checks.AllModes.Settings
         {
             double approxTickRate = Math.Round(tickRate * 1000) / 1000;
             if (tickRate - Math.Floor(tickRate) != 0
-                && approxTickRate != 0.5
-                && approxTickRate != 1.333
-                && approxTickRate != 1.5)
+                && !approxTickRate.AlmostEqual(0.5)
+                && !approxTickRate.AlmostEqual(1.333)
+                && !approxTickRate.AlmostEqual(1.5))
+            {
                 return new Issue(GetTemplate("Tick Rate"), beatmap,
                     approxTickRate, type);
+            }
+
             return null;
         }
     }

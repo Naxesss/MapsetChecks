@@ -8,6 +8,7 @@ using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
 using MapsetVerifierFramework.objects.resources;
+using MathNet.Numerics;
 
 namespace MapsetChecks.Checks.AllModes.General.Audio
 {
@@ -178,9 +179,9 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
 
                     // Only the hit sound edge at which the object is clicked is considered active.
                     if (hitObject.usedHitSamples.Any(sample =>
-                            sample.time == hitObject.time &&
-                            sample.hitSource == HitSample.HitSource.Edge &&
-                            sample.SameFileName(hitSoundFile)))
+                        sample.time.AlmostEqual(hitObject.time) &&
+                        sample.hitSource == HitSample.HitSource.Edge &&
+                        sample.SameFileName(hitSoundFile)))
                     {
                         return true;
                     }
