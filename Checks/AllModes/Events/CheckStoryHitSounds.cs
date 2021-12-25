@@ -15,6 +15,7 @@ namespace MapsetChecks.Checks.AllModes.Events
         {
             Modes = new[]
             {
+                // Mania uses storyboarded hit sounding due to hit sounds playing individually for each column otherwise.
                 Beatmap.Mode.Standard,
                 Beatmap.Mode.Taiko,
                 Beatmap.Mode.Catch
