@@ -56,6 +56,13 @@ namespace MapsetChecks.Checks.AllModes.Timing
                     .WithCause(
                         "A hit object is snapped at least 2 ms too early or late for either of the 1/5, " +
                         "1/7, 1/9, 1/12, or 1/16 beat snap divisors.") },
+                
+                { "AiMod False Positive",
+                    new IssueTemplate(Issue.Level.Info,
+                            "{0} {1} unsnapped by {2} ms. AiMod will claim that this is an issue, but that is a false-positive. So you can ignore that.",
+                            "timestamp - ", "object", "unsnap")
+                        .WithCause(
+                            "Same as the other check, but only for slider tails snapped > 1 ms and < 2 ms late.") },
 
                 { "Minor",
                     new IssueTemplate(Issue.Level.Minor,
@@ -85,8 +92,14 @@ namespace MapsetChecks.Checks.AllModes.Timing
                     Timestamp.Get(time), type, $"{unsnap:0.###}");
 
             else if (Math.Abs(unsnap) >= 1)
+            {
+                if (type == "Slider tail" && unsnap < -1)
+                    yield return new Issue(GetTemplate("AiMod False Positive"), beatmap,
+                        Timestamp.Get(time), type, $"{unsnap:0.###}");
+                
                 yield return new Issue(GetTemplate("Minor"), beatmap,
                     Timestamp.Get(time), type, $"{unsnap:0.###}");
+            }
         }
     }
 }
