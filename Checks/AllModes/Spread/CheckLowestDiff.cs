@@ -72,6 +72,7 @@ namespace MapsetChecks.Checks.AllModes.Spread
                 double drainTime = beatmap.GetDrainTime();
                 double playTime  = beatmap.GetPlayTime();
                 
+                // You could easily cheese the playtime requirement by making it mostly breaks; this prevents that.
                 bool canUsePlayTime =
                     drainTime / playTime >= 0.8 &&
                     beatmapSet.beatmaps.Last().metadataSettings.version != beatmap.metadataSettings.version;
