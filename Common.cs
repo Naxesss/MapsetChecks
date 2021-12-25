@@ -167,14 +167,21 @@ namespace MapsetChecks
                 {
                     string[] files;
                     try
-                    { files = Directory.GetFiles(beatmapSet.songPath, fileName + (fileName.Contains(".") ? "" : ".*")); }
+                    {
+                        files = Directory.GetFiles(beatmapSet.songPath,
+                            fileName + (fileName.Contains(".") ? "" : ".*"));
+                    }
                     catch (DirectoryNotFoundException)
-                    { files = new string[] { }; }
+                    {
+                        files = new string[] { };
+                    }
 
                     if (files.Length > 0)
                     {
                         try
-                        { file = new FileAbstraction(files[0]).GetTagFile(); }
+                        {
+                            file = new FileAbstraction(files[0]).GetTagFile();
+                        }
                         catch (Exception exception)
                         {
                             errorTemplate = "Exception";
@@ -191,25 +198,23 @@ namespace MapsetChecks
 
         /// <summary> Collects the usage data of the given hit sound, as well as the timestamp where it's
         /// been most frequently used. </summary>
-        public static void CollectHitSoundFrequency(BeatmapSet aBeatmapSet, string aHsFileName, double scoreThreshold,
-            out string aMostFrequentTimestamp, out Dictionary<Beatmap, int> aUseData)
+        public static void CollectHitSoundFrequency(BeatmapSet beatmapSet, string hsFileName, double scoreThreshold,
+            out string mostFrequentTimestamp, out Dictionary<Beatmap, int> useData)
         {
-            aUseData = new Dictionary<Beatmap, int>();
-            double prevTime = 0;
+            useData = new Dictionary<Beatmap, int>();
             double highestFrequencyScore = 0;
-            double frequencyScore = 0;
-            aMostFrequentTimestamp = null;
-            foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
+            mostFrequentTimestamp = null;
+            foreach (var beatmap in beatmapSet.beatmaps)
             {
-                aUseData[beatmap] = 0;
-                frequencyScore = 0;
-                prevTime = beatmap.hitObjects.FirstOrDefault()?.time ?? 0;
-                foreach (HitObject hitObject in beatmap.hitObjects)
+                useData[beatmap] = 0;
+                double frequencyScore = 0;
+                double prevTime = beatmap.hitObjects.FirstOrDefault()?.time ?? 0;
+                foreach (var hitObject in beatmap.hitObjects)
                 {
-                    if (!hitObject.usedHitSamples.Any(aSample => aSample.SameFileName(aHsFileName)))
+                    if (!hitObject.usedHitSamples.Any(aSample => aSample.SameFileName(hsFileName)))
                         continue;
 
-                    ++aUseData[beatmap];
+                    ++useData[beatmap];
                     frequencyScore += beatmap.generalSettings.mode == Beatmap.Mode.Mania ? 0.5 : 1;
 
                     double deltaTime = hitObject.time - prevTime;
@@ -221,7 +226,7 @@ namespace MapsetChecks
                         continue;
                     
                     if (frequencyScore >= scoreThreshold)
-                        aMostFrequentTimestamp = $"{Timestamp.Get(hitObject)} in {beatmap}";
+                        mostFrequentTimestamp = $"{Timestamp.Get(hitObject)} in {beatmap}";
 
                     highestFrequencyScore = frequencyScore;
                 }
@@ -229,36 +234,36 @@ namespace MapsetChecks
         }
 
         /// <summary> Returns the beatmap in the given beatmapset which most commonly uses some hit sound. </summary>
-        public static Beatmap GetBeatmapCommonlyUsedIn(BeatmapSet aBeatmapSet, Dictionary<Beatmap, int> aUseData,
+        public static Beatmap GetBeatmapCommonlyUsedIn(BeatmapSet beatmapSet, Dictionary<Beatmap, int> useData,
             double commonUsageThreshold)
         {
             double mostUses = 0;
             Beatmap mapMostCommonlyUsedIn = null;
-            foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
+            foreach (var beatmap in beatmapSet.beatmaps)
             {
-                if (!IsHitSoundCommonlyUsed(beatmap, aUseData[beatmap], commonUsageThreshold) || !(mostUses < aUseData[beatmap]))
+                if (!IsHitSoundCommonlyUsed(beatmap, useData[beatmap], commonUsageThreshold) || !(mostUses < useData[beatmap]))
                     // Not commonly used here, so skip.
                     continue;
                 
                 mapMostCommonlyUsedIn = beatmap;
-                mostUses = aUseData[beatmap];
+                mostUses = useData[beatmap];
             }
 
             return mapMostCommonlyUsedIn;
         }
 
         /// <summary> Returns whether the drain time to use ratio exceeds the common usage threshold. </summary>
-        private static bool IsHitSoundCommonlyUsed(Beatmap aBeatmap, double aUses, double aCommonUsageThreshold)
+        private static bool IsHitSoundCommonlyUsed(Beatmap beatmap, double uses, double commonUsageThreshold)
         {
-            if (aUses == 0)
+            if (uses == 0)
                 return false;
 
             // Mania can have multiple objects per moment in time, so we arbitrarily divide its usage by 2.
-            if (aBeatmap.generalSettings.mode == Beatmap.Mode.Mania)
-                aUses /= 2f;
+            if (beatmap.generalSettings.mode == Beatmap.Mode.Mania)
+                uses /= 2f;
 
-            double mean = aBeatmap.GetDrainTime() / aUses;
-            return mean <= aCommonUsageThreshold;
+            double mean = beatmap.GetDrainTime() / uses;
+            return mean <= commonUsageThreshold;
         }
     }
 }
