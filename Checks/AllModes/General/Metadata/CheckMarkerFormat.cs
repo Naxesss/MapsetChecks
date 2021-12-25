@@ -46,52 +46,66 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
             {
                 { "Wrong Format",
                     new IssueTemplate(Issue.Level.Problem,
-                        "{0} {1} field, \"{2}\".",
-                        "Romanized/unicode", "artist/title", "field")
+                        "Incorrect formatting of \"{0}\" marker in {1} {2} field, \"{3}\".",
+                        "marker", "Romanized/unicode", "artist/title", "field")
                     .WithCause(
                         "The artist or title field of a difficulty includes an incorrect format of \"CV:\", \"vs.\" or \"feat.\".") }
             };
         }
 
+        private readonly struct Marker
+        {
+            public readonly string name;
+            private readonly Regex approxRegex;
+            private readonly Regex exactRegex;
+            
+            public Marker(string name, Regex approxRegex, Regex exactRegex)
+            {
+                this.name = name;
+                this.approxRegex = approxRegex;
+                this.exactRegex = exactRegex;
+            }
+
+            public bool IsSimilarButNotExact(string input) => approxRegex.IsMatch(input) && !exactRegex.IsMatch(input);
+        }
+
+        private static readonly IEnumerable<Marker> Markers = new[]
+        {
+            new Marker("vs.", new Regex(@"(?i)( vs\.?[^A-Za-z0-9])"), new Regex(@"vs\.")),
+            new Marker("CV:", new Regex(@"(?i)((\(| |（)cv(:|：)?[^A-Za-z0-9])"), new Regex(@"CV(:|：)")),
+            new Marker("feat.", new Regex(@"(?i)((\(| |（)(ft|feat)\.?[^A-Za-z0-9])"), new Regex(@"feat\."))
+        };
+
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            Beatmap refBeatmap = beatmapSet.beatmaps[0];
+            if (!beatmapSet.beatmaps.Any())
+                yield break;
 
-            // Matches strings which contain some version of "vs.", "CV:" or "feat." markers but not exactly.
-            Regex regexVs   = new Regex(@"(?i)( vs\.?[^A-Za-z0-9])");
-            Regex regexCV   = new Regex(@"(?i)((\(| |（)cv(:|：)?[^A-Za-z0-9])");
-            Regex regexFeat = new Regex(@"(?i)((\(| |（)(ft|feat)\.?[^A-Za-z0-9])");
-
-            Regex regexVsExact   = new Regex(@"vs\.");
-            Regex regexCVExact   = new Regex(@"CV(:|：)");
-            Regex regexFeatExact = new Regex(@"feat\.");
-
-            foreach (Issue issue in GetFormattingIssues(refBeatmap.metadataSettings, field =>
-                    regexVs.IsMatch(field) && !regexVsExact.IsMatch(field) ||
-                    regexCV.IsMatch(field) && !regexCVExact.IsMatch(field) ||
-                    regexFeat.IsMatch(field) && !regexFeatExact.IsMatch(field)))
-                yield return issue;
+            var refBeatmap = beatmapSet.beatmaps[0];
+            foreach (var marker in Markers)
+                foreach (Issue issue in GetFormattingIssues(refBeatmap.metadataSettings, marker))
+                    yield return issue;
         }
 
         /// <summary> Applies a predicate to all artist and title metadata fields. Yields an issue wherever the predicate is true. </summary>
-        private IEnumerable<Issue> GetFormattingIssues(MetadataSettings settings, Func<string, bool> FieldPredicate)
+        private IEnumerable<Issue> GetFormattingIssues(MetadataSettings settings, Marker marker)
         {
-            if (FieldPredicate(settings.artist))
+            if (marker.IsSimilarButNotExact(settings.artist))
                 yield return new Issue(GetTemplate("Wrong Format"), null,
-                    "Romanized", "artist", settings.artist);
+                    marker.name, "Romanized", "artist", settings.artist);
 
             // Unicode fields do not exist in file version 9.
-            if (settings.artistUnicode != null && FieldPredicate(settings.artistUnicode))
+            if (settings.artistUnicode != null && marker.IsSimilarButNotExact(settings.artistUnicode))
                 yield return new Issue(GetTemplate("Wrong Format"), null,
-                    "Unicode", "artist", settings.artistUnicode);
+                    marker.name, "Unicode", "artist", settings.artistUnicode);
 
-            if (FieldPredicate(settings.title))
+            if (marker.IsSimilarButNotExact(settings.title))
                 yield return new Issue(GetTemplate("Wrong Format"), null,
-                    "Romanized", "title", settings.title);
+                    marker.name, "Romanized", "title", settings.title);
 
-            if (settings.titleUnicode != null && FieldPredicate(settings.titleUnicode))
+            if (settings.titleUnicode != null && marker.IsSimilarButNotExact(settings.titleUnicode))
                 yield return new Issue(GetTemplate("Wrong Format"), null,
-                    "Unicode", "title", settings.titleUnicode);
+                    marker.name, "Unicode", "title", settings.titleUnicode);
         }
     }
 }

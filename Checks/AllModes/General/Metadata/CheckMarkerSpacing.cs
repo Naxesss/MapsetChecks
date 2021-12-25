@@ -90,27 +90,23 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            Beatmap beatmap = beatmapSet.beatmaps[0];
+            var refBeatmap = beatmapSet.beatmaps[0];
             
-            List<Func<string, string>> problemTests = new List<Func<string, string>>()
+            var problemTests = new List<Func<string, string>>
             {
-                field => FormalSpaceRegex(field, @"CV:"),
-                field => FormalSpaceRegex(field, @"vs\."),
-                field => FormalSpaceRegex(field, @"feat\."),
-
+                field => EnsureSpaceBeforeAndAfter(field, @"CV:"),
+                field => EnsureSpaceBeforeAndAfter(field, @"vs\."),
+                field => EnsureSpaceBeforeAndAfter(field, @"feat\."),
+                
                 field => new Regex(@"[a-zA-Z0-9]\(CV:").IsMatch(field) ? "whitespace before \"(CV:\" or full-width bracket \"（\"" : null,
-                    // also check before any parenthesis CV: might have before it
-                
                 field => new Regex(@"(?<!(\(|（))CV:").IsMatch(field) ? "\"(\" before \"CV:\"" : null,
-                    // implied from the "Character (CV: Voice Actor)" format requirement
-                
-                field => new Regex(@",[a-zA-Z0-9]").IsMatch(field) ? "whitespace after \",\"" : null,
-                    // comma only checks trailing whitespaces
+                field => new Regex(@",[a-zA-Z0-9]").IsMatch(field) ? "whitespace after \",\"" : null
             };
-            List<Func<string, string>> warningTests = new List<Func<string, string>>()
+            
+            var warningTests = new List<Func<string, string>>
             {
                 // Some artists include ampersand as part of their name.
-                field => FormalSpaceRegex(field, "&"),
+                field => EnsureSpaceBeforeAndAfter(field, "&"),
 
                 // Markers only need spaces around them if both of the following are true
                 // - They are not full width (i.e. "、" for comma and "：" for colon)
@@ -119,8 +115,8 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
 
                 // The regex "[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]" matches all japanese characters.
                 
-                field => new Regex(@"(?<! |\(|（)feat\.")                     .IsMatch(field) ? "whitespace before \"feat.\""    : null,
-                field => new Regex(@"(?<! )(\(|（)feat\.")                    .IsMatch(field) ? "whitespace before \"(feat.\""   : null,
+                field => new Regex(@"(?<! |\(|（)feat\.")                    .IsMatch(field) ? "whitespace before \"feat.\""    : null,
+                field => new Regex(@"(?<! )(\(|（)feat\.")                   .IsMatch(field) ? "whitespace before \"(feat.\""   : null,
                 field => new Regex(@"(?<! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])vs\.")  .IsMatch(field) ? "whitespace before \"vs.\""      : null,
                 field => new Regex(@"(?<! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])&")     .IsMatch(field) ? "whitespace before \"&\""        : null,
 
@@ -129,29 +125,30 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
 
                 field => new Regex(@"feat\.(?! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])") .IsMatch(field) ? "whitespace after \"feat.\"" : null,
                 field => new Regex(@"vs\.(?! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])")   .IsMatch(field) ? "whitespace after \"vs.\""   : null,
-                field => new Regex(@"&(?! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])")      .IsMatch(field) ? "whitespace after \"&\""     : null,
+                field => new Regex(@"&(?! |[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー])")      .IsMatch(field) ? "whitespace after \"&\""     : null
             };
 
-            MetadataSettings metadata = beatmap.metadataSettings;
-            List<Field> fields = new List<Field>()
-                { new Field("artist",         metadata.artist),
-                  new Field("artist unicode", metadata.artistUnicode) };
+            var metadata = refBeatmap.metadataSettings;
+            var fields = new List<Field> {
+                new Field("artist",         metadata.artist),
+                new Field("artist unicode", metadata.artistUnicode)
+            };
 
-            List<FieldIssue> fieldIssues = new List<FieldIssue>();
-            foreach (Field field in fields)
+            var fieldIssues = new List<FieldIssue>();
+            foreach (var field in fields)
             {
-                // old osu versions didn't have unicode fields
+                // Old .osu versions didn't have unicode fields.
                 if (field.content == null)
                     continue;
 
-                foreach (Func<string, string> problemTest in problemTests)
+                foreach (var problemTest in problemTests)
                 {
                     string message = problemTest(field.content);
                     if (message != null && !fieldIssues.Any(fieldIssue => fieldIssue.message == message && fieldIssue.field == field))
                         fieldIssues.Add(new FieldIssue(field, message, isProblem: true));
                 }
 
-                foreach (Func<string, string> warningTest in warningTests)
+                foreach (var warningTest in warningTests)
                 {
                     string message = warningTest(field.content);
                     if (message != null && !fieldIssues.Any(fieldIssue => fieldIssue.message == message && fieldIssue.field == field))
@@ -159,13 +156,13 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
                 }
             }
 
-            foreach (FieldIssue fieldIssue in fieldIssues)
+            foreach (var fieldIssue in fieldIssues)
                 yield return new Issue(GetTemplate(fieldIssue.isProblem ? "Problem" : "Warning"), null,
                     fieldIssue.message, fieldIssue.field.name, fieldIssue.field.content);
         }
 
         /// <summary> Returns a message describing where a space is missing given a field and what is tested against. </summary>
-        private string FormalSpaceRegex(string field, string test)
+        private static string EnsureSpaceBeforeAndAfter(string field, string test)
         {
             if (new Regex(test + "[a-zA-Z0-9]").IsMatch(field))
                 return "whitespace after \"" + test.Replace("\\", "") + "\"";
