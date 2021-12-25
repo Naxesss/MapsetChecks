@@ -93,10 +93,12 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
                 try
                 {
                     channels = AudioBASS.GetChannels(hsPath);
-                    peaks    = AudioBASS.GetPeaks(hsPath);
+                    peaks = AudioBASS.GetPeaks(hsPath);
                 }
                 catch (Exception ex)
-                    { exception = ex; }
+                {
+                    exception = ex;
+                }
 
                 // Cannot yield in catch statements, hence externally handled.
                 if (exception != null)

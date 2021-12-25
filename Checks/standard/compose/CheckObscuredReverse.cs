@@ -16,11 +16,11 @@ namespace MapsetChecks.Checks.Standard.Compose
     {
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
-            Modes = new Beatmap.Mode[]
+            Modes = new[]
             {
                 Beatmap.Mode.Standard
             },
-            Difficulties = new Beatmap.Difficulty[]
+            Difficulties = new[]
             {
                 Beatmap.Difficulty.Easy,
                 Beatmap.Difficulty.Normal,
@@ -118,9 +118,9 @@ namespace MapsetChecks.Checks.Standard.Compose
 
                     List<HitObject> hitObjects;
                     if (hitObject.time > otherHitObject.time)
-                        hitObjects = new List<HitObject>() { otherHitObject, hitObject };
+                        hitObjects = new List<HitObject> { otherHitObject, hitObject };
                     else
-                        hitObjects = new List<HitObject>() { hitObject, otherHitObject };
+                        hitObjects = new List<HitObject> { hitObject, otherHitObject };
 
                     selectedObjects.AddRange(hitObjects);
                     break;
@@ -128,7 +128,7 @@ namespace MapsetChecks.Checks.Standard.Compose
 
                 if (selectedObjects.Count > 0)
                     yield return new Issue(GetTemplate("Obscured"), beatmap,
-                        Timestamp.Get(selectedObjects.ToArray()), (isSerious ? "" : "potentially "));
+                        Timestamp.Get(selectedObjects.ToArray()), isSerious ? "" : "potentially ");
             }
         }
     }

@@ -13,7 +13,7 @@ namespace MapsetChecks.Checks.AllModes.Events
     {
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
-            Modes = new Beatmap.Mode[]
+            Modes = new[]
             {
                 Beatmap.Mode.Standard,
                 Beatmap.Mode.Taiko,

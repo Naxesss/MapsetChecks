@@ -46,7 +46,7 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
             };
         }
 
-        private readonly char[] collabChars = new char[] { ',', '&', '|', '/' };
+        private readonly char[] collabChars = { ',', '&', '|', '/' };
         private readonly Regex possessorRegex = new Regex(@"(.+)(?:'s|(s)')", RegexOptions.IgnoreCase);
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)

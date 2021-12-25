@@ -76,7 +76,7 @@ namespace MapsetChecks.Checks.AllModes.General.Resources
             foreach (Issue issue in Common.GetTagOsuIssues(
                 beatmapSet,
                 beatmap => beatmap.videos.Count > 0 ? beatmap.videos.Select(aVideo => aVideo.path) : null,
-                templateArg => GetTemplate(templateArg),
+                GetTemplate,
                 tagFile =>
                 {
                     // Executes for each non-faulty video file used in one of the beatmaps in the set.

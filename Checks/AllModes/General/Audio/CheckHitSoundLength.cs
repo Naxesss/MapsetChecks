@@ -73,9 +73,13 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
                 double duration = 0;
                 Exception exception = null;
                 try
-                    { duration = AudioBASS.GetDuration(hsPath); }
+                {
+                    duration = AudioBASS.GetDuration(hsPath);
+                }
                 catch (Exception ex)
-                    { exception = ex; }
+                {
+                    exception = ex;
+                }
 
                 if (exception == null)
                 {

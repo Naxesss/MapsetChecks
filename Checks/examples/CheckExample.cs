@@ -13,12 +13,12 @@ namespace MapsetChecks.Checks.Examples
         /// <summary> Determines which modes the check shows for, in which category the check appears, the message for the check, etc. </summary>
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
-            Modes = new Beatmap.Mode[]
+            Modes = new[]
             {
                 Beatmap.Mode.Standard,
                 Beatmap.Mode.Catch
             },
-            Difficulties = new Beatmap.Difficulty[]
+            Difficulties = new[]
             {
                 Beatmap.Difficulty.Easy,
                 Beatmap.Difficulty.Normal,

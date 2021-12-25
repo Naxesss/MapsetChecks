@@ -77,7 +77,8 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
                 issues.AddRange(GetInconsistency("unicode title",  beatmap, refBeatmap, otherBeatmap => otherBeatmap.metadataSettings.titleUnicode));
                 issues.AddRange(GetInconsistency("source",         beatmap, refBeatmap, otherBeatmap => otherBeatmap.metadataSettings.source));
                 issues.AddRange(GetInconsistency("creator",        beatmap, refBeatmap, otherBeatmap => otherBeatmap.metadataSettings.creator));
-                foreach (Issue issue in issues)
+                
+                foreach (var issue in issues)
                     yield return issue;
 
                 if (beatmap.metadataSettings.tags == refSettings.tags)
@@ -87,7 +88,7 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
                 IEnumerable<string> curTags = beatmap.metadataSettings.tags.Split(' ');
                 IEnumerable<string> differenceTags = refTags.Except(curTags).Union(curTags.Except(refTags)).Distinct();
 
-                string difference = String.Join(" ", differenceTags);
+                string difference = string.Join(" ", differenceTags);
                 if (difference != "")
                     yield return
                         new Issue(GetTemplate("Tags"), null,

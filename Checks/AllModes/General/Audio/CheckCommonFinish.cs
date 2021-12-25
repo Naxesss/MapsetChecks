@@ -11,7 +11,7 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
     {
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
-            Modes = new Beatmap.Mode[]
+            Modes = new[]
             {
                 // This check would take on another meaning if applied to taiko, since there you basically map with hit sounds.
                 Beatmap.Mode.Standard,
@@ -67,7 +67,9 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
                 if (sample.sampleset == Beatmap.Sampleset.Drum ||
                     sample.hitSound != HitObject.HitSound.Finish ||
                     sample.hitSource != HitSample.HitSource.Edge)
+                {
                     continue;
+                }
 
                 Common.CollectHitSoundFrequency(beatmapSet, hsFile, scoreThreshold: 6,
                     out string mostFrequentTimestamp, out Dictionary<Beatmap, int> uses);

@@ -37,61 +37,61 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
             }
         };
 
-        private static readonly string[][] genreTagCombinations = {
-            new string[] { "Video", "Game" },
-            new string[] { "Anime" },
-            new string[] { "Rock" },
-            new string[] { "Pop" },
-            new string[] { "Novelty" },
-            new string[] { "Hip", "Hop" },
-            new string[] { "Electronic" },
-            new string[] { "Metal" },
-            new string[] { "Classical" },
-            new string[] { "Folk" },
-            new string[] { "Jazz" }
+        private static readonly string[][] GenreTagCombinations = {
+            new[] { "Video", "Game" },
+            new[] { "Anime" },
+            new[] { "Rock" },
+            new[] { "Pop" },
+            new[] { "Novelty" },
+            new[] { "Hip", "Hop" },
+            new[] { "Electronic" },
+            new[] { "Metal" },
+            new[] { "Classical" },
+            new[] { "Folk" },
+            new[] { "Jazz" }
         };
 
-        private static readonly string[][] languageTagCombinations = {
-            new string[] { "English" },
-            new string[] { "Chinese" },
-            new string[] { "French" },
-            new string[] { "German" },
-            new string[] { "Italian" },
-            new string[] { "Japanese" },
-            new string[] { "Korean" },
-            new string[] { "Spanish" },
-            new string[] { "Swedish" },
-            new string[] { "Russian" },
-            new string[] { "Polish" },
-            new string[] { "Instrumental" },
+        private static readonly string[][] LanguageTagCombinations = {
+            new[] { "English" },
+            new[] { "Chinese" },
+            new[] { "French" },
+            new[] { "German" },
+            new[] { "Italian" },
+            new[] { "Japanese" },
+            new[] { "Korean" },
+            new[] { "Spanish" },
+            new[] { "Swedish" },
+            new[] { "Russian" },
+            new[] { "Polish" },
+            new[] { "Instrumental" },
 
             // Following are not web languages, but if we find these in the tags,
             // web would need to be "Other" anyway, so no point in warning.
-            new string[] { "Conlang" },
-            new string[] { "Hindi" },
-            new string[] { "Arabic" },
-            new string[] { "Portugese" },
-            new string[] { "Turkish" },
-            new string[] { "Vietnamese" },
-            new string[] { "Persian" },
-            new string[] { "Indonesian" },
-            new string[] { "Ukrainian" },
-            new string[] { "Romanian" },
-            new string[] { "Dutch" },
-            new string[] { "Thai" },
-            new string[] { "Greek" },
-            new string[] { "Somali" },
-            new string[] { "Malay" },
-            new string[] { "Hungarian" },
-            new string[] { "Czech" },
-            new string[] { "Norwegian" },
-            new string[] { "Finnish" },
-            new string[] { "Danish" },
-            new string[] { "Latvia" },
-            new string[] { "Lithuanian" },
-            new string[] { "Estonian" },
-            new string[] { "Punjabi" },
-            new string[] { "Bengali" }
+            new[] { "Conlang" },
+            new[] { "Hindi" },
+            new[] { "Arabic" },
+            new[] { "Portugese" },
+            new[] { "Turkish" },
+            new[] { "Vietnamese" },
+            new[] { "Persian" },
+            new[] { "Indonesian" },
+            new[] { "Ukrainian" },
+            new[] { "Romanian" },
+            new[] { "Dutch" },
+            new[] { "Thai" },
+            new[] { "Greek" },
+            new[] { "Somali" },
+            new[] { "Malay" },
+            new[] { "Hungarian" },
+            new[] { "Czech" },
+            new[] { "Norwegian" },
+            new[] { "Finnish" },
+            new[] { "Danish" },
+            new[] { "Latvia" },
+            new[] { "Lithuanian" },
+            new[] { "Estonian" },
+            new[] { "Punjabi" },
+            new[] { "Bengali" }
         };
 
         private string ToCause(string[][] tagCombinations)
@@ -112,14 +112,14 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
                         "Missing genre tag (\"rock\", \"pop\", \"electronic\", etc), ignore if none fit.")
                     .WithCause(
                         "None of the following tags were found (case insensitive):" +
-                        ToCause(genreTagCombinations)) },
+                        ToCause(GenreTagCombinations)) },
 
                 { "Language",
                     new IssueTemplate(Issue.Level.Warning,
                         "Missing language tag (\"english\", \"japanese\", \"instrumental\", etc), ignore if none fit.")
                     .WithCause(
                         "None of the following tags were found (case insensitive):" +
-                        ToCause(languageTagCombinations)) }
+                        ToCause(LanguageTagCombinations)) }
             };
         }
 
@@ -131,10 +131,10 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
 
             string[] tags = refBeatmap.metadataSettings.tags.ToLower().Split(" ");
 
-            if (!HasAnyCombination(genreTagCombinations, tags))
+            if (!HasAnyCombination(GenreTagCombinations, tags))
                 yield return new Issue(GetTemplate("Genre"), null);
 
-            if (!HasAnyCombination(languageTagCombinations, tags))
+            if (!HasAnyCombination(LanguageTagCombinations, tags))
                 yield return new Issue(GetTemplate("Language"), null);
         }
 

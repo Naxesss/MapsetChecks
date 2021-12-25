@@ -97,7 +97,7 @@ namespace MapsetChecks.Checks.AllModes.General.Resources
             foreach (Issue issue in Common.GetTagOsuIssues(
                 beatmapSet,
                 beatmap => beatmap.backgrounds.Count > 0 ? beatmap.backgrounds.Select(bg => bg.path) : null,
-                templateArg => GetTemplate(templateArg),
+                GetTemplate,
                 tagFile =>
                 {
                     // Executes for each non-faulty background file used in one of the beatmaps in the set.

@@ -15,7 +15,7 @@ namespace MapsetChecks.Checks.AllModes.HitSounds
     {
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
-            Modes = new Beatmap.Mode[]
+            Modes = new[]
             {
                 // This check would take on another meaning if applied to taiko, since there you basically map with hit sounds.
                 Beatmap.Mode.Standard,
@@ -168,6 +168,7 @@ namespace MapsetChecks.Checks.AllModes.HitSounds
                     Issue issue = GetIssueFromUpdate(endTimeBeforeExcl, ref objectsPassed, ref prevTime, beatmap);
                     if (issue != null)
                         issues.Add(issue);
+                    
                     prevTime = objectAfterExcl.time;
                 }
                 
@@ -242,7 +243,7 @@ namespace MapsetChecks.Checks.AllModes.HitSounds
                     Timestamp.Get(currentTime - timeDifference), Timestamp.Get(currentTime),
                     $"{timeDifference / 1000:0.##}");
             }
-            
+
             return null;
         }
 

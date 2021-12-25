@@ -115,9 +115,13 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
                 List<float[]> peaks = null;
                 Exception exception = null;
                 try
-                    { peaks = AudioBASS.GetPeaks(hsPath); }
+                {
+                    peaks = AudioBASS.GetPeaks(hsPath);
+                }
                 catch (Exception ex)
-                    { exception = ex; }
+                {
+                    exception = ex;
+                }
 
                 if (exception == null)
                 {

@@ -12,7 +12,7 @@ namespace MapsetChecks.Checks.AllModes.Settings
     {
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
-            Modes = new Beatmap.Mode[]
+            Modes = new[]
             {
                 // Does not apply to taiko, due to always using red/blue.
                 // Does not apply to mania, due to not having combo colours (based on column instead).

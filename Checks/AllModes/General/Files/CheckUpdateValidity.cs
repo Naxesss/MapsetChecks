@@ -87,7 +87,7 @@ namespace MapsetChecks.Checks.AllModes.General.Files
 
                 if(fileName.Length > 132)
                     yield return new Issue(GetTemplate("Too Long Name"), null,
-                            filePath, fileName.Length);
+                        filePath, fileName.Length);
 
                 if (!fileName.EndsWith(".osu"))
                     continue;

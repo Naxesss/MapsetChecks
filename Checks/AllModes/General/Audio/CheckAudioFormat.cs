@@ -43,7 +43,7 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
         
         public override Dictionary<string, IssueTemplate> GetTemplates()
         {
-            return new Dictionary<string, IssueTemplate>()
+            return new Dictionary<string, IssueTemplate>
             {
                 { "Incorrect Format",
                     new IssueTemplate(Issue.Level.Problem,
@@ -78,9 +78,13 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
             ManagedBass.ChannelType actualFormat = 0;
             Exception exception = null;
             try
-                { actualFormat = AudioBASS.GetFormat(audioPath); }
+            {
+                actualFormat = AudioBASS.GetFormat(audioPath);
+            }
             catch (Exception ex)
-                { exception = ex; }
+            {
+                exception = ex;
+            }
 
             if (exception != null)
                 yield return new Issue(GetTemplate("Exception"), null,

@@ -80,7 +80,7 @@ namespace MapsetChecks.Checks.AllModes.General.Resources
             foreach (Issue issue in Common.GetTagOsuIssues(
                 beatmapSet,
                 beatmap => beatmap.sprites.Count > 0 ? beatmap.sprites.Select(aSprite => aSprite.path) : null,
-                templateArg => GetTemplate(templateArg),
+                GetTemplate,
                 tagFile =>
                 {
                     // Executes for each non-faulty sprite file used in one of the beatmaps in the set.
@@ -99,7 +99,7 @@ namespace MapsetChecks.Checks.AllModes.General.Resources
             foreach (Issue issue in Common.GetTagOsuIssues(
                 beatmapSet,
                 beatmap => beatmap.animations.Count > 0 ? beatmap.animations.SelectMany(aAnimation => aAnimation.framePaths) : null,
-                templateArg => GetTemplate(templateArg),
+                GetTemplate,
                 tagFile =>
                 {
                     List<Issue> issues = new List<Issue>();
@@ -117,7 +117,7 @@ namespace MapsetChecks.Checks.AllModes.General.Resources
             foreach (Issue issue in Common.GetTagOsbIssues(
                 beatmapSet,
                 osb => osb.sprites.Count > 0 ? osb.sprites.Select(aSprite => aSprite.path) : null,
-                templateArg => GetTemplate(templateArg),
+                GetTemplate,
                 tagFile =>
                 {
                     List<Issue> issues = new List<Issue>();
@@ -134,7 +134,7 @@ namespace MapsetChecks.Checks.AllModes.General.Resources
             foreach (Issue issue in Common.GetTagOsbIssues(
                 beatmapSet,
                 osb => osb.animations.Count > 0 ? osb.animations.SelectMany(aAnimation => aAnimation.framePaths) : null,
-                templateArg => GetTemplate(templateArg),
+                GetTemplate,
                 tagFile =>
                 {
                     List<Issue> issues = new List<Issue>();

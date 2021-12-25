@@ -14,7 +14,7 @@ namespace MapsetChecks.Checks.Taiko.Timing
     {
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
-            Modes = new Beatmap.Mode[]
+            Modes = new[]
             {
                 Beatmap.Mode.Taiko
             },

@@ -16,7 +16,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
             // Mania doesn't have this issue since SV affects scroll speed rather than properties of objects.
-            Modes = new Beatmap.Mode[]
+            Modes = new[]
             {
                 Beatmap.Mode.Standard,
                 Beatmap.Mode.Taiko,

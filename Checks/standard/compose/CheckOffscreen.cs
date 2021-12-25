@@ -13,9 +13,9 @@ namespace MapsetChecks.Checks.Standard.Compose
     [Check]
     public class CheckOffscreen : BeatmapCheck
     {
-        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata()
+        public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
-            Modes = new Beatmap.Mode[]
+            Modes = new[]
             {
                 Beatmap.Mode.Standard
             },

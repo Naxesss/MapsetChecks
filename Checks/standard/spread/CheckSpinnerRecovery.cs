@@ -15,7 +15,7 @@ namespace MapsetChecks.Checks.Standard.Spread
     {
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
-            Modes = new Beatmap.Mode[]
+            Modes = new[]
             {
                 Beatmap.Mode.Standard
             },
@@ -97,7 +97,7 @@ namespace MapsetChecks.Checks.Standard.Spread
         private IEnumerable<Issue> GetLengthIssues(Beatmap beatmap, Spinner spinner)
         {
             double spinnerTime = spinner.endTime - spinner.time;
-            double[] spinnerTimeExpected = new double[] { 1000, 750, 500 }; // 4, 3 and 2 beats respectively, 240 bpm
+            double[] spinnerTimeExpected = { 1000, 750, 500 }; // 4, 3 and 2 beats respectively, 240 bpm
 
             for (int diffIndex = 0; diffIndex < spinnerTimeExpected.Length; ++diffIndex)
             {

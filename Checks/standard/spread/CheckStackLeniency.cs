@@ -14,16 +14,16 @@ namespace MapsetChecks.Checks.Standard.Spread
     {
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
-            Modes = new Beatmap.Mode[]
+            Modes = new[]
             {
                 Beatmap.Mode.Standard
             },
-            Difficulties = new Beatmap.Difficulty[]
+            Difficulties = new[]
             {
                 Beatmap.Difficulty.Easy,
                 Beatmap.Difficulty.Normal,
                 Beatmap.Difficulty.Hard,
-                Beatmap.Difficulty.Insane,
+                Beatmap.Difficulty.Insane
             },
             Category = "Spread",
             Message = "Perfect stacks too close in time.",
@@ -75,7 +75,7 @@ namespace MapsetChecks.Checks.Standard.Spread
 
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            double[] snapping = new double[] { 1, 1, 0.5, 0.25 };
+            double[] snapping = { 1, 1, 0.5, 0.25 };
 
             for (int diffIndex = 0; diffIndex < snapping.Length; ++diffIndex)
             {

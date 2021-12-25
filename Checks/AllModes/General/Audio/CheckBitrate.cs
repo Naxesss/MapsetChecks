@@ -107,7 +107,9 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
 
                 if ((hitSoundFormat & ManagedBass.ChannelType.OGG) != 0 &&
                     (hitSoundFormat & ManagedBass.ChannelType.MP3) != 0)
+                {
                     continue;
+                }
 
                 foreach (Issue issue in GetIssue(beatmapSet, hitSoundPath, true))
                     yield return issue;
@@ -127,7 +129,7 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
             if (!isHitSound)
                 yield return new Issue(GetTemplate("Bitrate"), null,
                     audioRelPath, $"{bitrate:0.##}",
-                    (bitrate < 128 ? "low" : "high"));
+                    bitrate < 128 ? "low" : "high");
             else
                 yield return new Issue(GetTemplate("Hit Sound"), null,
                     audioRelPath, $"{bitrate:0.##}");

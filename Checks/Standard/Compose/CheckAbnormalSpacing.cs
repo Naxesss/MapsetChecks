@@ -15,7 +15,7 @@ namespace MapsetChecks.Checks.Standard.Compose
     {
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
-            Modes = new Beatmap.Mode[]
+            Modes = new[]
             {
                 Beatmap.Mode.Standard
             },
@@ -73,7 +73,7 @@ namespace MapsetChecks.Checks.Standard.Compose
                         "{0} Space/time ratio is {1} times the expected, see e.g. {2}.",
                         "timestamp - ", "times", "example objects")
                     .WithCause(
-                        "Same as the first check, but with more common differences.") },
+                        "Same as the first check, but with more common differences.") }
             };
         }
 

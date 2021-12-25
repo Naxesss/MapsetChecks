@@ -13,7 +13,7 @@ namespace MapsetChecks.Checks.Standard.Compose
     {
         public override CheckMetadata GetMetadata() => new BeatmapCheckMetadata
         {
-            Modes = new Beatmap.Mode[]
+            Modes = new[]
             {
                 Beatmap.Mode.Standard
             },
