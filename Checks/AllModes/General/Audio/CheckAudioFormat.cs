@@ -47,7 +47,7 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
             {
                 { "Incorrect Format",
                     new IssueTemplate(Issue.Level.Problem,
-                        "\"{0}\" is using the {1} format. Song audio files must be in either MP3 or OGG format.",
+                        "\"{0}\" is using the {1} format. Song audio files must be in either MP3 or OGG format. (Note: extension ≠ format.)",
                         "path", "actual format")
                     .WithCause(
                         "A song audio file is not using the MP3 format.") },
