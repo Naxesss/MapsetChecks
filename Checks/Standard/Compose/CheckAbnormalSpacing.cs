@@ -146,8 +146,8 @@ namespace MapsetChecks.Checks.Standard.Compose
                     // Too few samples, probably going to get inaccurate readings.
                     continue;
 
-                double expectedDistance  = sameSnappedDistances.Sum(obvDist => obvDist.distance  * Decay(hitObject, obvDist)) / sameSnappedDistances.Count();
-                double expectedDeltaTime = sameSnappedDistances.Sum(obvDist => obvDist.deltaTime * Decay(hitObject, obvDist)) / sameSnappedDistances.Count();
+                double expectedDistance  = sameSnappedDistances.Sum(obvDist => obvDist.distance  * Decay(hitObject, obvDist)) / sameSnappedDistances.Count;
+                double expectedDeltaTime = sameSnappedDistances.Sum(obvDist => obvDist.deltaTime * Decay(hitObject, obvDist)) / sameSnappedDistances.Count;
 
                 if (hitObject is Slider)
                     // Account for slider follow circle leniency.

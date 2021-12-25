@@ -68,7 +68,7 @@ namespace MapsetChecks.Checks.AllModes.Compose
 
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            int hitObjectCount = beatmap.hitObjects.Count();
+            int hitObjectCount = beatmap.hitObjects.Count;
             for (int i = 0; i < hitObjectCount - 1; ++i)
             {
                 for (int j = i + 1; j < hitObjectCount; ++j)

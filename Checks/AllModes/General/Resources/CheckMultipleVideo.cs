@@ -98,7 +98,7 @@ namespace MapsetChecks.Checks.AllModes.General.Resources
                                 (beatmap.videos.FirstOrDefault()?.path ?? "None") == videoName ||
                                 beatmapSet.osb?.videos.FirstOrDefault()?.path == videoName);
 
-                    if (videoNames.Count() > 1 && suchBeatmaps.Any())
+                    if (videoNames.Count > 1 && suchBeatmaps.Any())
                         yield return new Issue(GetTemplate("Same Mode"), null,
                             videoName, string.Join(", ", suchBeatmaps));
 

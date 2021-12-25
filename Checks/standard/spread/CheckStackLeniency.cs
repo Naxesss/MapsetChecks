@@ -81,7 +81,7 @@ namespace MapsetChecks.Checks.Standard.Spread
             {
                 double timeGap = snapping[diffIndex] * 60000 / 160d;
 
-                int hitObjectCount = beatmap.hitObjects.Count();
+                int hitObjectCount = beatmap.hitObjects.Count;
                 for (int i = 0; i < hitObjectCount - 1; ++i)
                 {
                     for (int j = i + 1; j < hitObjectCount; ++j)

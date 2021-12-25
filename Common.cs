@@ -96,7 +96,7 @@ namespace MapsetChecks
                 if (tagFile.file == null)
                 {
                     List<object> templateArgs = new List<object> { tagFile.templateArgs[0] };
-                    if (tagFile.templateArgs.Count() > 1)
+                    if (tagFile.templateArgs.Length > 1)
                         templateArgs.Add(tagFile.templateArgs[1]);
 
                     yield return new Issue(TemplateFunc(tagFile.templateName), null,

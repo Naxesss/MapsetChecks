@@ -117,7 +117,7 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
                     continue;
 
                 float leftSum = peaks.Sum(peak => peak?[0] ?? 0);
-                float rightSum = peaks.Sum(peak => peak.Count() > 1 ? peak?[1] ?? 0 : 0);
+                float rightSum = peaks.Sum(peak => peak.Length > 1 ? peak[1] : 0);
                 if (leftSum == 0 || rightSum == 0)
                 {
                     yield return new Issue(GetTemplate("Warning Silent"), null,
