@@ -9,6 +9,7 @@ using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
 using MapsetVerifierFramework.objects.resources;
+using MathNet.Numerics;
 
 namespace MapsetChecks.Checks.AllModes.General.Audio
 {
@@ -86,69 +87,76 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            if (beatmapSet.hitSoundFiles != null)
+            if (beatmapSet.hitSoundFiles == null)
+                yield break;
+            
+            foreach (string hitSoundFile in beatmapSet.hitSoundFiles)
             {
-                foreach (string hitSoundFile in beatmapSet.hitSoundFiles)
+                string fullPath = Path.Combine(beatmapSet.songPath, hitSoundFile);
+
+                ManagedBass.ChannelType actualFormat = 0;
+                Exception exception = null;
+                try
                 {
-                    string fullPath = Path.Combine(beatmapSet.songPath, hitSoundFile);
+                    actualFormat = AudioBASS.GetFormat(fullPath);
+                }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
 
-                    ManagedBass.ChannelType actualFormat = 0;
-                    Exception exception = null;
-                    try
-                        { actualFormat = AudioBASS.GetFormat(fullPath); }
-                    catch (Exception ex)
-                        { exception = ex; }
+                if (exception != null)
+                {
+                    yield return new Issue(GetTemplate("Exception"), null,
+                        hitSoundFile, Common.ExceptionTag(exception));
+                    continue;
+                }
 
-                    if (exception != null)
+                // The .mp3 format includes inherent delays and are as such not fit for active hit sounding.
+                if (actualFormat == ManagedBass.ChannelType.MP3)
+                {
+                    HitObject hitObjectActiveAt = GetHitObjectActiveAt(beatmapSet, hitSoundFile);
+                    if (hitObjectActiveAt != null)
+                        yield return new Issue(GetTemplate("mp3"), null,
+                            hitSoundFile, Timestamp.Get(hitObjectActiveAt), hitObjectActiveAt.beatmap);
+                }
+                else
+                {
+                    if ((ManagedBass.ChannelType.Wave & actualFormat) == 0 &&
+                        (ManagedBass.ChannelType.OGG & actualFormat) == 0)
                     {
-                        yield return new Issue(GetTemplate("Exception"), null,
-                            hitSoundFile, Common.ExceptionTag(exception));
+                        yield return new Issue(GetTemplate("Unexpected Format"), null,
+                            hitSoundFile, AudioBASS.EnumToString(actualFormat));
+                    }
+                    else if (!hitSoundFile.ToLower().EndsWith(".wav") && !hitSoundFile.ToLower().EndsWith(".ogg"))
+                        yield return new Issue(GetTemplate("Incorrect Extension"), null,
+                            hitSoundFile, AudioBASS.EnumToString(actualFormat));
+
+                }
+            }
+        }
+        
+        private static HitObject GetHitObjectActiveAt(BeatmapSet beatmapSet, string hitSoundFile)
+        {
+            foreach (var beatmap in beatmapSet.beatmaps)
+            {
+                foreach (var hitObject in beatmap.hitObjects)
+                {
+                    if (hitObject is Spinner)
                         continue;
-                    }
 
-                    // The .mp3 format includes inherent delays and are as such not fit for active hit sounding.
-                    if (actualFormat == ManagedBass.ChannelType.MP3)
+                    // Only the edge at which the object is clicked is considered active.
+                    if (hitObject.usedHitSamples.Any(sample =>
+                        sample.time.AlmostEqual(hitObject.time) &&
+                        sample.hitSource == HitSample.HitSource.Edge &&
+                        sample.SameFileName(hitSoundFile)))
                     {
-                        bool foundActiveMp3 = false;
-                        foreach (Beatmap beatmap in beatmapSet.beatmaps)
-                        {
-                            foreach (HitObject hitObject in beatmap.hitObjects)
-                            {
-                                if (hitObject is Spinner)
-                                    continue;
-
-                                // Only the hit sound edge at which the object is clicked is considered active.
-                                if (hitObject.usedHitSamples.Any(sample =>
-                                        sample.time == hitObject.time &&
-                                        sample.hitSource == HitSample.HitSource.Edge &&
-                                        sample.SameFileName(hitSoundFile)))
-                                {
-                                    yield return new Issue(GetTemplate("mp3"), null,
-                                        hitSoundFile, Timestamp.Get(hitObject), beatmap);
-
-                                    foundActiveMp3 = true;
-                                    break;
-                                }
-                            }
-                            if (foundActiveMp3)
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        if ((ManagedBass.ChannelType.Wave & actualFormat) == 0 &&
-                            (ManagedBass.ChannelType.OGG & actualFormat) == 0)
-                        {
-                            yield return new Issue(GetTemplate("Unexpected Format"), null,
-                                hitSoundFile, AudioBASS.EnumToString(actualFormat));
-                        }
-                        else if (!hitSoundFile.ToLower().EndsWith(".wav") && !hitSoundFile.ToLower().EndsWith(".ogg"))
-                            yield return new Issue(GetTemplate("Incorrect Extension"), null,
-                                hitSoundFile, AudioBASS.EnumToString(actualFormat));
-
+                        return hitObject;
                     }
                 }
             }
+
+            return null;
         }
     }
 }

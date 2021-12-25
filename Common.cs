@@ -36,16 +36,21 @@ namespace MapsetChecks
             foreach (Beatmap beatmap in beatmapSet.beatmaps)
                 pairs.Add(new KeyValuePair<Beatmap, string>(beatmap, ConsistencyCheck(beatmap)));
 
-            var groups = pairs.Where(pair => pair.Value != null).GroupBy(pair => pair.Value).Select(group =>
-                new KeyValuePair<string, IEnumerable<Beatmap>>(group.Key, group.Select(pair => pair.Key)));
+            var groups =
+                pairs
+                    .Where(pair => pair.Value != null)
+                    .GroupBy(pair => pair.Value)
+                    .Select(group =>
+                        new KeyValuePair<string, IEnumerable<Beatmap>>(group.Key, group.Select(pair => pair.Key)))
+                    .ToList();
 
-            if (groups.Count() > 1)
+            if (groups.Count <= 1)
+                yield break;
+            
+            foreach (var (key, value) in groups)
             {
-                foreach (var group in groups)
-                {
-                    string message = group.Key + " : " + String.Join(" ", group.Value);
-                    yield return new Issue(template, null, message);
-                }
+                string message = key + " : " + string.Join(" ", value);
+                yield return new Issue(template, null, message);
             }
         }
 
@@ -115,11 +120,12 @@ namespace MapsetChecks
             foreach (Beatmap beatmap in beatmapSet.beatmaps)
             {
                 IEnumerable<string> fileNameList = BeatmapFunc(beatmap);
-
-                if (fileNameList != null)
-                    foreach (string fileName in fileNameList)
-                        if (fileName != null && !fileNames.Contains(fileName))
-                            fileNames.Add(fileName);
+                if (fileNameList == null)
+                    continue;
+                
+                foreach (string fileName in fileNameList)
+                    if (fileName != null && !fileNames.Contains(fileName))
+                        fileNames.Add(fileName);
             }
 
             return GetTagFiles(beatmapSet, fileNames);
@@ -127,58 +133,59 @@ namespace MapsetChecks
 
         private static IEnumerable<TagFile> GetTagOsbFiles(BeatmapSet beatmapSet, Func<Osb, IEnumerable<string>> OsbFunc)
         {
-            List<string> fileNames = new List<string>();
-            if (beatmapSet.osb != null)
-            {
-                IEnumerable<string> fileNameList = OsbFunc(beatmapSet.osb);
-
-                if (fileNameList != null)
-                    foreach (string fileName in fileNameList)
-                        if (fileName != null && !fileNames.Contains(fileName))
-                            fileNames.Add(fileName);
-            }
+            var fileNames = new List<string>();
+            if (beatmapSet.osb == null)
+                return GetTagFiles(beatmapSet, fileNames);
+            
+            IEnumerable<string> fileNameList = OsbFunc(beatmapSet.osb);
+            if (fileNameList == null)
+                return GetTagFiles(beatmapSet, fileNames);
+            
+            foreach (string fileName in fileNameList)
+                if (fileName != null && !fileNames.Contains(fileName))
+                    fileNames.Add(fileName);
 
             return GetTagFiles(beatmapSet, fileNames);
         }
 
         private static IEnumerable<TagFile> GetTagFiles(BeatmapSet beatmapSet, List<string> fileNames)
         {
-            if (beatmapSet.songPath != null)
+            if (beatmapSet.songPath == null)
+                yield break;
+            
+            foreach (string fileName in fileNames)
             {
-                foreach (string fileName in fileNames)
-                {
-                    TagLib.File file = null;
-                    string errorTemplate = "";
-                    List<object> arguments = new List<object>() { fileName };
+                TagLib.File file = null;
+                string errorTemplate = "";
+                List<object> arguments = new List<object> { fileName };
 
-                    if (fileName.StartsWith(".."))
+                if (fileName.StartsWith(".."))
+                {
+                    errorTemplate = "Leaves Folder";
+                }
+                else
+                {
+                    string[] files;
+                    try
+                    { files = Directory.GetFiles(beatmapSet.songPath, fileName + (fileName.Contains(".") ? "" : ".*")); }
+                    catch (DirectoryNotFoundException)
+                    { files = new string[] { }; }
+
+                    if (files.Length > 0)
                     {
-                        errorTemplate = "Leaves Folder";
+                        try
+                        { file = new FileAbstraction(files[0]).GetTagFile(); }
+                        catch (Exception exception)
+                        {
+                            errorTemplate = "Exception";
+                            arguments.Add(ExceptionTag(exception));
+                        }
                     }
                     else
-                    {
-                        string[] files;
-                        try
-                        { files = Directory.GetFiles(beatmapSet.songPath, fileName + (fileName.Contains(".") ? "" : ".*")); }
-                        catch (DirectoryNotFoundException)
-                        { files = new string[] { }; }
-
-                        if (files.Length > 0)
-                        {
-                            try
-                            { file = new FileAbstraction(files[0]).GetTagFile(); }
-                            catch (Exception exception)
-                            {
-                                errorTemplate = "Exception";
-                                arguments.Add(ExceptionTag(exception));
-                            }
-                        }
-                        else
-                            errorTemplate = "Missing";
-                    }
-
-                    yield return new TagFile(file, errorTemplate, arguments.ToArray());
+                        errorTemplate = "Missing";
                 }
+
+                yield return new TagFile(file, errorTemplate, arguments.ToArray());
             }
         }
 
@@ -210,13 +217,13 @@ namespace MapsetChecks
                     frequencyScore *= mult;
                     prevTime = hitObject.time;
 
-                    if (highestFrequencyScore < frequencyScore)
-                    {
-                        if (frequencyScore >= scoreThreshold)
-                            aMostFrequentTimestamp = $"{Timestamp.Get(hitObject)} in {beatmap}";
+                    if (!(highestFrequencyScore < frequencyScore))
+                        continue;
+                    
+                    if (frequencyScore >= scoreThreshold)
+                        aMostFrequentTimestamp = $"{Timestamp.Get(hitObject)} in {beatmap}";
 
-                        highestFrequencyScore = frequencyScore;
-                    }
+                    highestFrequencyScore = frequencyScore;
                 }
             }
         }
@@ -229,12 +236,12 @@ namespace MapsetChecks
             Beatmap mapMostCommonlyUsedIn = null;
             foreach (Beatmap beatmap in aBeatmapSet.beatmaps)
             {
-                if (IsHitSoundCommonlyUsed(beatmap, aUseData[beatmap], commonUsageThreshold) &&
-                    mostUses < aUseData[beatmap])
-                {
-                    mapMostCommonlyUsedIn = beatmap;
-                    mostUses = aUseData[beatmap];
-                }
+                if (!IsHitSoundCommonlyUsed(beatmap, aUseData[beatmap], commonUsageThreshold) || !(mostUses < aUseData[beatmap]))
+                    // Not commonly used here, so skip.
+                    continue;
+                
+                mapMostCommonlyUsedIn = beatmap;
+                mostUses = aUseData[beatmap];
             }
 
             return mapMostCommonlyUsedIn;

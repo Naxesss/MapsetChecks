@@ -75,10 +75,10 @@ namespace MapsetChecks.Checks.AllModes.General.Files
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            for (int i = 0; i < beatmapSet.songFilePaths.Count; ++i)
+            foreach (var songFilePath in beatmapSet.songFilePaths)
             {
-                string filePath = beatmapSet.songFilePaths[i].Substring(beatmapSet.songPath.Length + 1);
-                string fileNameWithExtension = filePath.Split(new char[] { '/', '\\' }).Last().ToLower();
+                string filePath = songFilePath[(beatmapSet.songPath.Length + 1)..];
+                string fileNameWithExtension = filePath.Split(new[] { '/', '\\' }).Last().ToLower();
 
                 if (beatmapSet.IsFileUsed(filePath) || fileNameWithExtension == "thumbs.db")
                     continue;

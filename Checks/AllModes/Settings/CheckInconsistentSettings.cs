@@ -225,14 +225,14 @@ namespace MapsetChecks.Checks.AllModes.Settings
                                                     BeatmapSet            beatmapSet,
                                                     InconsistencyTemplate inconsistency)
         {
-            if (inconsistency.Condition == null || inconsistency.Condition(beatmap, otherBeatmap, beatmapSet))
-            {
-                string value = inconsistency.Value(beatmap).ToString();
-                string otherValue = inconsistency.Value(otherBeatmap).ToString();
-                if (value != otherValue)
-                    yield return new Issue(GetTemplate(inconsistency.template), beatmap,
-                        inconsistency.name, value, otherBeatmap, otherValue);
-            }
+            if (inconsistency.condition != null && !inconsistency.condition(beatmap, otherBeatmap, beatmapSet))
+                yield break;
+            
+            string value = inconsistency.value(beatmap).ToString();
+            string otherValue = inconsistency.value(otherBeatmap).ToString();
+            if (value != otherValue)
+                yield return new Issue(GetTemplate(inconsistency.template), beatmap,
+                    inconsistency.name, value, otherBeatmap, otherValue);
         }
     }
 }

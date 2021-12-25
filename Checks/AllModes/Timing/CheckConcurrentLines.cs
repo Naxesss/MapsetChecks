@@ -73,9 +73,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
 
                 if (beatmap.timingLines[i - 1].uninherited == beatmap.timingLines[i].uninherited)
                 {
-                    string inheritance =
-                        beatmap.timingLines[i].uninherited ?
-                            "uninherited" : "inherited";
+                    string inheritance = beatmap.timingLines[i].uninherited ? "uninherited" : "inherited";
 
                     yield return new Issue(GetTemplate("Concurrent"), beatmap,
                         Timestamp.Get(beatmap.timingLines[i].offset), inheritance);

@@ -61,9 +61,9 @@ namespace MapsetChecks.Checks.AllModes.Spread
         
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            double hardThreshold   = (3 * 60 + 30) * 1000;
-            double insaneThreshold = (4 * 60 + 15) * 1000;
-            double expertThreshold = (5 * 60) * 1000;
+            const double hardThreshold = (3 * 60 + 30) * 1000;
+            const double insaneThreshold = (4 * 60 + 15) * 1000;
+            const double expertThreshold = 5 * 60 * 1000;
             
             var lowestBeatmap = beatmapSet.beatmaps.First();
 

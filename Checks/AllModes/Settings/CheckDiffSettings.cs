@@ -117,15 +117,14 @@ namespace MapsetChecks.Checks.AllModes.Settings
                 if (type == "Circle Size" && beatmap.generalSettings.mode == Beatmap.Mode.Mania)
                     return new Issue(GetTemplate("CS Mania"), beatmap,
                         $"{setting:0.####}", minSetting, maxSetting);
-                else
-                    return new Issue(GetTemplate("Other"), beatmap,
-                        $"{setting:0.####}", type);
-            }
-            else if (setting - (float)Math.Floor(setting * 10) / 10 > 0)
-            {
-                return new Issue(GetTemplate("Decimals"), beatmap,
+                
+                return new Issue(GetTemplate("Other"), beatmap,
                     $"{setting:0.####}", type);
             }
+
+            if (setting - (float)Math.Floor(setting * 10) / 10 > 0)
+                return new Issue(GetTemplate("Decimals"), beatmap,
+                    $"{setting:0.####}", type);
 
             return null;
         }

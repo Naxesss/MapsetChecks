@@ -93,16 +93,15 @@ namespace MapsetChecks.Checks.Standard.Compose
 
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            List<ObservedDistance> observedDistances = new List<ObservedDistance>();
+            var observedDistances = new List<ObservedDistance>();
 
-            double ratioProblemThreshold = 15.0;
-            double ratioWarningThreshold = 4.0;
-            double ratioMinorThreshold   = 2.0;
+            const double ratioProblemThreshold = 15.0;
+            const double ratioWarningThreshold = 4.0;
+            const double ratioMinorThreshold = 2.0;
 
-            double snapLeniencyMs = 5;
+            const double snapLeniencyMs = 5;
 
             double deltaTime;
-            double distance;
 
             foreach (var hitObject in beatmap.hitObjects)
             {
@@ -117,12 +116,11 @@ namespace MapsetChecks.Checks.Standard.Compose
                 if (deltaTime > 180)
                     continue;
 
-                distance = nextObject.GetPrevDistance();
-
+                var distance = nextObject.GetPrevDistance();
                 if (distance < 20)
                     distance = 20;
 
-                List<ObservedDistance> sameSnappedDistances =
+                var sameSnappedDistances =
                     observedDistances
                         .FindAll(observedDistance =>
                             deltaTime <= observedDistance.deltaTime + snapLeniencyMs &&
@@ -153,7 +151,7 @@ namespace MapsetChecks.Checks.Standard.Compose
                     // Account for slider follow circle leniency.
                     distance -= Math.Min(beatmap.difficultySettings.GetCircleRadius() * 3, distance);
 
-                double actualExpectedRatio = (distance / deltaTime) / (expectedDistance / expectedDeltaTime);
+                double actualExpectedRatio = distance / deltaTime / (expectedDistance / expectedDeltaTime);
 
                 if (actualExpectedRatio <= ratioMinorThreshold)
                     continue;

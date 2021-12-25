@@ -87,40 +87,32 @@ namespace MapsetChecks.Checks.Standard.Spread
 
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            HitObject nextObject;
-            
             double deltaTime;
             
-            List<ObservedDistance> observedDistances = new List<ObservedDistance>();
+            var observedDistances = new List<ObservedDistance>();
             ObservedDistance? observedIssue = null;
 
-            double distanceExpected;
-            double distance;
+            const double leniencyPercent = 0.15;
+            const double leniencyAbsolute = 10;
 
-            double mleniencyPercent = 0.15;
-            double leniencyAbsolute = 10;
+            const double snapLeniencyPercent = 0.1;
 
-            double snapLeniencyPercent = 0.1;
-
-            double ratioLeniencyPercent = 0.2;
-            double ratioLeniencyAbsolute = 0.1;
+            const double ratioLeniencyPercent = 0.2;
+            const double ratioLeniencyAbsolute = 0.1;
 
             foreach (var hitObject in beatmap.hitObjects)
             {
-                nextObject = hitObject.Next();
-
+                var nextObject = hitObject.Next();
                 // Ignore spinners, since they have no clear start or end.
                 if (hitObject is Spinner || nextObject is Spinner || nextObject == null)
                     continue;
                 
                 deltaTime = nextObject.GetPrevDeltaTime();
-
                 // Ignore objects 2 beats or more apart (assuming 200 bpm), since they don't really hang together context-wise.
                 if (deltaTime > 600)
                     continue;
 
-                distance = nextObject.GetPrevDistance();
-
+                var distance = nextObject.GetPrevDistance();
                 // Ignore stacks and half-stacks, since these are relatively normal.
                 if (distance < 8)
                     continue;
@@ -132,8 +124,9 @@ namespace MapsetChecks.Checks.Standard.Spread
                 int closeDistanceCount =
                     observedDistances.Count(observedDistance =>
                         observedDistance.hitObject.time > hitObject.time - 4000);
-                
-                double avrRatio = closeDistanceCount > 0 ? closeDistanceSum / closeDistanceCount : -1;
+
+                bool hasCloseDistances = closeDistanceCount > 0;
+                double avrRatio = hasCloseDistances ? closeDistanceSum / closeDistanceCount : -1;
 
                 // Checks whether a similar snapping has already been observed and uses that as
                 // reference for determining if the current is too different.
@@ -146,9 +139,9 @@ namespace MapsetChecks.Checks.Standard.Spread
 
                 if (index != -1)
                 {
-                    distanceExpected = observedDistances[index].distance;
+                    var distanceExpected = observedDistances[index].distance;
 
-                    if ((Math.Abs(distanceExpected - distance) - leniencyAbsolute) / distance > mleniencyPercent)
+                    if ((Math.Abs(distanceExpected - distance) - leniencyAbsolute) / distance > leniencyPercent)
                     {
                         // Prevents issues from duplicating due to error being different compared to both before and after.
                         // (e.g. if 1 -> 2 is too large, and 2 -> 3 is only too small because of 1 -> 2 being an issue, we
@@ -156,7 +149,7 @@ namespace MapsetChecks.Checks.Standard.Spread
                         double distanceExpectedAlternate = observedIssue?.distance ?? 0;
 
                         if (observedIssue != null
-                            && Math.Abs(distanceExpectedAlternate - distance) / distance <= mleniencyPercent)
+                            && Math.Abs(distanceExpectedAlternate - distance) / distance <= leniencyPercent)
                         {
                             observedDistances[index] = new ObservedDistance(deltaTime, distance, hitObject);
                             observedIssue = null;
@@ -182,7 +175,7 @@ namespace MapsetChecks.Checks.Standard.Spread
                 }
                 else
                 {
-                    if (avrRatio != -1 && (
+                    if (hasCloseDistances && (
                         distance / deltaTime - ratioLeniencyAbsolute > avrRatio * (1 + ratioLeniencyPercent) ||
                         distance / deltaTime + ratioLeniencyAbsolute < avrRatio * (1 - ratioLeniencyPercent)))
                     {

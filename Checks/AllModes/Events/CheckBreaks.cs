@@ -61,18 +61,19 @@ namespace MapsetChecks.Checks.AllModes.Events
 
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            foreach (Break @break in beatmap.breaks)
+            // Breaks are sometimes 1 ms off.
+            const int leniency = 1;
+            const double minStart = 200;
+            const double minDuration = 650;
+            
+            foreach (var @break in beatmap.breaks)
             {
-                // sometimes breaks are 1 ms off for some reason
-                int leniency = 1;
-                
-                double minStart = 200;
                 double minEnd = beatmap.difficultySettings.GetFadeInTime();
 
                 double diffStart = 0;
                 double diffEnd = 0;
 
-                // checking from start of break forwards and end of break backwards ensures nothing is in between
+                // Checking from start of break forwards and end of break backwards ensures nothing is in between.
                 if (@break.time - beatmap.GetHitObject(@break.time)?.time < minStart)
                     diffStart = minStart - (@break.time - beatmap.GetHitObject(@break.time).time);
 
@@ -82,21 +83,21 @@ namespace MapsetChecks.Checks.AllModes.Events
                 if (diffStart > leniency || diffEnd > leniency)
                 {
                     string issueMessage = "";
-
+                    
+                    if (diffStart > leniency)
+                        issueMessage += $"starts {diffStart:0.##} ms too early";
                     if (diffStart > leniency && diffEnd > leniency)
-                        issueMessage = $"starts {diffStart:0.##} ms too early and ends {diffEnd:0.##} ms too late";
-                    else if (diffStart > leniency)
-                        issueMessage = $"starts {diffStart:0.##} ms too early";
-                    else if (diffEnd > leniency)
-                        issueMessage = $"ends {diffEnd:0.##} ms too late";
+                        issueMessage += " and ";
+                    if (diffEnd > leniency)
+                        issueMessage += $"ends {diffEnd:0.##} ms too late";
                     
                     yield return new Issue(GetTemplate("Too early or late"), beatmap,
                         Timestamp.Get(@break.time), Timestamp.Get(@break.endTime),
                         issueMessage);
                 }
 
-                // although this currently affects nothing, it may affect things in the future
-                if (@break.endTime - @break.time < 650)
+                // Although this currently affects nothing, it may affect things in the future.
+                if (@break.endTime - @break.time < minDuration)
                     yield return new Issue(GetTemplate("Too short"), beatmap,
                         Timestamp.Get(@break.time), Timestamp.Get(@break.endTime));
             }

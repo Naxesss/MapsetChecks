@@ -80,10 +80,10 @@ namespace MapsetChecks.Checks.AllModes.General.Files
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            for (int i = 0; i < beatmapSet.songFilePaths.Count; ++i)
+            foreach (var songFilePath in beatmapSet.songFilePaths)
             {
-                string filePath = beatmapSet.songFilePaths[i].Substring(beatmapSet.songPath.Length + 1);
-                string fileName = filePath.Split(new char[] { '/', '\\' }).Last();
+                string filePath = songFilePath[(beatmapSet.songPath.Length + 1)..];
+                string fileName = filePath.Split(new[] { '/', '\\' }).Last();
 
                 if(fileName.Length > 132)
                     yield return new Issue(GetTemplate("Too Long Name"), null,

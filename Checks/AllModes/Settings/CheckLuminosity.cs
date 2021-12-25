@@ -110,9 +110,9 @@ namespace MapsetChecks.Checks.AllModes.Settings
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
             // Luminosity thresholds, ~15 more lenient than the original 53 / 233
-            float luminosityMinRankable = 30;
-            float luminosityMinWarning = 43;
-            float luminosityMax = 250;
+            const float luminosityMinRankable = 30;
+            const float luminosityMinWarning = 43;
+            const float luminosityMax = 250;
             
             if (beatmap.colourSettings.sliderBorder != null)
             {

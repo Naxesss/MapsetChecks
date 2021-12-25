@@ -95,8 +95,7 @@ namespace MapsetChecks.Checks.AllModes.HitSounds
             
             void ApplyFeedbackUpdate(HitObject.HitSound hitSound, Beatmap.Sampleset sampleset, HitObject hitObject, double time)
             {
-                if (prevSample == null)
-                    prevSample = sampleset;
+                prevSample ??= sampleset;
 
                 if (hitSound > 0 ||
                     sampleset != prevSample ||
@@ -128,19 +127,8 @@ namespace MapsetChecks.Checks.AllModes.HitSounds
                             otherSpinner.endTime > prevTime &&
                             otherSpinner.endTime < hitObject.time);
                     
-                    double excludeStart =
-                        @break == null ?
-                            spinner == null ?
-                                -1 :
-                                spinner.time :
-                            @break.time;
-
-                    double excludeEnd =
-                        @break == null ?
-                            spinner == null ?
-                                -1 :
-                                spinner.endTime :
-                            @break.endTime;
+                    double excludeStart = @break?.time ?? (spinner?.time ?? -1);
+                    double excludeEnd = @break?.endTime ?? (spinner?.endTime ?? -1);
 
                     if (@break != null && spinner != null)
                     {
@@ -154,9 +142,9 @@ namespace MapsetChecks.Checks.AllModes.HitSounds
                     HitObject objectAfterExcl = beatmap.GetNextHitObject(excludeEnd);
 
                     double endTimeBeforeExcl =
-                        objectBeforeExcl is Spinner ? ((Spinner)objectBeforeExcl).endTime
-                        : objectBeforeExcl is Slider ? ((Slider)objectBeforeExcl).endTime
-                        : objectBeforeExcl.time;
+                        objectBeforeExcl is Spinner spinnerObject ? spinnerObject.endTime :
+                        objectBeforeExcl is Slider sliderObject ? sliderObject.endTime :
+                        objectBeforeExcl.time;
 
                     // Between the previous object's time and the end time before the exclusion,
                     // storyboarded hit sounds should be accounted for in mania, since they need to
@@ -176,22 +164,30 @@ namespace MapsetChecks.Checks.AllModes.HitSounds
                 foreach (Issue storyIssue in GetStoryHsIssuesFromUpdates(beatmap, prevTime, hitObject.time, ref objectsPassed, ref prevTime))
                     issues.Add(storyIssue);
 
-                if (hitObject is Circle)
-                    ApplyFeedbackUpdate(hitObject.hitSound, hitObject.GetSampleset(), hitObject, hitObject.time);
-
-                if (hitObject is Slider slider)
+                switch (hitObject)
                 {
-                    ApplyFeedbackUpdate(slider.startHitSound, slider.GetStartSampleset(), slider, slider.time);
+                    case Circle _:
+                        ApplyFeedbackUpdate(hitObject.hitSound, hitObject.GetSampleset(), hitObject, hitObject.time);
+                        break;
+                    case Slider slider:
+                    {
+                        ApplyFeedbackUpdate(slider.startHitSound, slider.GetStartSampleset(), slider, slider.time);
 
-                    if (slider.reverseHitSounds.Any())
-                        for (int reverseIndex = 0; reverseIndex < slider.edgeAmount - 1; ++reverseIndex)
-                            ApplyFeedbackUpdate(
-                                slider.reverseHitSounds.ElementAt(reverseIndex),
-                                slider.GetReverseSampleset(reverseIndex),
-                                slider,
-                                Math.Floor(slider.time + slider.GetCurveDuration() * (reverseIndex + 1)));
+                        if (slider.reverseHitSounds.Any())
+                        {
+                            for (int reverseIndex = 0; reverseIndex < slider.edgeAmount - 1; ++reverseIndex)
+                            {
+                                ApplyFeedbackUpdate(
+                                    slider.reverseHitSounds.ElementAt(reverseIndex),
+                                    slider.GetReverseSampleset(reverseIndex),
+                                    slider,
+                                    Math.Floor(slider.time + slider.GetCurveDuration() * (reverseIndex + 1)));
+                            }
+                        }
 
-                    ApplyFeedbackUpdate(slider.endHitSound, slider.GetEndSampleset(), slider, slider.endTime);
+                        ApplyFeedbackUpdate(slider.endHitSound, slider.GetEndSampleset(), slider, slider.endTime);
+                        break;
+                    }
                 }
             }
             
@@ -213,31 +209,31 @@ namespace MapsetChecks.Checks.AllModes.HitSounds
             objectsPassed = 0;
             previousTime = currentTime;
 
-            double timeRatio = timeDifference;
-            double objectRatio = objectDifference * 200;
+            // ReSharper disable once InlineTemporaryVariable (More clear what we consider our scores this way.)
+            double timeScore = timeDifference;
+            double objectScore = objectDifference * 200;
 
             // Thresholds
-            int warningTotal    = 10000;
-            int warningTime     = 8 * 1500;     // 12 seconds (8 measures of 160 BPM, usually makes up a whole section in the song)
-            int warningObject   = 2 * 200;      // 2 objects (difficulty invariant, so needs to work for easy diffs too)
+            const int warningTotal = 10000;
+            const int warningTime = 8 * 1500; // 12 seconds (8 measures of 160 BPM, usually makes up a whole section in the song)
+            const int warningObject = 2 * 200; // 2 objects (difficulty invariant, so needs to work for easy diffs too)
 
-            int problemTotal     = 30000;
-            int problemTime      = 24 * 1500;    // 36 seconds (24 measures of 160 BPM, usually makes up multiple sections in the song)
-            int problemObject    = 8 * 200;      // 8 objects
+            const int problemTotal = 30000;
+            const int problemTime = 24 * 1500; // 36 seconds (24 measures of 160 BPM, usually makes up multiple sections in the song)
+            const int problemObject = 8 * 200; // 8 objects
             
-            if (timeRatio + objectRatio > problemTotal &&    // at least this much of the combined
-                timeRatio > problemTime &&                   // at least this much of the individual
-                objectRatio > problemObject)
+            if (timeScore + objectScore > problemTotal &&    // at least this much of the combined
+                timeScore > problemTime &&                   // at least this much of the individual
+                objectScore > problemObject)
             {
                 return new Issue(GetTemplate("Problem"), beatmap,
                     Timestamp.Get(currentTime - timeDifference), Timestamp.Get(currentTime),
                     $"{timeDifference / 1000:0.##}");
             }
 
-            else if (
-                timeRatio + objectRatio > warningTotal &&
-                timeRatio > warningTime &&
-                objectRatio > warningObject)
+            if (timeScore + objectScore > warningTotal &&
+                timeScore > warningTime &&
+                objectScore > warningObject)
             {
                 return new Issue(GetTemplate("Warning"), beatmap,
                     Timestamp.Get(currentTime - timeDifference), Timestamp.Get(currentTime),
@@ -250,24 +246,25 @@ namespace MapsetChecks.Checks.AllModes.HitSounds
         /// <summary> Returns issues for every storyboarded hit sound where too much time and/or too many objects were passed since last update. </summary>
         private List<Issue> GetStoryHsIssuesFromUpdates(Beatmap beatmap, double startTime, double endTime, ref int objectsPassed, ref double prevTime)
         {
-            List<Issue> issues = new List<Issue>();
-            if (beatmap.generalSettings.mode == Beatmap.Mode.Mania)
+            var issues = new List<Issue>();
+            if (beatmap.generalSettings.mode != Beatmap.Mode.Mania)
+                return issues;
+            
+            while (true)
             {
-                while (true)
-                {
-                    Sample storyHitSound = beatmap.samples.FirstOrDefault(
-                        aHitsound => aHitsound.time > startTime && aHitsound.time < endTime);
+                var storyHitSound = beatmap.samples.FirstOrDefault(
+                    aHitsound => aHitsound.time > startTime && aHitsound.time < endTime);
 
-                    if (storyHitSound == null)
-                        break;
+                if (storyHitSound == null)
+                    break;
 
-                    Issue maniaIssue = GetIssueFromUpdate(storyHitSound.time, ref objectsPassed, ref prevTime, beatmap);
-                    if (maniaIssue != null)
-                        issues.Add(maniaIssue);
+                Issue maniaIssue = GetIssueFromUpdate(storyHitSound.time, ref objectsPassed, ref prevTime, beatmap);
+                if (maniaIssue != null)
+                    issues.Add(maniaIssue);
 
-                    startTime = prevTime;
-                }
+                startTime = prevTime;
             }
+            
             return issues;
         }
     }

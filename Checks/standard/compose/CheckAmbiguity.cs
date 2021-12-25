@@ -125,14 +125,14 @@ namespace MapsetChecks.Checks.Standard.Compose
                     if (totalDistance - curDistance > 60)
                         tailAnchorDistance = Vector2.Distance(anchorPosition, tailPosition);
 
-                    if (headAnchorDistance != null && headAnchorDistance <= 5)
+                    if (headAnchorDistance <= 5)
                     {
                         yield return new Issue(GetTemplate("Anchor"), beatmap,
                             Timestamp.Get(hitObject), "Head");
                         break;
                     }
 
-                    if (tailAnchorDistance != null && tailAnchorDistance <= 5)
+                    if (tailAnchorDistance <= 5)
                     {
                         yield return new Issue(GetTemplate("Anchor"), beatmap,
                             Timestamp.Get(hitObject), "Tail");

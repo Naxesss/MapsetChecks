@@ -69,8 +69,8 @@ namespace MapsetChecks.Checks.Standard.Spread
 
         public override IEnumerable<Issue> GetIssues(Beatmap beatmap)
         {
-            double problemThreshold = 60000 / 240d;
-            double warningThreshold  = 60000 / 180d;
+            const double problemThreshold = 60000 / 240d;
+            const double warningThreshold = 60000 / 180d;
 
             foreach (var slider in beatmap.hitObjects.OfType<Slider>())
             {
