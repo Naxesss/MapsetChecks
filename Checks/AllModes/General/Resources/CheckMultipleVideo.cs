@@ -113,7 +113,7 @@ namespace MapsetChecks.Checks.AllModes.General.Resources
                 yield return issue;
         }
 
-        private IEnumerable<Issue> GetCrossModeIssues(List<ModeVideoPair> modeVideoPairs)
+        private IEnumerable<Issue> GetCrossModeIssues(IReadOnlyList<ModeVideoPair> modeVideoPairs)
         {
             var inconsistentModes = new List<(Beatmap.Mode, Beatmap.Mode)>();
             for (int i = 0; i < modeVideoPairs.Count - 1; ++i)
