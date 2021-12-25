@@ -88,7 +88,7 @@ namespace MapsetChecks.Checks.AllModes.General.Resources
                 // same time as *any* .osu video file (either in front of or behind the other).
                 string osbVideoPath = beatmapSet.osb?.videos.FirstOrDefault()?.path;
                 if (osbVideoPath != null && !videoNames.Contains(osbVideoPath))
-                    videoNames.Append(osbVideoPath);
+                    videoNames.Add(osbVideoPath);
 
                 foreach (string videoName in videoNames)
                 {
