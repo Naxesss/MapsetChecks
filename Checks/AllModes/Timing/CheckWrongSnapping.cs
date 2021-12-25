@@ -9,6 +9,7 @@ using MapsetParser.statics;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
+using MathNet.Numerics;
 
 namespace MapsetChecks.Checks.AllModes.Timing
 {
@@ -101,50 +102,68 @@ namespace MapsetChecks.Checks.AllModes.Timing
         private List<Tuple<int, string>> percentWarningStamps;
         private List<Tuple<int, string>> percentMinorStamps;
 
-        private ConcurrentBag<Tuple<double, double, Beatmap>> inconsistentPlaces;
+        private readonly struct Inconsistency
+        {
+            public readonly double inconsistentEdgeTime;
+            public readonly double respectiveEdgeTime;
+            public readonly Beatmap respectiveBeatmap;
+            
+            public Inconsistency(double inconsistentEdgeTime, double respectiveEdgeTime, Beatmap respectiveBeatmap)
+            {
+                this.inconsistentEdgeTime = inconsistentEdgeTime;
+                this.respectiveEdgeTime = respectiveEdgeTime;
+                this.respectiveBeatmap = respectiveBeatmap;
+            }
+        }
+
+        private ConcurrentBag<Inconsistency> inconsistencies;
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            // uses a non-isolated approach in order to compare for inconsistent snappings between beatmaps in a set
-            foreach (Beatmap beatmap in beatmapSet.beatmaps)
+            foreach (var beatmap in beatmapSet.beatmaps)
             {
-                inconsistentPlaces = new ConcurrentBag<Tuple<double, double, Beatmap>>();
+                inconsistencies = new ConcurrentBag<Inconsistency>();
 
-                IEnumerable<Beatmap> otherBeatmaps =
+                // Essentially if our `otherBeatmaps` simplify rhythms from our `beatmap`, then that's an issue.
+                // So the reason `otherBeatmaps` is all higher difficulties is because lower difficulties are expected to simplify rhythms.
+                var otherBeatmaps =
                     beatmapSet.beatmaps.Where(otherBeatmap =>
                         otherBeatmap.starRating > beatmap.starRating &&
                         otherBeatmap.generalSettings.mode == beatmap.generalSettings.mode);
 
-                Parallel.ForEach(otherBeatmaps, otherBeatmap => PopulateInconsistentPlaces(beatmap, otherBeatmap));
+                Parallel.ForEach(otherBeatmaps, otherBeatmap => PopulateInconsistencies(beatmap, otherBeatmap));
 
-                foreach (double inconsistentTime in inconsistentPlaces.Select(tuple => tuple.Item1).Distinct())
+                foreach (double inconsistentEdgeTime in inconsistencies.Select(inconsistency => inconsistency.inconsistentEdgeTime).Distinct())
                 {
-                    Beatmap otherBeatmap =
-                        inconsistentPlaces
-                            .Where(tuple => tuple.Item1 == inconsistentTime)
-                            .Select(tuple => tuple.Item3).First();
+                    Beatmap respectiveBeatmap =
+                        inconsistencies
+                            .Where(inconsistency => inconsistency.inconsistentEdgeTime.AlmostEqual(inconsistentEdgeTime))
+                            .Select(inconsistency => inconsistency.respectiveBeatmap).First();
 
-                    double stampTime =
-                        inconsistentPlaces
-                            .Where(tuple => tuple.Item1 == inconsistentTime)
-                            .Select(tuple => tuple.Item2).FirstOrDefault();
+                    double respectiveEdgeTime =
+                        inconsistencies
+                            .Where(inconsistency => inconsistency.inconsistentEdgeTime.AlmostEqual(inconsistentEdgeTime))
+                            .Select(inconsistency => inconsistency.respectiveEdgeTime).FirstOrDefault();
 
-                    if (beatmap.GetLowestDivisor(stampTime) == 0 || beatmap.GetLowestDivisor(inconsistentTime) == 0)
+                    if (beatmap.GetLowestDivisor(respectiveEdgeTime) == 0 ||
+                        beatmap.GetLowestDivisor(inconsistentEdgeTime) == 0)
+                    {
                         continue;
+                    }
 
                     yield return new Issue(GetTemplate("Snap Consistency"), beatmap,
-                        Timestamp.Get(stampTime), beatmap.GetLowestDivisor(stampTime),
-                        Timestamp.Get(inconsistentTime), beatmap.GetLowestDivisor(inconsistentTime),
-                        otherBeatmap);
+                        Timestamp.Get(respectiveEdgeTime), beatmap.GetLowestDivisor(respectiveEdgeTime),
+                        Timestamp.Get(inconsistentEdgeTime), beatmap.GetLowestDivisor(inconsistentEdgeTime),
+                        respectiveBeatmap);
                 }
 
                 PrepareRareDivisors(beatmap);
                 PopulateRareDivisors(beatmap);
 
-                foreach (Issue issue in GetDivisorIssues(beatmap, countWarningStamps, "Snap Count")) yield return issue;
-                foreach (Issue issue in GetDivisorIssues(beatmap, percentWarningStamps, "Snap Percent")) yield return issue;
-                foreach (Issue issue in GetDivisorIssues(beatmap, countMinorStamps, "Minor Snap Count")) yield return issue;
-                foreach (Issue issue in GetDivisorIssues(beatmap, percentMinorStamps, "Minor Snap Percent")) yield return issue;
+                foreach (var issue in GetDivisorIssues(beatmap, countWarningStamps, "Snap Count")) yield return issue;
+                foreach (var issue in GetDivisorIssues(beatmap, percentWarningStamps, "Snap Percent")) yield return issue;
+                foreach (var issue in GetDivisorIssues(beatmap, countMinorStamps, "Minor Snap Count")) yield return issue;
+                foreach (var issue in GetDivisorIssues(beatmap, percentMinorStamps, "Minor Snap Percent")) yield return issue;
             }
         }
 
@@ -163,23 +182,22 @@ namespace MapsetChecks.Checks.AllModes.Timing
             percentWarningDivisors = new List<int>();
             percentMinorDivisors = new List<int>();
 
-            var edgeDivisors =
-                beatmap.hitObjects.SelectMany(hitObject =>
-                    hitObject.GetEdgeTimes().Select(time =>
-                        beatmap.GetLowestDivisor(time)
+            var divisorGroups =
+                beatmap.hitObjects
+                    .SelectMany(hitObject => hitObject.GetEdgeTimes().Select(beatmap.GetLowestDivisor))
+                    .Where(divisor => divisor != 0)
+                    .GroupBy(divisor => divisor)
+                    .Select(group => new
+                        {
+                            divisor = group.Key,
+                            count = group.Count()
+                        }
                     )
-                )
-                .Where(divisor => divisor != 0).GroupBy(divisor => divisor).Select(group =>
-                    new
-                    {
-                        divisor = group.Key,
-                        count = group.Count()
-                    }
-                );
+                    .ToList();
 
-            int divisorsTotal = edgeDivisors.Sum(divisorGroup => divisorGroup.count);
+            int divisorsTotal = divisorGroups.Sum(divisorGroup => divisorGroup.count);
 
-            foreach (var divisorGroup in edgeDivisors)
+            foreach (var divisorGroup in divisorGroups)
             {
                 double precentage = divisorGroup.count / (double)divisorsTotal;
 
@@ -199,7 +217,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
             percentWarningStamps = new List<Tuple<int, string>>();
             percentMinorStamps = new List<Tuple<int, string>>();
 
-            foreach (HitObject hitObject in beatmap.hitObjects)
+            foreach (var hitObject in beatmap.hitObjects)
                 foreach (double edgeTime in hitObject.GetEdgeTimes())
                     TryAddDivisorIssue(edgeTime, beatmap);
 
@@ -211,7 +229,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
 
         /// <summary> Supplied with the divisor issue list, this function basically just turns them into readable issues
         /// which we can then return in GetIssues. </summary>
-        private IEnumerable<Issue> GetDivisorIssues(Beatmap beatmap, List<Tuple<int, string>> divisorTupleList, string templateKey)
+        private IEnumerable<Issue> GetDivisorIssues(Beatmap beatmap, IReadOnlyCollection<Tuple<int, string>> divisorTupleList, string templateKey)
         {
             if (divisorTupleList.Count == 0)
                 yield break;
@@ -221,7 +239,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
                 IEnumerable<string> stamps = divisorTupleList.Where(stamp => stamp.Item1 == divisor).Select(stamp => stamp.Item2);
 
                 yield return new Issue(GetTemplate(templateKey), beatmap,
-                    String.Join(" ", stamps), divisor);
+                    string.Join(" ", stamps), divisor);
             }
         }
 
@@ -248,28 +266,25 @@ namespace MapsetChecks.Checks.AllModes.Timing
 
         /// <summary> Populates the inconsistent places list, which keeps track of any
         /// time values in either beatmap that has no corresponding value in the other. </summary>
-        private void PopulateInconsistentPlaces(Beatmap beatmap, Beatmap otherBeatmap)
+        private void PopulateInconsistencies(Beatmap beatmap, Beatmap otherBeatmap)
         {
-            List<double> differenceTimes = GetDifferenceTimes(beatmap, otherBeatmap).ToList();
-            List<double> otherDifferenceTimes = GetDifferenceTimes(otherBeatmap, beatmap).ToList();
-
-            foreach (double time in differenceTimes)
-                TryAddInconsistentPlace(otherDifferenceTimes, otherBeatmap, time);
+            foreach (var inconsistency in GetInconsistencies(beatmap, otherBeatmap))
+                inconsistencies.Add(inconsistency);
         }
 
         /// <summary> Returns any time value from the first beatmap that has no corresponding
         /// object within 3 ms in the other beatmap. </summary>
-        private IEnumerable<double> GetDifferenceTimes(Beatmap beatmap, Beatmap otherBeatmap)
+        private static IEnumerable<double> GetMissingEdgeTimes(Beatmap beatmap, Beatmap otherBeatmap)
         {
             // TODO: Surely, this can be optimized. May want to swap the `otherBeatmap.hitObjects` loop with
             //       the `hitObject.GetEdgeTimes()` one, for example, in order to improve the time complexity.
-            foreach (HitObject hitObject in beatmap.hitObjects)
+            foreach (var hitObject in beatmap.hitObjects)
             {
                 foreach (double edgeTime in hitObject.GetEdgeTimes())
                 {
                     bool isOverlapping = false;
 
-                    foreach (HitObject otherHitObject in otherBeatmap.hitObjects)
+                    foreach (var otherHitObject in otherBeatmap.hitObjects)
                         foreach (double otherEdgeTime in otherHitObject.GetEdgeTimes())
                             if (Math.Abs(edgeTime - otherEdgeTime) < 3)
                                 isOverlapping = true;
@@ -280,35 +295,34 @@ namespace MapsetChecks.Checks.AllModes.Timing
             }
         }
 
-        /// <summary> Adds any point in time where no object in the other beatmap is within 3 ms, but
-        /// is within the consistency range, depending on which divisor this point in time is in.<para/>
-        /// This usually means the mapper has interpreted the same sound(s) differently from the other beatmap,
-        /// so we add it as a potential inconsistency.</summary>
-        private void TryAddInconsistentPlace(List<double> differenceTimes, Beatmap otherBeatmap, double otherTime)
+        private IEnumerable<Inconsistency> GetInconsistencies(Beatmap beatmap, Beatmap otherBeatmap)
         {
-            List<double> inconsistencies = differenceTimes.Where(time =>
+            foreach (double missingEdgeTime in GetMissingEdgeTimes(beatmap, otherBeatmap))
             {
-                if (Math.Abs(time - otherTime) < 3)
-                    return false;
+                foreach (double otherMissingEdgeTime in GetMissingEdgeTimes(otherBeatmap, beatmap))
+                {
+                    var timeDifference = Math.Abs(missingEdgeTime - otherMissingEdgeTime);
+                    if (timeDifference <= 3)
+                        // If both maps somehow claim they have an object the other does not at the same time, we skip that case.
+                        continue;
+                    
+                    var line = otherBeatmap.GetTimingLine<UninheritedLine>(missingEdgeTime);
+                    double msPerBeat = line.msPerBeat;
+                    if (timeDifference >= msPerBeat)
+                        // Edges a beat apart or more should not be flagged as inconsistent, so skip those cases.
+                        continue;
 
-                UninheritedLine line = otherBeatmap.GetTimingLine<UninheritedLine>(time);
-                double msPerBeat = line.msPerBeat;
-
-                if (Math.Abs(time - otherTime) >= msPerBeat)
-                    return false;
-
-                double consistencyRange = GetConsistencyRange(otherBeatmap, time, msPerBeat, otherTime);
-                return
-                    time + consistencyRange > otherTime &&
-                    time - consistencyRange < otherTime;
-            }).ToList();
-
-            foreach (double inconsistency in inconsistencies)
-                if (!inconsistentPlaces.Any(place => place.Item1 == inconsistency))
-                    inconsistentPlaces.Add(new Tuple<double, double, Beatmap>(inconsistency, otherTime, otherBeatmap));
+                    double consistencyRange = GetConsistencyRange(otherBeatmap, missingEdgeTime, msPerBeat, otherMissingEdgeTime);
+                    if (missingEdgeTime + consistencyRange > otherMissingEdgeTime &&
+                        missingEdgeTime - consistencyRange < otherMissingEdgeTime)
+                    {
+                        yield return new Inconsistency(missingEdgeTime, otherMissingEdgeTime, otherBeatmap);
+                    }
+                }
+            }
         }
 
-        private readonly int[] divisors = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 16 };
+        private readonly int[] divisors = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 16 };
 
         /// <summary> Gets a time offset from a given divisor which may be confused with it. Larger for smaller divisors.
         /// So the offset for a 1/1 would be larger than for a 1/6, for example. If two times are supplied, the largest divisor is used. </summary>
@@ -318,16 +332,12 @@ namespace MapsetChecks.Checks.AllModes.Timing
 
             if (otherTime == null)
             {
-                int index =
-                    divisor == 0 ? -1 :
-                    Array.IndexOf(divisors, divisor) == -1 ? divisors.Length :
-                    Array.IndexOf(divisors, divisor);
+                int divisorIndex = Array.IndexOf(divisors, divisor);
+                int greaterDivisor =
+                    divisors.ElementAt(divisorIndex + 2 > divisors.Length - 1 ? divisors.Length - 1 : divisorIndex + 2);
+                const int unsnapMargin = 2;
 
-                // if the divisor is 0, that means the time we gave it was unsnapped
-                if (index == -1)
-                    return 2;
-
-                return msPerBeat / divisors.ElementAt(index + 2 > divisors.Length - 1 ? divisors.Length - 1 : index + 2) - 2;
+                return msPerBeat / greaterDivisor - unsnapMargin;
             }
 
             int higherDiffDivisor = Math.Max(otherBeatmap.GetLowestDivisor(otherTime.GetValueOrDefault()), 2);
@@ -337,8 +347,8 @@ namespace MapsetChecks.Checks.AllModes.Timing
             if (divisor < higherDiffDivisor || divisor % 3 != 0 && higherDiffDivisor % 3 == 0)
                 return Math.Max(GetConsistencyRange(otherBeatmap, time, msPerBeat),
                                 GetConsistencyRange(otherBeatmap, otherTime.GetValueOrDefault(), msPerBeat));
-            else
-                return 2;
+            
+            return 2;
         }
     }
 }
