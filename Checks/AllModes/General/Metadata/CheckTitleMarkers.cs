@@ -87,16 +87,16 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
         private class Marker
         {
             private Marker(string value) { Value = value; }
-            public string Value { get; private set; }
+            public string Value { get; }
 
-            public static Marker TV_SIZE           { get { return new Marker("(TV Size)"); } }
-            public static Marker GAME_VER          { get { return new Marker("(Game Ver.)"); } }
-            public static Marker SHORT_VER         { get { return new Marker("(Short Ver.)"); } }
-            public static Marker CUT_VER           { get { return new Marker("(Cut Ver.)"); } }
-            public static Marker SPED_UP_VER       { get { return new Marker("(Sped Up Ver.)"); } }
-            public static Marker NIGHTCORE_MIX     { get { return new Marker("(Nightcore Mix)"); } }
-            public static Marker SPED_UP_CUT_VER   { get { return new Marker("(Sped Up & Cut Ver.)"); } }
-            public static Marker NIGHTCORE_CUT_VER { get { return new Marker("(Nightcore & Cut Ver.)"); } }
+            public static Marker TV_SIZE => new Marker("(TV Size)");
+            public static Marker GAME_VER => new Marker("(Game Ver.)");
+            public static Marker SHORT_VER => new Marker("(Short Ver.)");
+            public static Marker CUT_VER => new Marker("(Cut Ver.)");
+            public static Marker SPED_UP_VER => new Marker("(Sped Up Ver.)");
+            public static Marker NIGHTCORE_MIX => new Marker("(Nightcore Mix)");
+            public static Marker SPED_UP_CUT_VER => new Marker("(Sped Up & Cut Ver.)");
+            public static Marker NIGHTCORE_CUT_VER => new Marker("(Nightcore & Cut Ver.)");
         }
 
         private readonly struct MarkerFormat
