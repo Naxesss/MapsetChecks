@@ -199,7 +199,7 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
                 foreach (var titleType in TitleTypes)
                     if (titleType.Get(beatmap).Contains(pair.original.Value))
                         yield return new Issue(GetTemplate("Warning Nightcore"), null,
-                            nightcoreTag, pair.original.Value, pair.substitution.Value, titleType.type);
+                            nightcoreTag, pair.substitution.Value, pair.original.Value, titleType.type);
         }
     }
 }
