@@ -114,31 +114,31 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
             foreach (string audioPath in audioUsage.Keys)
             {
                 double maxFraction = 0;
-                bool anyHasVideoOrSB = false;
+                bool anyHasVideoOrSb = false;
                 foreach (AudioUsage usage in audioUsage[audioPath])
                 {
                     if (usage.fraction > maxFraction) maxFraction = usage.fraction;
-                    if (usage.hasVideoOrSB)           anyHasVideoOrSB = true;
+                    if (usage.hasVideoOrSb)           anyHasVideoOrSb = true;
                 }
 
                 if (maxFraction > 0.8d)
                     continue;
 
-                string templateKey = (anyHasVideoOrSB ? "With" : "Without") + " Video/Storyboard";
+                string templateKey = (anyHasVideoOrSb ? "With" : "Without") + " Video/Storyboard";
 
                 yield return new Issue(GetTemplate(templateKey), null, $"{(1 - maxFraction) * 100:0.##}");
             }
         }
-        
-        public struct AudioUsage
-        {
-            public double fraction;
-            public bool hasVideoOrSB;
 
-            public AudioUsage(double fraction, bool hasVideoOrSB = false)
+        private readonly struct AudioUsage
+        {
+            public readonly double fraction;
+            public readonly bool hasVideoOrSb;
+
+            public AudioUsage(double fraction, bool hasVideoOrSb = false)
             {
                 this.fraction = fraction;
-                this.hasVideoOrSB = hasVideoOrSB;
+                this.hasVideoOrSb = hasVideoOrSb;
             }
         }
     }

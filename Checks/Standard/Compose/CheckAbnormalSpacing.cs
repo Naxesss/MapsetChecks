@@ -77,11 +77,11 @@ namespace MapsetChecks.Checks.Standard.Compose
             };
         }
 
-        private struct ObservedDistance
+        private readonly struct ObservedDistance
         {
-            public double deltaTime;
-            public double distance;
-            public HitObject hitObject;
+            public readonly double deltaTime;
+            public readonly double distance;
+            public readonly HitObject hitObject;
 
             public ObservedDistance(double deltaTime, double distance, HitObject hitObject)
             {
@@ -174,7 +174,7 @@ namespace MapsetChecks.Checks.Standard.Compose
             }
         }
 
-        private double Decay(HitObject hitObject, ObservedDistance obvDist) =>
+        private static double Decay(HitObject hitObject, ObservedDistance obvDist) =>
             Math.Min(1 / (hitObject.time - obvDist.hitObject.time) * 4000, 1);
     }
 }

@@ -155,12 +155,12 @@ namespace MapsetChecks.Checks.AllModes.HitSounds
         /// <summary> Returns the volume that can be heard in-game, given the timing line or object
         /// code volume from the code. Volumes less than 5% are interpreted as 5%. </summary>
         /// <param name="volume"> The volume according to the object/timing line code, in percent (i.e. 20 is 20%). </param>
-        private float GetActualVolume(float volume) => volume < 5 ? 5 : volume;
+        private static float GetActualVolume(float volume) => volume < 5 ? 5 : volume;
 
         /// <summary> Gets the timing line in effect at the given time continuing at the index given.
         /// This is more performant than <see cref="Beatmap.GetTimingLine(double, bool)"/> due to not
         /// iterating from the beginning for each hit object. </summary>
-        private TimingLine GetTimingLine(Beatmap beatmap, ref int index, double time)
+        private static TimingLine GetTimingLine(Beatmap beatmap, ref int index, double time)
         {
             int length = beatmap.timingLines.Count;
             for (; index < length; ++index)

@@ -158,6 +158,6 @@ namespace MapsetChecks.Checks.Standard.Spread
 
         /// <summary> Scales the bpm in accordance to https://osu.ppy.sh/help/wiki/Ranking_Criteria/osu!/Scaling_BPM,
         /// where 180 bpm is 1, 120 bpm is 0.5, and 240 bpm is 2. </summary>
-        private double GetScaledTiming(double bpm) => Math.Pow(bpm, 2) / 14400 - bpm / 80 + 1;
+        private static double GetScaledTiming(double bpm) => Math.Pow(bpm, 2) / 14400 - bpm / 80 + 1;
     }
 }

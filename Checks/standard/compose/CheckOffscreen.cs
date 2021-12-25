@@ -193,7 +193,7 @@ namespace MapsetChecks.Checks.Standard.Compose
         }
 
         /// <summary> Returns how far offscreen an object is in pixels (in-game pixels, not resolution). </summary>
-        private float GetOffscreenBy(Vector2 point, Beatmap beatmap, float leniency = 0)
+        private static float GetOffscreenBy(Vector2 point, Beatmap beatmap, float leniency = 0)
         {
             float circleRadius = beatmap.difficultySettings.GetCircleRadius();
 

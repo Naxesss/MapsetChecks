@@ -58,10 +58,10 @@ namespace MapsetChecks.Checks.AllModes.General.Resources
             };
         }
 
-        private struct ModeVideoPair
+        private readonly struct ModeVideoPair
         {
-            public Beatmap.Mode mode;
-            public string videoName;
+            public readonly Beatmap.Mode mode;
+            public readonly string videoName;
 
             public ModeVideoPair(Beatmap.Mode mode, string videoName)
             {

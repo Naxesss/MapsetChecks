@@ -90,8 +90,8 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
                     fieldName, field, GetUnicodeCharacters(field));
         }
 
-        private bool   IsUnicode(char ch)               => ch > 127;
-        private bool   ContainsUnicode(string str)      => str.Any(IsUnicode);
-        private string GetUnicodeCharacters(string str) => String.Join("", str.Where(IsUnicode));
+        private static bool   IsUnicode(char ch)               => ch > 127;
+        private static bool   ContainsUnicode(string str)      => str.Any(IsUnicode);
+        private static string GetUnicodeCharacters(string str) => string.Join("", str.Where(IsUnicode));
     }
 }

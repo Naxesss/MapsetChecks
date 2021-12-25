@@ -64,8 +64,8 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
 
         private class Field
         {
-            public string name;
-            public string content;
+            public readonly string name;
+            public readonly string content;
 
             public Field(string name, string content)
             {
@@ -76,9 +76,9 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
 
         private class FieldIssue
         {
-            public Field field;
-            public string message;
-            public bool isProblem;
+            public readonly Field field;
+            public readonly string message;
+            public readonly bool isProblem;
 
             public FieldIssue(Field field, string message, bool isProblem)
             {

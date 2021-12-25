@@ -94,7 +94,7 @@ namespace MapsetChecks.Checks.AllModes.Settings
                 otherBeatmap.HasDifficultySpecificStoryboard() ||
                 beatmapSet.osb != null;
 
-        struct InconsistencyTemplate
+        private readonly struct InconsistencyTemplate
         {
             public readonly string template;
             public readonly string name;

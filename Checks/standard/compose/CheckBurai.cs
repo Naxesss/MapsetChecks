@@ -150,13 +150,13 @@ namespace MapsetChecks.Checks.Standard.Compose
         }
 
         /// <summary> Returns the smallest angle in radians. </summary>
-        private double WrapAngle(double radians, double scale = 1)
+        private static double WrapAngle(double radians, double scale = 1)
         {
             return radians > Math.PI * scale ? Math.PI * 2 * scale - radians : radians;
         }
 
         /// <summary> Returns the angle between two 2D vectors, a value between 0 and 2 PI. </summary>
-        private double GetAngle(Vector2 vector, Vector2 otherVector, double wrapScale = 1)
+        private static double GetAngle(Vector2 vector, Vector2 otherVector, double wrapScale = 1)
         {
             double radians =
                 WrapAngle(
@@ -169,7 +169,7 @@ namespace MapsetChecks.Checks.Standard.Compose
         }
 
         /// <summary> Returns the euclidean distance between two 2D vectors. </summary>
-        private double GetDistance(Vector2 vector, Vector2 otherVector)
+        private static double GetDistance(Vector2 vector, Vector2 otherVector)
         {
             return
                 Math.Sqrt(
@@ -178,7 +178,7 @@ namespace MapsetChecks.Checks.Standard.Compose
         }
 
         /// <summary> Returns the weighted score of burai scores, decaying by 90% for each lower number. </summary>
-        private double GetWeighedScore(List<double> buraiScores)
+        private static double GetWeighedScore(IEnumerable<double> buraiScores)
         {
             double score = 0;
 

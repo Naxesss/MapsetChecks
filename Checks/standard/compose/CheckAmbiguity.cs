@@ -144,10 +144,10 @@ namespace MapsetChecks.Checks.Standard.Compose
             }
         }
 
-        private bool CouldSliderBreak(Slider slider) =>
+        private static bool CouldSliderBreak(Slider slider) =>
             MaxDistanceFromHead(slider) - slider.beatmap.difficultySettings.GetCircleRadius() * 2 > 0;
 
-        private float MaxDistanceFromHead(Slider slider)
+        private static float MaxDistanceFromHead(Slider slider)
         {
             float maxDistance = 0;
             foreach (double tickTime in slider.GetSliderTickTimes())

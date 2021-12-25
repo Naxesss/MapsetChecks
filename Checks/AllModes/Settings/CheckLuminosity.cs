@@ -165,7 +165,7 @@ namespace MapsetChecks.Checks.AllModes.Settings
             }
         }
 
-        public float GetLuminosity(Vector3 colour)
+        private static float GetLuminosity(Vector3 colour)
         {
             // HSP colour model http://alienryderflex.com/hsp.html
             return

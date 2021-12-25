@@ -116,7 +116,7 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
             }
         }
 
-        public IEnumerable<Issue> GetIssue(BeatmapSet beatmapSet, string audioPath, bool isHitSound = false)
+        private IEnumerable<Issue> GetIssue(BeatmapSet beatmapSet, string audioPath, bool isHitSound = false)
         {
             // `Audio.GetBitrate` has a < 0.1 kbps error margin, so we should round this.
             double bitrate = Math.Round(AudioBASS.GetBitrate(audioPath));

@@ -98,7 +98,7 @@ namespace MapsetChecks.Checks.AllModes.Compose
             }
         }
 
-        public string ObjectsAsString(HitObject hitObject, HitObject otherHitObject)
+        private static string ObjectsAsString(HitObject hitObject, HitObject otherHitObject)
         {
             string type = hitObject.GetObjectType();
             string otherType = otherHitObject.GetObjectType();

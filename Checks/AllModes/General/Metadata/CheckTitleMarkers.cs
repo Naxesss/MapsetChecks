@@ -99,7 +99,7 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
             public static Marker NIGHTCORE_CUT_VER { get { return new Marker("(Nightcore & Cut Ver.)"); } }
         }
 
-        struct MarkerFormat
+        private readonly struct MarkerFormat
         {
             public readonly Marker marker;
             public readonly Regex incorrectFormatRegex;
@@ -111,7 +111,7 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
             }
         }
 
-        private static readonly List<MarkerFormat> MarkerFormats = new List<MarkerFormat>()
+        private static readonly List<MarkerFormat> MarkerFormats = new List<MarkerFormat>
         {
             new MarkerFormat(Marker.TV_SIZE,           new Regex(@"(?i)(tv (size|ver))")),
             new MarkerFormat(Marker.GAME_VER,          new Regex(@"(?i)(game (size|ver))")),
@@ -120,7 +120,7 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
             new MarkerFormat(Marker.SPED_UP_VER,       new Regex(@"(?i)(?<!& )(sped|speed) ?up ver")),
             new MarkerFormat(Marker.NIGHTCORE_MIX,     new Regex(@"(?i)(?<!& )(nightcore|night core) (ver|mix)")),
             new MarkerFormat(Marker.SPED_UP_CUT_VER,   new Regex(@"(?i)(sped|speed) ?up (ver)? ?& cut (size|ver)")),
-            new MarkerFormat(Marker.NIGHTCORE_CUT_VER, new Regex(@"(?i)(nightcore|night core) (ver|mix)? ?& cut (size|ver)")),
+            new MarkerFormat(Marker.NIGHTCORE_CUT_VER, new Regex(@"(?i)(nightcore|night core) (ver|mix)? ?& cut (size|ver)"))
         };
 
         private IEnumerable<Issue> GetMarkerFormatIssues(Beatmap beatmap)
@@ -133,7 +133,7 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
             }
         }
 
-        struct TitleType
+        private readonly struct TitleType
         {
             public readonly string type;
             public readonly Func<Beatmap, string> Get;
@@ -145,14 +145,14 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
             }
         }
 
-        private static readonly List<TitleType> TitleTypes = new List<TitleType>()
+        private static readonly IEnumerable<TitleType> TitleTypes = new[]
         {
             new TitleType("romanized", beatmap => beatmap.metadataSettings.title),
             new TitleType("unicode",   beatmap => beatmap.metadataSettings.titleUnicode)
         };
 
-        private string Capitalize(string str) =>
-            str.First().ToString().ToUpper() + str.Substring(1);
+        private static string Capitalize(string str) =>
+            str.First().ToString().ToUpper() + str[1..];
 
         /// <summary> Returns issues wherever the romanized or unicode title matches the regex but not the exact format. </summary>
         private IEnumerable<Issue> GetIssuesFromRegex(Beatmap beatmap, MarkerFormat markerFormat)
@@ -171,7 +171,7 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
             }
         }
 
-        struct SubstitutionPair
+        private readonly struct SubstitutionPair
         {
             public readonly Marker original;
             public readonly Marker substitution;

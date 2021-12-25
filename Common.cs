@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace MapsetChecks
 {
-    public class Common
+    public static class Common
     {
         public const string CHECK_MANUALLY_MESSAGE = ", so you'll need to check that manually.";
         public const string FILE_EXCEPTION_MESSAGE = "\"{0}\" couldn't be checked, so you'll need to do that manually.{1}";
@@ -49,7 +49,7 @@ namespace MapsetChecks
             }
         }
 
-        public struct TagFile
+        public readonly struct TagFile
         {
             public readonly TagLib.File file;
             public readonly string templateName;
@@ -109,7 +109,7 @@ namespace MapsetChecks
             }
         }
 
-        public static IEnumerable<TagFile> GetTagOsuFiles(BeatmapSet beatmapSet, Func<Beatmap, IEnumerable<string>> BeatmapFunc)
+        private static IEnumerable<TagFile> GetTagOsuFiles(BeatmapSet beatmapSet, Func<Beatmap, IEnumerable<string>> BeatmapFunc)
         {
             List<string> fileNames = new List<string>();
             foreach (Beatmap beatmap in beatmapSet.beatmaps)
@@ -125,7 +125,7 @@ namespace MapsetChecks
             return GetTagFiles(beatmapSet, fileNames);
         }
 
-        public static IEnumerable<TagFile> GetTagOsbFiles(BeatmapSet beatmapSet, Func<Osb, IEnumerable<string>> OsbFunc)
+        private static IEnumerable<TagFile> GetTagOsbFiles(BeatmapSet beatmapSet, Func<Osb, IEnumerable<string>> OsbFunc)
         {
             List<string> fileNames = new List<string>();
             if (beatmapSet.osb != null)
@@ -141,7 +141,7 @@ namespace MapsetChecks
             return GetTagFiles(beatmapSet, fileNames);
         }
 
-        public static IEnumerable<TagFile> GetTagFiles(BeatmapSet beatmapSet, List<string> fileNames)
+        private static IEnumerable<TagFile> GetTagFiles(BeatmapSet beatmapSet, List<string> fileNames)
         {
             if (beatmapSet.songPath != null)
             {

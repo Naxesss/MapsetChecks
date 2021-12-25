@@ -94,7 +94,7 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
             new[] { "Bengali" }
         };
 
-        private string ToCause(string[][] tagCombinations)
+        private static string ToCause(IEnumerable<string[]> tagCombinations)
         {
             StringBuilder liStr = new StringBuilder();
             foreach (string[] combination in tagCombinations)
@@ -140,13 +140,15 @@ namespace MapsetChecks.Checks.AllModes.General.Metadata
 
         /// <summary> Returns true if all tags in any combination exist in the given tags
         /// (e.g. contains both "Video" and "Game", or "Electronic"), case insensitive. </summary>
-        private bool HasAnyCombination(string[][] tagCombinations, string[] tags) =>
-            tagCombinations.Any(tagCombination =>
+        private static bool HasAnyCombination(IEnumerable<string[]> tagCombinations, IEnumerable<string> tags)
+        {
+            return tagCombinations.Any(tagCombination =>
                 tagCombination.All(tagInCombination =>
                     tags.Any(tag =>
                         tag.Contains(tagInCombination.ToLower())
                     )
                 )
             );
+        }
     }
 }
