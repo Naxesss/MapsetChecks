@@ -105,6 +105,8 @@ namespace MapsetChecks.Checks.AllModes.Timing
                     string conflictingGreenSettings = "";
                     string conflictingRedSettings = "";
 
+                    // As mentioned above, we know neither are null, so we do not need to check that.
+                    // ReSharper disable twice PossibleNullReferenceException
                     if (greenLine.kiai != redLine.kiai)
                     {
                         conflictingGreenSettings += (conflictingGreenSettings.Length > 0 ? ", " : "") + (greenLine.kiai ? "kiai" : "no kiai");

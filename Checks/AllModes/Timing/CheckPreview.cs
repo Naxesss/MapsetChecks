@@ -60,6 +60,8 @@ namespace MapsetChecks.Checks.AllModes.Timing
             var refBeatmap = beatmapSet.beatmaps[0];
             foreach (var beatmap in beatmapSet.beatmaps)
             {
+                // Here we do care if the floats differ. It should be exactly -1. Anything else is treated as an actual offset.
+                // ReSharper disable twice CompareOfFloatsByEqualityOperator
                 if (beatmap.generalSettings.previewTime == -1)
                     yield return new Issue(GetTemplate("Not Set"), beatmap);
 

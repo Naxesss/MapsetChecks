@@ -77,6 +77,7 @@ namespace MapsetChecks.checks.Catch.compose
                 }
 
                 // Check the gap before the spinner.
+                // ReSharper disable once InvertIf (More clearly a variation of the above if-statement like this.)
                 if (spinner.Prev() is HitObject prev && !(prev is Spinner))
                 {
                     double prevGap = spinner.time - prev.GetEndTime();
