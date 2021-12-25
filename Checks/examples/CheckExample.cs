@@ -1,8 +1,6 @@
 ﻿using MapsetParser.objects;
 using MapsetVerifierFramework.objects;
-using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
-using System;
 using System.Collections.Generic;
 
 namespace MapsetChecks.Checks.Examples

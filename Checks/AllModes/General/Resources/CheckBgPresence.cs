@@ -1,17 +1,13 @@
-﻿using MapsetParser.objects;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using MapsetParser.objects;
 using MapsetParser.objects.events;
-using MapsetVerifierFramework;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
 
-namespace MapsetChecks.checks.general.resources
+namespace MapsetChecks.Checks.AllModes.General.Resources
 {
     [Check]
     public class CheckBgPresence : GeneralCheck

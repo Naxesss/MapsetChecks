@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using MapsetParser.objects;
-using MapsetParser.objects.events;
 using MapsetParser.statics;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;

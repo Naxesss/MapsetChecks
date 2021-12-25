@@ -1,16 +1,12 @@
 ﻿using MapsetParser.objects;
 using MapsetParser.objects.hitobjects;
-using MapsetParser.objects.timinglines;
 using MapsetParser.statics;
-using MapsetVerifierFramework;
 using MapsetVerifierFramework.objects;
 using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Numerics;
 
 namespace MapsetChecks.Checks.Standard.Spread
 {
