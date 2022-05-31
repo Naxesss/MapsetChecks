@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MapsetParser.objects;
 using MapsetParser.objects.hitobjects;
@@ -8,7 +9,7 @@ using MapsetVerifierFramework.objects.attributes;
 using MapsetVerifierFramework.objects.metadata;
 using static MapsetParser.objects.Beatmap;
 
-namespace MapsetChecks.checks.Catch.compose
+namespace MapsetChecks.checks.Catch.Compose
 {
     [Check]
     public class CheckSpinnerGap : BeatmapCheck
@@ -67,7 +68,7 @@ namespace MapsetChecks.checks.Catch.compose
                 // Check the gap after the spinner.
                 if (spinner.Next() is HitObject next && !(next is Spinner))
                 {
-                    double nextGap = next.time - spinner.endTime;
+                    int nextGap = (int) Math.Round(next.time - spinner.endTime);
 
                     for (int diffIndex = 0; diffIndex < (int)Difficulty.Ultra; ++diffIndex)
                         if (nextGap < ThresholdAfter[diffIndex])
@@ -80,7 +81,7 @@ namespace MapsetChecks.checks.Catch.compose
                 // ReSharper disable once InvertIf (More clearly a variation of the above if-statement like this.)
                 if (spinner.Prev() is HitObject prev && !(prev is Spinner))
                 {
-                    double prevGap = spinner.time - prev.GetEndTime();
+                    int prevGap = (int) Math.Round(spinner.time - prev.GetEndTime());
 
                     for (int diffIndex = 0; diffIndex < (int)Difficulty.Ultra; ++diffIndex)
                         if (prevGap < ThresholdBefore[diffIndex])
