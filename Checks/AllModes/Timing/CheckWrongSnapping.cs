@@ -276,22 +276,18 @@ namespace MapsetChecks.Checks.AllModes.Timing
         /// object within 3 ms in the other beatmap. </summary>
         private static IEnumerable<double> GetMissingEdgeTimes(Beatmap beatmap, Beatmap otherBeatmap)
         {
-            // TODO: Surely, this can be optimized. May want to swap the `otherBeatmap.hitObjects` loop with
-            //       the `hitObject.GetEdgeTimes()` one, for example, in order to improve the time complexity.
+            List<double> edgeTimes = new List<double>();
             foreach (var hitObject in beatmap.hitObjects)
+                edgeTimes.AddRange(hitObject.GetEdgeTimes());
+
+            List<double> otherEdgeTimes = new List<double>();
+            foreach (var otherHitObject in otherBeatmap.hitObjects)
+                otherEdgeTimes.AddRange(otherHitObject.GetEdgeTimes());
+
+            foreach (var edgeTime in edgeTimes)
             {
-                foreach (double edgeTime in hitObject.GetEdgeTimes())
-                {
-                    bool isOverlapping = false;
-
-                    foreach (var otherHitObject in otherBeatmap.hitObjects)
-                        foreach (double otherEdgeTime in otherHitObject.GetEdgeTimes())
-                            if (Math.Abs(edgeTime - otherEdgeTime) < 3)
-                                isOverlapping = true;
-
-                    if (!isOverlapping)
-                        yield return edgeTime;
-                }
+                if (!otherEdgeTimes.Exists(time => Math.Abs(time - edgeTime) < 3))
+                    yield return edgeTime;
             }
         }
 
