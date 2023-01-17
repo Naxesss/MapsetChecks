@@ -67,7 +67,7 @@ namespace MapsetChecks.checks.Catch.compose
                 // Check the gap after the spinner.
                 if (spinner.Next() is HitObject next && !(next is Spinner))
                 {
-                    double nextGap = next.time - spinner.endTime;
+                    int nextGap = Timestamp.Round(next.time) - Timestamp.Round(spinner.endTime);
 
                     for (int diffIndex = 0; diffIndex < (int)Difficulty.Ultra; ++diffIndex)
                         if (nextGap < ThresholdAfter[diffIndex])
@@ -80,7 +80,7 @@ namespace MapsetChecks.checks.Catch.compose
                 // ReSharper disable once InvertIf (More clearly a variation of the above if-statement like this.)
                 if (spinner.Prev() is HitObject prev && !(prev is Spinner))
                 {
-                    double prevGap = spinner.time - prev.GetEndTime();
+                    int prevGap = Timestamp.Round(spinner.time) - Timestamp.Round(prev.GetEndTime());
 
                     for (int diffIndex = 0; diffIndex < (int)Difficulty.Ultra; ++diffIndex)
                         if (prevGap < ThresholdBefore[diffIndex])
