@@ -32,7 +32,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
                     "Reasoning",
                     @"
                     When placing uninherited lines on-beat with the previous uninherited line, timing may shift 1 ms forwards 
-                    due to rounding errors. This means afer 20 uninherited lines placed in this way, timing may shift up to 
+                    due to rounding errors. This means after 20 uninherited lines placed in this way, timing may shift up to 
                     20 ms at the end. They may also affect the nightcore mod and main menu pulsing depending on placement.
                     <br \><br \>
                     Unused inherited lines don't cause any issues and are basically equivalent to bookmarks. Unless the mapper 
