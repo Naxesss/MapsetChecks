@@ -41,11 +41,12 @@ namespace MapsetChecks.Checks.AllModes.General.Files
                     already had the map when the file name was correct, it may properly update for you while showing ""not 
                     submitted"" for others downloading it for the first time.
                     <br><br>
-                    For some Windows 10 users, file names longer than 132 characters cannot properly be unzipped by the game and 
-                    simply vanish instead.
+                    For Windows 10 users, file paths longer than 260 characters cannot properly be unzipped by the game and 
+                    simply vanish instead. This varies between users based on where on their computer they put osu!, but
+                    for the sake of consistency, we'll simply arbitrarily make 130 characters the limit.
                     <image>
                         https://i.imgur.com/PO8eKvZ.png
-                        A file name longer than 132 characters, caused by a combination of a long title and a long difficulty name.
+                        A file name longer than 130 characters, caused by a combination of a long title and a long difficulty name.
                     </image>"
                 }
             }
@@ -70,11 +71,13 @@ namespace MapsetChecks.Checks.AllModes.General.Files
                         "A .osu file is not named after the mentioned format using its respective properties.") },
 
                 { "Too Long Name",
-                    new IssueTemplate(Issue.Level.Minor,
-                        "\"{0}\" has a file name longer than 132 characters ({1}), which causes the .osz to fail to unzip for a few users.",
+                    new IssueTemplate(Issue.Level.Warning,
+                        "\"{0}\" has a file name longer than 130 characters ({1}), which causes the .osz to fail " +
+                        "to unzip for some users. Consider truncating the artist, title, and/or difficulty name fields " +
+                        "where it makes sense to do so.",
                         "path", "length")
                     .WithCause(
-                        "A .osu file has a file name longer than 132 characters.") }
+                        "A .osu file has a file name longer than 130 characters.") }
             };
         }
 
@@ -85,7 +88,7 @@ namespace MapsetChecks.Checks.AllModes.General.Files
                 string filePath = songFilePath[(beatmapSet.songPath.Length + 1)..];
                 string fileName = filePath.Split(new[] { '/', '\\' }).Last();
 
-                if(fileName.Length > 132)
+                if(fileName.Length > 130)
                     yield return new Issue(GetTemplate("Too Long Name"), null,
                         filePath, fileName.Length);
 
