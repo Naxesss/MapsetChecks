@@ -41,6 +41,14 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
                         how noticeable it is.
                     </note>
                     <br \>
+                    Audio files in the OGG container format using the Q6 setting will typically land around 192 kbps, 
+                    somtimes inconveniently a little above that, so the upper limit for OGG is instead 208 kbps.
+                    <note>
+                        Q6 generally reads as 192 kbps in tools like Spek. These programs actually just approximate the 
+                        bitrate by rounding to the closest 32 kbps step. 192 kbps is one such step. Therefore, any 
+                        file > 208 kbps will show as 224 kbps in these tools.
+                    </note>
+                    <br \>
                     OGG and MP3 files are typically compressed, unlike Wave, making too low bitrate a concern even for 
                     hit sounds using those formats. An upper limit for hit sound quality is not enforced due to their short 
                     length and small impact on file size, even with uncompressed formats like Wave."
@@ -57,8 +65,8 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
                         "Average audio bitrate for \"{0}\", {1} kbps, is too {2}.",
                         "path", "bitrate", "high/low")
                     .WithCause(
-                        "The average bitrate of an audio file (MP3 or OGG format) is either higher than 192 kbps " +
-                        "or lower than 128 kbps.") },
+                        "The average bitrate of an audio file is either higher than 192/208 kbps" +
+                        "for MP3/OGG respectively or lower than 128 kbps.") },
 
                 { "Hit Sound",
                     new IssueTemplate(Issue.Level.Warning,
@@ -78,10 +86,52 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
 
         public override IEnumerable<Issue> GetIssues(BeatmapSet beatmapSet)
         {
-            if (beatmapSet.GetAudioFilePath() != null)
-                foreach (var issue in GetIssue(beatmapSet, beatmapSet.GetAudioFilePath()))
-                    yield return issue;
+            foreach (var issue in GetAudioIssues(beatmapSet))
+                yield return issue;
+            
+            foreach (var issue in GetHitSoundIssues(beatmapSet))
+                yield return issue;
+        }
+        
+        private IEnumerable<Issue> GetAudioIssues(BeatmapSet beatmapSet)
+        {
+            string audioPath = beatmapSet.GetAudioFilePath();
+            if (audioPath == null)
+                yield break;
+            
+            ManagedBass.ChannelType audioFormat = 0;
+            Issue errorIssue = null;
+            try
+            {
+                audioFormat = AudioBASS.GetFormat(audioPath);
+            }
+            catch (Exception exception)
+            {
+                errorIssue = new Issue(GetTemplate("Exception"), null,
+                    PathStatic.RelativePath(audioPath, beatmapSet.songPath),
+                    Common.ExceptionTag(exception));
+            }
 
+            if (errorIssue != null)
+                yield return errorIssue;
+
+            int upperBitrateLimit = 192;
+            if ((audioFormat & ManagedBass.ChannelType.OGG) != 0)
+                upperBitrateLimit = 208;
+
+            // `Audio.GetBitrate` has a < 0.1 kbps error margin, so we should round this.
+            double bitrate = Math.Round(AudioBASS.GetBitrate(audioPath));
+            if (bitrate >= 128 && bitrate <= upperBitrateLimit)
+                yield break;
+            
+            string relativePath = PathStatic.RelativePath(audioPath, beatmapSet.songPath);
+            yield return new Issue(GetTemplate("Bitrate"), null,
+                relativePath, $"{bitrate:0.##}",
+                bitrate < 128 ? "low" : "high");
+        }
+        
+        private IEnumerable<Issue> GetHitSoundIssues(BeatmapSet beatmapSet)
+        {
             foreach (string hitSoundFile in beatmapSet.hitSoundFiles)
             {
                 string hitSoundPath = Path.Combine(beatmapSet.songPath, hitSoundFile);
@@ -111,28 +161,16 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
                     continue;
                 }
 
-                foreach (var issue in GetIssue(beatmapSet, hitSoundPath, true))
-                    yield return issue;
-            }
-        }
-
-        private IEnumerable<Issue> GetIssue(BeatmapSet beatmapSet, string audioPath, bool isHitSound = false)
-        {
-            // `Audio.GetBitrate` has a < 0.1 kbps error margin, so we should round this.
-            double bitrate = Math.Round(AudioBASS.GetBitrate(audioPath));
-            // Hit sounds only need to follow the lower limit for quality requirements, as Wave
-            // (which is the most used hit sound format currently) is otherwise uncompressed anyway.
-            if (bitrate >= 128 && (bitrate <= 192 || isHitSound))
-                yield break;
-
-            string audioRelPath = PathStatic.RelativePath(audioPath, beatmapSet.songPath);
-            if (!isHitSound)
-                yield return new Issue(GetTemplate("Bitrate"), null,
-                    audioRelPath, $"{bitrate:0.##}",
-                    bitrate < 128 ? "low" : "high");
-            else
+                double bitrate = Math.Round(AudioBASS.GetBitrate(hitSoundPath));
+                // Hit sounds only need to follow the lower limit for quality requirements, as Wave
+                // (which is the most used hit sound format currently) is otherwise uncompressed anyway.
+                if (bitrate >= 128)
+                    yield break;
+                
+                string relativePath = PathStatic.RelativePath(hitSoundPath, beatmapSet.songPath);
                 yield return new Issue(GetTemplate("Hit Sound"), null,
-                    audioRelPath, $"{bitrate:0.##}");
+                    relativePath, $"{bitrate:0.##}");
+            }
         }
     }
 }
