@@ -48,8 +48,9 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
             return new Dictionary<string, IssueTemplate>
             {
                 { "Without Video/Storyboard",
-                    new IssueTemplate(Issue.Level.Problem,
-                        "Currently {0}% unused audio.",
+                    new IssueTemplate(Issue.Level.Warning,
+                        "Currently {0}% unused audio. Ensure the outro significantly contributes to the song, " +
+                        "otherwise cut the outro.",
                         "percent")
                     .WithCause(
                         "The amount of time after the last object exceeds 20% of the length of the audio file. " +
@@ -57,7 +58,8 @@ namespace MapsetChecks.Checks.AllModes.General.Audio
 
                 { "With Video/Storyboard",
                     new IssueTemplate(Issue.Level.Warning,
-                        "Currently {0}% unused audio. Ensure this is being occupied by the video or storyboard.",
+                        "Currently {0}% unused audio. Ensure the outro either significantly contributes to the " +
+                        "song, or is being occupied by the video or storyboard, otherwise cut the outro.",
                         "percent")
                     .WithCause(
                         "Same as the other check, except with a storyboard or video present.") },
