@@ -63,7 +63,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
 
                 { "Warning",
                     new IssueTemplate(Issue.Level.Warning,
-                        "{0} Uninherited line changes nothing, other than {1}, ensure this makes sense.",
+                        "{0} Uninherited line only {1}, ensure this makes sense, otherwise remove the line.",
                         "timestamp - ", "something not immediately obvious")
                     .WithCause(
                         "Same as the first check, but changes something that inherited lines cannot, yet isn't immediately obvious, " +
@@ -71,7 +71,7 @@ namespace MapsetChecks.Checks.AllModes.Timing
 
                 { "Warning Can Be Replaced By Inherited",
                     new IssueTemplate(Issue.Level.Warning,
-                        "{0} Uninherited line changes nothing that can't be changed with an inherited line, other than {1}, ensure this makes sense.",
+                        "{0} Uninherited line only {1}, ensure this makes sense, otherwise replace with an inherited line",
                         "timestamp - ", "something not immediately obvious")
                     .WithCause(
                         "Same as the second check, but changes something that inherited lines cannot, yet isn't immediately obvious, " +
@@ -124,9 +124,9 @@ namespace MapsetChecks.Checks.AllModes.Timing
                 bool changesNCCymbals = !NightcoreCymbalsAlign(currentLine, previousUninheritedLine);
 
                 var notImmediatelyObvious = new List<string>();
-                if (omittingBarline)   notImmediatelyObvious.Add("omitting first barline");
-                if (correctingBarline) notImmediatelyObvious.Add($"correcting the omitted barline at {Timestamp.Get(previousUninheritedLine.offset)}");
-                if (changesNCCymbals)  notImmediatelyObvious.Add("nightcore mod cymbals");
+                if (omittingBarline)   notImmediatelyObvious.Add("omits the first barline");
+                if (correctingBarline) notImmediatelyObvious.Add($"corrects the omitted barline at {Timestamp.Get(previousUninheritedLine.offset)}");
+                if (changesNCCymbals)  notImmediatelyObvious.Add("resets nightcore mod cymbals");
                 string notImmediatelyObviousStr = string.Join(" and ", notImmediatelyObvious);
 
                 if (!IsLineUsed(beatmap, currentLine, previousLine))
