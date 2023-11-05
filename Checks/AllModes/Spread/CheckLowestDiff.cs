@@ -78,6 +78,12 @@ namespace MapsetChecks.Checks.AllModes.Spread
                     beatmapSet.beatmaps.Last().metadataSettings.version != beatmap.metadataSettings.version;
 
                 double effectiveTime = canUsePlayTime ? playTime : drainTime;
+                
+                if (beatmapSet.beatmaps.Last().metadataSettings.version == beatmap.metadataSettings.version)
+                {
+                    double combinedDrainTime = drainTime + 30 * 1000;
+                    effectiveTime = playTime > combinedDrainTime ? combinedDrainTime : playTime;
+                }
 
                 if (effectiveTime < hardThreshold)
                     yield return new Issue(GetTemplate("Problem"), lowestBeatmap,
