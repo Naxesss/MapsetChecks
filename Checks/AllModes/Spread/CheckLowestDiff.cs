@@ -65,42 +65,48 @@ namespace MapsetChecks.Checks.AllModes.Spread
             const double insaneThreshold = (4 * 60 + 15) * 1000;
             const double expertThreshold = 5 * 60 * 1000;
             
+            const double breakTimeLeniency = 30 * 1000;
+            
             var lowestBeatmap = beatmapSet.beatmaps.First();
 
             foreach (var beatmap in beatmapSet.beatmaps)
             {
                 double drainTime = beatmap.GetDrainTime();
                 double playTime  = beatmap.GetPlayTime();
+                double breakTime = playTime - drainTime;
                 
-                // You could easily cheese the playtime requirement by making it mostly breaks; this prevents that.
-                bool canUsePlayTime =
-                    drainTime / playTime >= 0.8 &&
-                    beatmapSet.beatmaps.Last().metadataSettings.version != beatmap.metadataSettings.version;
+                bool isHighestDifficulty = beatmapSet.beatmaps.Last().metadataSettings.version ==
+                                           beatmap.metadataSettings.version;
+                bool canUsePlayTime = !isHighestDifficulty || breakTime < breakTimeLeniency;
 
-                double effectiveTime = canUsePlayTime ? playTime : drainTime;
+                double effectiveTime = playTime;
+                double thresholdReduction = 0;
                 
-                if (beatmapSet.beatmaps.Last().metadataSettings.version == beatmap.metadataSettings.version)
+                if (!canUsePlayTime)
                 {
-                    double combinedDrainTime = drainTime + 30 * 1000;
-                    effectiveTime = playTime > combinedDrainTime ? combinedDrainTime : playTime;
+                    effectiveTime = drainTime;
+                    
+                    // We can't use play time, so we end up with drain time + break time leniency instead.
+                    // Hence, drain time thresholds are effectively the break time leniency lower.
+                    thresholdReduction = breakTimeLeniency;
                 }
 
-                if (effectiveTime < hardThreshold)
+                if (effectiveTime < hardThreshold - thresholdReduction)
                     yield return new Issue(GetTemplate("Problem"), lowestBeatmap,
                         Beatmap.Difficulty.Hard, canUsePlayTime ? "play" : "drain", beatmap,
-                        Timestamp.Get(hardThreshold), Timestamp.Get(effectiveTime))
+                        Timestamp.Get(hardThreshold - thresholdReduction), Timestamp.Get(effectiveTime))
                         .ForDifficulties(Beatmap.Difficulty.Hard);
 
-                if (effectiveTime < insaneThreshold)
+                if (effectiveTime < insaneThreshold - thresholdReduction)
                     yield return new Issue(GetTemplate("Problem"), lowestBeatmap,
                         Beatmap.Difficulty.Insane, canUsePlayTime ? "play" : "drain", beatmap,
-                        Timestamp.Get(insaneThreshold), Timestamp.Get(effectiveTime))
+                        Timestamp.Get(insaneThreshold - thresholdReduction), Timestamp.Get(effectiveTime))
                         .ForDifficulties(Beatmap.Difficulty.Insane);
 
-                if (effectiveTime < expertThreshold)
+                if (effectiveTime < expertThreshold - thresholdReduction)
                     yield return new Issue(GetTemplate("Problem"), lowestBeatmap,
                         Beatmap.Difficulty.Expert, canUsePlayTime ? "play" : "drain", beatmap,
-                        Timestamp.Get(expertThreshold), Timestamp.Get(effectiveTime))
+                        Timestamp.Get(expertThreshold - thresholdReduction), Timestamp.Get(effectiveTime))
                         .ForDifficulties(Beatmap.Difficulty.Expert, Beatmap.Difficulty.Ultra);
             }
         }
