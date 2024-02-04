@@ -78,7 +78,7 @@ namespace MapsetChecks.Checks.AllModes.Compose
                     var otherHitObject = beatmap.hitObjects[j];
 
                     if (beatmap.generalSettings.mode == Beatmap.Mode.Mania &&
-                        hitObject.Position.X.AlmostEqual(otherHitObject.Position.X))
+                        !hitObject.Position.X.AlmostEqual(otherHitObject.Position.X))
                         continue;
 
                     // Only need to check forwards, as any previous object will already have looked behind this one.
