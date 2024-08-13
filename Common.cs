@@ -175,6 +175,11 @@ namespace MapsetChecks
                     {
                         files = new string[] { };
                     }
+                    catch (ArgumentException ex) when (ex.HResult == -2147024809 /* fileName/GetFiles's expression is drive/UNC path */) 
+                    {
+                        files = new string[] { };
+                    }
+                    
 
                     if (files.Length > 0)
                     {
